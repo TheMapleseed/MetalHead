@@ -152,12 +152,16 @@ public class MetalRenderingEngine: ObservableObject {
         self.commandQueue = commandQueue
         
         // Create parallel command queues for concurrent encoding
+        // Multiple queues allow GPU to process commands in parallel across all GPU cores
         for _ in 0..<3 {
             if let queue = device.makeCommandQueue() {
                 parallelCommandQueues.append(queue)
             }
         }
-        print("Created \(parallelCommandQueues.count) parallel command queues")
+        print("Created \(parallelCommandQueues.count) parallel command queues for GPU core utilization")
+        
+        // Metal automatically distributes work across all available GPU cores
+        // Each MTLCommandQueue submits work to the GPU, which schedules across all compute units
     }
     
     private func setupBuffers() throws {

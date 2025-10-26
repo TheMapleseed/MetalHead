@@ -235,6 +235,97 @@ public var masterTime: TimeInterval { get }
 public var systemLatency: TimeInterval { get }
 ```
 
+### Advanced Rendering APIs
+
+#### ComputeShaderManager
+
+```swift
+// GPU compute shaders for parallel processing
+public let computeShaderManager: ComputeShaderManager
+
+// Execute compute shader
+try computeShaderManager.dispatchShader(
+    named: "audio_visualization",
+    data: audioData,
+    dataSize: size,
+    threadsPerGrid: gridSize,
+    threadsPerThreadgroup: threadgroupSize
+)
+
+// Audio visualization
+try computeShaderManager.visualizeAudio(
+    audioData: frequencies,
+    outputTexture: texture
+)
+
+// Particle system updates on GPU
+try computeShaderManager.updateParticles(&particles, deltaTime: deltaTime)
+```
+
+#### OffscreenRenderer
+
+```swift
+// Render-to-texture for post-processing
+public let offscreenRenderer: OffscreenRenderer
+
+// Create render target
+let texture = try offscreenRenderer.createRenderTarget(
+    name: "postProcess",
+    width: 1920,
+    height: 1080
+)
+
+// Render to texture
+try offscreenRenderer.renderToTexture(name: "postProcess") { encoder in
+    // Encoding commands
+}
+
+// Blit textures
+try offscreenRenderer.blitTexture(source: srcTexture, destination: dstTexture)
+```
+
+#### DeferredRenderer
+
+```swift
+// Deferred lighting pipeline
+public let deferredRenderer: DeferredRenderer
+
+// Initialize with render size
+try deferredRenderer.initialize(width: 1920, height: 1080)
+
+// Render G-Buffer pass
+try deferredRenderer.renderGBuffer(
+    commandBuffer: buffer,
+    cameraViewMatrix: viewMatrix,
+    geometries: meshes
+)
+
+// Render lighting pass
+try deferredRenderer.renderLighting(commandBuffer: buffer, lights: lightArray)
+```
+
+#### TextureManager
+
+```swift
+// Intelligent texture caching
+public let textureManager: TextureManager
+
+// Load texture with caching
+let texture = try textureManager.loadTexture(
+    from: imageURL,
+    generateMipmaps: true
+)
+
+// Get cached texture
+let cached = textureManager.getTexture(key: "myTexture")
+
+// Release texture
+textureManager.releaseTexture(key: "myTexture")
+
+// Get cache statistics
+let stats = textureManager.getCacheStats()
+```
+
 ### Testing APIs
 
 #### TestAPI
@@ -277,6 +368,32 @@ public var fps: Double { get }
 public var memoryUsage: Int { get }
 public var cpuUtilization: Double { get }
 public var gpuUtilization: Double { get }
+```
+
+### Parallel Rendering
+
+MetalHead utilizes **ALL CPU AND GPU CORES** for maximum performance:
+
+#### CPU Core Utilization
+- **Automatic CPU core detection** using `ProcessInfo.processInfo.processorCount`
+- **Parallel rendering** with MTLParallelRenderCommandEncoder
+- **Up to 8 concurrent threads** for optimal performance
+- **Concurrent command encoding** across all available cores
+
+#### GPU Core Utilization  
+- **Multiple command queues** (3 queues for parallel GPU processing)
+- **Automatic GPU work distribution** across all compute units
+- **Compute shaders** utilize all available GPU cores
+- **Metal automatically schedules** work across all GPU cores
+
+**Usage:**
+```swift
+// Parallel rendering is automatic when using render3DParallel
+// The engine detects CPU cores and distributes work accordingly
+
+// CPU cores are used for parallel command encoding
+// GPU cores are used for parallel command execution
+// Metal handles GPU core distribution automatically
 ```
 
 ## Best Practices
