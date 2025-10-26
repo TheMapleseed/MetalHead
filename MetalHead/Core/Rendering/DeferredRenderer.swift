@@ -56,7 +56,7 @@ public class DeferredRenderer {
     
     /// Render G-Buffer pass (deferred rendering stage 1)
     public func renderGBuffer(commandBuffer: MTLCommandBuffer,
-                             camera: Camera,
+                             cameraViewMatrix: matrix_float4x4,
                              geometries: [DeferredGeometry]) throws {
         
         // Create G-Buffer render pass descriptor
@@ -80,7 +80,8 @@ public class DeferredRenderer {
         // Render geometries to G-Buffer
         for geometry in geometries {
             encoder.setVertexBuffer(geometry.vertexBuffer, offset: 0, index: 0)
-            encoder.setFragmentBytes(&geometry.material, length: MemoryLayout<DeferredMaterial>.size, index: 0)
+            var material = geometry.material
+            encoder.setFragmentBytes(&material, length: MemoryLayout<DeferredMaterial>.size, index: 0)
             
             if let indexBuffer = geometry.indexBuffer {
                 encoder.drawIndexedPrimitives(type: .triangle,
@@ -124,12 +125,12 @@ public class DeferredRenderer {
         encoder.setFragmentBytes(&lightCount, length: MemoryLayout<UInt32>.size, index: 0)
         
         if !lights.isEmpty {
-            let lightsData = UnsafeMutablePointer<DeferredLight>.allocate(capacity: lights.count)
-            defer { lightsData.deallocate() }
-            lights.withUnsafeBufferPointer { buffer in
-                lightsData.initialize(from: buffer)
+            var lightsArray = lights
+            lightsArray.withUnsafeMutableBytes { buffer in
+                if let baseAddress = buffer.baseAddress {
+                    encoder.setFragmentBytes(baseAddress, length: lights.count * MemoryLayout<DeferredLight>.size, index: 1)
+                }
             }
-            encoder.setFragmentBytes(lightsData, length: lights.count * MemoryLayout<DeferredLight>.size, index: 1)
         }
         
         // Render fullscreen quad for lighting

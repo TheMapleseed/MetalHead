@@ -112,7 +112,7 @@ public class ComputeShaderManager {
                                              length: particles.count * MemoryLayout<Particle>.size,
                                              options: [])
         
-        guard let pipelineState = computePipelineStates["particle_update"] else {
+        if computePipelineStates["particle_update"] == nil {
             try setupParticlePipeline()
         }
         
@@ -167,6 +167,9 @@ public class ComputeShaderManager {
         // Create a simple particle update function
         // This would require a custom metal shader for particles
         print("Particle pipeline would be setup here")
+        
+        // Placeholder for now - would create particle pipeline state here
+        throw ComputeError.shaderNotFound("particle_update")
     }
 }
 

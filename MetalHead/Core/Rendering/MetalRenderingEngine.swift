@@ -15,6 +15,7 @@ public class MetalRenderingEngine: ObservableObject {
     // Metal objects
     public let device: MTLDevice
     private var commandQueue: MTLCommandQueue!
+    private var parallelCommandQueues: [MTLCommandQueue] = [] // For parallel encoding
     private var renderPipelineState: MTLRenderPipelineState!
     private var depthStencilState: MTLDepthStencilState!
     private var computePipelineState: MTLComputePipelineState!
@@ -88,7 +89,8 @@ public class MetalRenderingEngine: ObservableObject {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
         
         if is3DMode {
-            render3D(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
+            // Use parallel rendering for better performance
+            render3DParallel(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
         }
         
         commandBuffer.present(drawable)
@@ -148,6 +150,14 @@ public class MetalRenderingEngine: ObservableObject {
             throw RenderingError.commandQueueCreationFailed
         }
         self.commandQueue = commandQueue
+        
+        // Create parallel command queues for concurrent encoding
+        for _ in 0..<3 {
+            if let queue = device.makeCommandQueue() {
+                parallelCommandQueues.append(queue)
+            }
+        }
+        print("Created \(parallelCommandQueues.count) parallel command queues")
     }
     
     private func setupBuffers() throws {
@@ -250,6 +260,66 @@ public class MetalRenderingEngine: ObservableObject {
         
         let uniformPointer = uniformBuffer.contents().bindMemory(to: Uniforms.self, capacity: 1)
         uniformPointer.pointee = uniforms
+    }
+    
+    private func render3DParallel(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor) {
+        // Create parallel render command encoder to utilize all CPU cores
+        guard let parallelEncoder = commandBuffer.makeParallelRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            // Fallback if parallel rendering not available
+            render3D(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
+            return
+        }
+        
+        // Determine number of sub-encoders based on CPU cores
+        let cpuCount = ProcessInfo.processInfo.processorCount
+        let threadCount = min(cpuCount, 8) // Limit to 8 threads for optimal performance
+        
+        print("Parallel rendering across \(threadCount) CPU cores (total: \(cpuCount) cores available)")
+        
+        // Encode rendering commands concurrently across all CPU cores
+        let concurrentQueue = DispatchQueue(label: "com.metalhead.parallel", attributes: .concurrent)
+        let group = DispatchGroup()
+        let queue = DispatchQueue(label: "parallelEncoding", attributes: .concurrent)
+        
+        // Split work across multiple threads
+        for i in 0..<threadCount {
+            group.enter()
+            queue.async { [weak self] in
+                defer { group.leave() }
+                
+                guard let self = self else { return }
+                
+                // Get or create sub-encoder for this thread
+                if let subEncoder = parallelEncoder.makeRenderCommandEncoder() {
+                    subEncoder.setRenderPipelineState(self.renderPipelineState)
+                    subEncoder.setDepthStencilState(self.depthStencilState)
+                    subEncoder.setVertexBuffer(self.vertexBuffer, offset: 0, index: 0)
+                    subEncoder.setVertexBuffer(self.uniformBuffer, offset: 0, index: 1)
+                    
+                    // Each thread renders a portion of the geometry
+                    let triangleCount = 36
+                    let trianglesPerThread = triangleCount / threadCount
+                    let offset = (i * trianglesPerThread) * MemoryLayout<UInt16>.size
+                    let count = (i == threadCount - 1) ? (triangleCount - (trianglesPerThread * i)) : trianglesPerThread
+                    
+                    if count > 0 {
+                        subEncoder.drawIndexedPrimitives(type: .triangle,
+                                                        indexCount: count,
+                                                        indexType: .uint16,
+                                                        indexBuffer: self.indexBuffer,
+                                                        indexBufferOffset: offset)
+                    }
+                    
+                    subEncoder.endEncoding()
+                }
+            }
+        }
+        
+        // Wait for all threads to complete encoding
+        group.wait()
+        
+        // End the parallel encoder
+        parallelEncoder.endEncoding()
     }
     
     private func render3D(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor) {
