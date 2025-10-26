@@ -167,14 +167,16 @@ public class UnifiedClockSystem: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.handleSystemTimeChange()
+            Task { @MainActor in
+                await self?.handleSystemTimeChange()
+            }
         }
         
         // AVAudioSession is not available on macOS
         // On macOS, audio interruptions are handled differently
     }
     
-    private func handleSystemTimeChange() {
+    private func handleSystemTimeChange() async {
         let currentSystemTime = CACurrentMediaTime()
         systemTimeOffset = currentSystemTime - masterTime
         notifySubsystemsOfTimeChange()
@@ -206,12 +208,12 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     private func startTimingUpdateLoop() {
-        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            self?.timingUpdateLoop()
+        Task { @MainActor [weak self] in
+            await self?.timingUpdateLoop()
         }
     }
     
-    private func timingUpdateLoop() {
+    private func timingUpdateLoop() async {
         while isRunning {
             let currentTime = CACurrentMediaTime()
             let deltaTime = currentTime - lastUpdateTime
@@ -228,7 +230,7 @@ public class UnifiedClockSystem: ObservableObject {
             
             let sleepTime = frameInterval - (CACurrentMediaTime() - currentTime)
             if sleepTime > 0 {
-                Thread.sleep(forTimeInterval: sleepTime)
+                try? await Task.sleep(nanoseconds: UInt64(sleepTime * 1_000_000_000))
             }
         }
     }

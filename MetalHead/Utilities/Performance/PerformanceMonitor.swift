@@ -47,7 +47,9 @@ public class PerformanceMonitor: ObservableObject {
         guard monitoringTimer == nil else { return }
         
         monitoringTimer = Timer.scheduledTimer(withTimeInterval: monitoringInterval, repeats: true) { [weak self] _ in
-            self?.updatePerformanceMetrics()
+            Task { @MainActor in
+                await self?.updatePerformanceMetrics()
+            }
         }
         
         print("Performance monitoring started")
@@ -138,7 +140,7 @@ public class PerformanceMonitor: ObservableObject {
     }
     
     // MARK: - Private Methods
-    private func updatePerformanceMetrics() {
+    private func updatePerformanceMetrics() async {
         memoryUsage = getMemoryUsage()
         cpuUtilization = getCPUUsage()
         gpuUtilization = getGPUUtilization()

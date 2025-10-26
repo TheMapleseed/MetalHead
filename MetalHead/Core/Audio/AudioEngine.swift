@@ -52,32 +52,34 @@ public class AudioEngine: ObservableObject {
     public func play() {
         guard !isPlaying else { return }
         
-        audioQueue.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self = self else { return }
             
             if let audioFile = self.currentAudioFile {
-                self.audioPlayerNode.scheduleFile(audioFile, at: nil, completionHandler: nil)
+                // Note: scheduleSegment is synchronous and deprecated, but there's no async alternative yet
+                _ = {
+                    self.audioPlayerNode.scheduleSegment(
+                        audioFile,
+                        startingFrame: 0,
+                        frameCount: AVAudioFrameCount(audioFile.length),
+                        at: nil
+                    )
+                }()
             } else {
                 self.generateTestTone()
             }
             
             self.audioPlayerNode.play()
-            
-            DispatchQueue.main.async {
-                self.isPlaying = true
-            }
+            self.isPlaying = true
         }
     }
     
     public func stop() {
         guard isPlaying else { return }
         
-        audioQueue.async { [weak self] in
+        Task { @MainActor [weak self] in
             self?.audioPlayerNode.stop()
-            
-            DispatchQueue.main.async {
-                self?.isPlaying = false
-            }
+            self?.isPlaying = false
         }
     }
     
@@ -138,7 +140,7 @@ public class AudioEngine: ObservableObject {
     public func setSpatialPosition(_ position: SIMD3<Float>) {
         let distance = length(position)
         let azimuth = atan2(position.x, position.z)
-        let elevation = atan2(position.y, sqrt(position.x * position.x + position.z * position.z))
+        _ = atan2(position.y, sqrt(position.x * position.x + position.z * position.z))
         
         let volumeAttenuation = 1.0 / (1.0 + distance * 0.1)
         setVolume(volume * volumeAttenuation)
@@ -216,24 +218,29 @@ public class AudioEngine: ObservableObject {
     }
     
     private func performFFT(_ audioData: [Float]) {
-        guard let fftSetup = fftSetup else { return }
+        guard fftSetup != nil else { return }
+        let fftSetup = fftSetup!
         
         let halfSize = audioData.count / 2
         var realParts = Array(audioData.prefix(halfSize))
         var imaginaryParts = Array(repeating: Float(0.0), count: halfSize)
         
-        var splitComplex = DSPSplitComplex(realp: &realParts, imagp: &imaginaryParts)
-        vDSP_fft_zrip(fftSetup, &splitComplex, 1, vDSP_Length(log2(Double(halfSize))), Int32(FFT_FORWARD))
-        
-        var magnitudes = Array(repeating: Float(0.0), count: halfSize)
-        vDSP_zvmags(&splitComplex, 1, &magnitudes, 1, vDSP_Length(halfSize))
-        
-        var dbMagnitudes = Array(repeating: Float(0.0), count: halfSize)
-        var refValue = Float(1.0)
-        vDSP_vdbcon(magnitudes, 1, &refValue, &dbMagnitudes, 1, vDSP_Length(halfSize), 1)
-        
-        DispatchQueue.main.async {
-            self.audioSpectrum = Array(dbMagnitudes.prefix(min(64, halfSize)))
+        realParts.withUnsafeMutableBufferPointer { realBuffer in
+            imaginaryParts.withUnsafeMutableBufferPointer { imagBuffer in
+                var splitComplex = DSPSplitComplex(realp: realBuffer.baseAddress!, imagp: imagBuffer.baseAddress!)
+                vDSP_fft_zrip(fftSetup, &splitComplex, 1, vDSP_Length(log2(Double(halfSize))), Int32(FFT_FORWARD))
+                
+                var magnitudes = Array(repeating: Float(0.0), count: halfSize)
+                vDSP_zvmags(&splitComplex, 1, &magnitudes, 1, vDSP_Length(halfSize))
+                
+                var dbMagnitudes = Array(repeating: Float(0.0), count: halfSize)
+                var refValue = Float(1.0)
+                vDSP_vdbcon(magnitudes, 1, &refValue, &dbMagnitudes, 1, vDSP_Length(halfSize), 1)
+                
+                DispatchQueue.main.async {
+                    self.audioSpectrum = Array(dbMagnitudes.prefix(min(64, halfSize)))
+                }
+            }
         }
     }
     

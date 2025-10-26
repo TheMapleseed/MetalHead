@@ -308,7 +308,7 @@ extension Int {
 public class ErrorRecovery {
     public static func recoverFromDeviceError() -> Bool {
         // Attempt to recover from device errors
-        guard let device = MTLCreateSystemDefaultDevice() else {
+        guard MTLCreateSystemDefaultDevice() != nil else {
             return false
         }
         

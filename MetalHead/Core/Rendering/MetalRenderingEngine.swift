@@ -160,7 +160,7 @@ public class MetalRenderingEngine: ObservableObject {
         pipelineDescriptor.fragmentFunction = fragmentFunction
         pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
         pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
-        pipelineDescriptor.sampleCount = 4
+        pipelineDescriptor.rasterSampleCount = 4
         
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float3

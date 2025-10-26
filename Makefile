@@ -3,7 +3,7 @@
 # Configuration
 PROJECT_NAME = MetalHead
 SCHEME = MetalHead
-DESTINATION = 'platform=macOS'
+DESTINATION = 'platform=macOS,arch=arm64'
 CONFIGURATION_DEBUG = Debug
 CONFIGURATION_RELEASE = Release
 XCODEBUILD = xcodebuild

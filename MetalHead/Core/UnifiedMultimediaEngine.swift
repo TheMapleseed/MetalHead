@@ -233,7 +233,7 @@ public class UnifiedMultimediaEngine: ObservableObject {
         clockSystem?.resume()
         
         // Resume audio
-        try await audioEngine?.resume()
+        audioEngine?.resume()
         
         // Rendering and input automatically resume with the clock
     }

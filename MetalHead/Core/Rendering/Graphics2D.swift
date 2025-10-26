@@ -148,7 +148,7 @@ public class Graphics2D: ObservableObject {
         pipelineDescriptor.vertexFunction = vertexFunction
         pipelineDescriptor.fragmentFunction = fragmentFunction
         pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
-        pipelineDescriptor.sampleCount = 4
+        pipelineDescriptor.rasterSampleCount = 4
         
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float2
