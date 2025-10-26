@@ -1,0 +1,167 @@
+#include <metal_stdlib>
+using namespace metal;
+
+// MARK: - Data Structures
+struct Vertex {
+    float3 position [[attribute(0)]];
+    float4 color [[attribute(1)]];
+};
+
+struct Uniforms {
+    float4x4 modelMatrix;
+    float4x4 viewMatrix;
+    float4x4 projectionMatrix;
+    float time;
+};
+
+struct VertexOut {
+    float4 position [[position]];
+    float4 color;
+    float3 worldPosition;
+    float3 normal;
+};
+
+// MARK: - Vertex Shader
+vertex VertexOut vertex_main(Vertex in [[stage_in]],
+                           constant Uniforms& uniforms [[buffer(1)]]) {
+    VertexOut out;
+    
+    // Transform position to world space
+    float4 worldPosition = uniforms.modelMatrix * float4(in.position, 1.0);
+    
+    // Transform to view space
+    float4 viewPosition = uniforms.viewMatrix * worldPosition;
+    
+    // Transform to clip space
+    out.position = uniforms.projectionMatrix * viewPosition;
+    
+    // Pass through color
+    out.color = in.color;
+    
+    // Pass world position for lighting calculations
+    out.worldPosition = worldPosition.xyz;
+    
+    // Calculate normal (simplified for cube)
+    out.normal = normalize((uniforms.modelMatrix * float4(in.position, 0.0)).xyz);
+    
+    return out;
+}
+
+// MARK: - Fragment Shader
+fragment float4 fragment_main(VertexOut in [[stage_in]],
+                            constant Uniforms& uniforms [[buffer(1)]]) {
+    // Simple lighting calculation
+    float3 lightDirection = normalize(float3(1.0, 1.0, 1.0));
+    float3 normal = normalize(in.normal);
+    
+    // Ambient lighting
+    float ambient = 0.3;
+    
+    // Diffuse lighting
+    float diffuse = max(dot(normal, lightDirection), 0.0);
+    
+    // Combine lighting
+    float lighting = ambient + diffuse;
+    
+    // Apply time-based color variation
+    float timeVariation = sin(uniforms.time * 2.0) * 0.1 + 0.9;
+    
+    // Final color
+    float4 finalColor = in.color * lighting * timeVariation;
+    
+    return finalColor;
+}
+
+// MARK: - Compute Shader for Advanced Effects
+kernel void compute_main(device float* data [[buffer(0)]],
+                        uint2 gid [[thread_position_in_grid]],
+                        uint2 gSize [[threads_per_grid]]) {
+    if (gid.x >= gSize.x || gid.y >= gSize.y) {
+        return;
+    }
+    
+    uint index = gid.y * gSize.x + gid.x;
+    
+    // Perform some computation (e.g., particle simulation, audio visualization)
+    data[index] = sin(float(gid.x) * 0.01) * cos(float(gid.y) * 0.01);
+}
+
+// MARK: - 2D Graphics Shaders
+struct Vertex2D {
+    float2 position [[attribute(0)]];
+    float2 texCoord [[attribute(1)]];
+    float4 color [[attribute(2)]];
+};
+
+struct Vertex2DOut {
+    float4 position [[position]];
+    float2 texCoord;
+    float4 color;
+};
+
+vertex Vertex2DOut vertex_2d_main(Vertex2D in [[stage_in]]) {
+    Vertex2DOut out;
+    out.position = float4(in.position, 0.0, 1.0);
+    out.texCoord = in.texCoord;
+    out.color = in.color;
+    return out;
+}
+
+fragment float4 fragment_2d_main(Vertex2DOut in [[stage_in]],
+                                texture2d<float> texture [[texture(0)]]) {
+    constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
+    
+    if (texture.get_width() > 0) {
+        float4 textureColor = texture.sample(textureSampler, in.texCoord);
+        return textureColor * in.color;
+    } else {
+        return in.color;
+    }
+}
+
+// MARK: - Audio Visualization Shader
+kernel void audio_visualization(device float* audioData [[buffer(0)]],
+                               texture2d<float, access::write> outputTexture [[texture(0)]],
+                               uint2 gid [[thread_position_in_grid]]) {
+    if (gid.x >= outputTexture.get_width() || gid.y >= outputTexture.get_height()) {
+        return;
+    }
+    
+    // Sample audio data for visualization
+    uint audioIndex = (gid.x * outputTexture.get_height() + gid.y) % 1024;
+    float audioValue = audioData[audioIndex];
+    
+    // Create visualization pattern
+    float intensity = abs(audioValue);
+    float4 color = float4(intensity, intensity * 0.5, intensity * 0.2, 1.0);
+    
+    outputTexture.write(color, gid);
+}
+
+// MARK: - Post-Processing Shader
+fragment float4 post_process_main(Vertex2DOut in [[stage_in]],
+                                 texture2d<float> inputTexture [[texture(0)]],
+                                 constant float& time [[buffer(0)]]) {
+    constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
+    
+    float4 color = inputTexture.sample(textureSampler, in.texCoord);
+    
+    // Apply some post-processing effects
+    float2 uv = in.texCoord;
+    
+    // Chromatic aberration
+    float2 offset = float2(sin(time * 2.0) * 0.01, cos(time * 2.0) * 0.01);
+    float4 r = inputTexture.sample(textureSampler, uv + offset);
+    float4 b = inputTexture.sample(textureSampler, uv - offset);
+    
+    color = float4(r.r, color.g, b.b, color.a);
+    
+    // Vignette effect
+    float2 center = float2(0.5, 0.5);
+    float distance = length(uv - center);
+    float vignette = 1.0 - smoothstep(0.3, 0.8, distance);
+    
+    color *= vignette;
+    
+    return color;
+}

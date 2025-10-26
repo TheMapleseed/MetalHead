@@ -1,0 +1,171 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+          
+    - name: Build project
+      run: |
+        xcodebuild -project MetalHead.xcodeproj \
+          -scheme MetalHead \
+          -destination 'platform=macOS' \
+          -configuration Debug \
+          build
+          
+    - name: Run unit tests
+      run: |
+        xcodebuild -project MetalHead.xcodeproj \
+          -scheme MetalHead \
+          -destination 'platform=macOS' \
+          -configuration Debug \
+          test
+          
+    - name: Run performance tests
+      run: |
+        xcodebuild -project MetalHead.xcodeproj \
+          -scheme MetalHead \
+          -destination 'platform=macOS' \
+          -configuration Release \
+          test
+          
+    - name: Generate test report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: Xcode Test Results
+        path: '*.xml'
+        reporter: java-junit
+        
+  lint:
+    name: Code Quality
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Install SwiftLint
+      run: |
+        brew install swiftlint
+        
+    - name: Run SwiftLint
+      run: |
+        swiftlint lint --reporter github-actions-logging
+        
+    - name: Run SwiftLint with strict mode
+      run: |
+        swiftlint lint --strict
+        
+  security:
+    name: Security Scan
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Install security tools
+      run: |
+        brew install sonar-scanner
+        
+    - name: Run security scan
+      run: |
+        sonar-scanner \
+          -Dsonar.projectKey=MetalHead \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          
+  build:
+    name: Build Release
+    runs-on: macos-latest
+    needs: [test, lint, security]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Build release
+      run: |
+        xcodebuild -project MetalHead.xcodeproj \
+          -scheme MetalHead \
+          -destination 'platform=macOS' \
+          -configuration Release \
+          -archivePath MetalHead.xcarchive \
+          archive
+          
+    - name: Export app
+      run: |
+        xcodebuild -exportArchive \
+          -archivePath MetalHead.xcarchive \
+          -exportPath ./build \
+          -exportOptionsPlist ExportOptions.plist
+          
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: MetalHead-build
+        path: ./build
+        
+  deploy:
+    name: Deploy
+    runs-on: macos-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: MetalHead-build
+        path: ./build
+        
+    - name: Deploy to App Store
+      run: |
+        # Deploy to App Store Connect
+        xcrun altool --upload-app \
+          -f ./build/MetalHead.app \
+          -u ${{ secrets.APPLE_ID }} \
+          -p ${{ secrets.APPLE_PASSWORD }}
