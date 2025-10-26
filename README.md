@@ -5,8 +5,11 @@ A high-performance macOS multimedia engine with 3D acceleration, 2D drawing, aud
 ## Features
 
 - **Metal 4 Rendering**: Hardware-accelerated 3D graphics with ray tracing support
+- **Advanced Rendering APIs**: Compute shaders, offscreen rendering, deferred lighting, and multipass effects
 - **3D Model Loading**: Automatic loading of OBJ, USDZ, and other formats via MetalKit and Model I/O
 - **PBR Materials**: Physically-based rendering with texture support (Albedo, Normal, Roughness, Metallic)
+- **GPU Compute**: Parallel processing with compute shaders for effects and simulations
+- **Texture Management**: Intelligent caching with reference counting and memory optimization
 - **2D Graphics**: Efficient 2D drawing operations
 - **Real-time Audio**: Low-latency audio processing with FFT analysis and 3D spatial audio
 - **Input Handling**: Keyboard, mouse, and gamepad support
@@ -44,8 +47,12 @@ make release  # Build for release
 The engine is organized into modular components:
 
 ### Core Systems
-- **MetalRenderingEngine**: 3D rendering with Metal 4 and model loading
+- **MetalRenderingEngine**: 3D rendering with Metal 4 and advanced rendering APIs
 - **ModelLoader**: 3D model loading with MetalKit (OBJ, USDZ, etc.) and PBR materials
+- **ComputeShaderManager**: GPU compute shaders for parallel processing and effects
+- **OffscreenRenderer**: Render-to-texture for post-processing and multipass effects
+- **DeferredRenderer**: Advanced deferred lighting with G-Buffer pipeline
+- **TextureManager**: Intelligent texture caching and resource management
 - **Graphics2D**: 2D drawing operations
 - **AudioEngine**: Real-time audio processing
 - **InputManager**: Keyboard, mouse, and gamepad input
@@ -99,6 +106,26 @@ audioEngine?.play()
 audioEngine?.setVolume(0.5)
 ```
 
+### Advanced Rendering
+
+```swift
+// Compute shaders for GPU effects
+let computeManager = renderingEngine?.computeShaderManager
+try computeManager?.visualizeAudio(audioData: audioFrequencies, outputTexture: visualizationTexture)
+
+// Offscreen rendering for post-processing
+let offscreenRenderer = renderingEngine?.offscreenRenderer
+let renderTarget = try offscreenRenderer?.createRenderTarget(name: "postProcess", width: 1920, height: 1080)
+
+// Deferred rendering for advanced lighting
+let deferredRenderer = renderingEngine?.deferredRenderer
+try deferredRenderer?.initialize(width: 1920, height: 1080)
+
+// Advanced texture management
+let textureManager = renderingEngine?.textureManager
+let texture = try textureManager?.loadTexture(from: imageURL, generateMipmaps: true)
+```
+
 ### Input Handling
 
 ```swift
@@ -116,7 +143,11 @@ MetalHead/
 ├── Core/
 │   ├── Rendering/        # 3D and 2D rendering
 │   │   ├── MetalRenderingEngine.swift
-│   │   ├── ModelLoader.swift      # 3D model loading with MetalKit
+│   │   ├── ModelLoader.swift         # 3D model loading with MetalKit
+│   │   ├── ComputeShaderManager.swift # GPU compute shaders
+│   │   ├── OffscreenRenderer.swift   # Render-to-texture
+│   │   ├── DeferredRenderer.swift    # Advanced deferred lighting
+│   │   ├── TextureManager.swift      # Texture caching
 │   │   ├── Graphics2D.swift
 │   │   └── Shaders.metal
 │   ├── Audio/            # Audio processing
