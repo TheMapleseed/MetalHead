@@ -1,0 +1,196 @@
+import Metal
+import MetalKit
+import simd
+import Foundation
+
+/// Manages compute shader execution for GPU-accelerated computations
+/// Provides high-level API for particle systems, audio visualization, and GPGPU operations
+@MainActor
+public class ComputeShaderManager {
+    
+    // MARK: - Properties
+    private let device: MTLDevice
+    private var commandQueue: MTLCommandQueue!
+    private var computePipelineStates: [String: MTLComputePipelineState] = [:]
+    private var computeBuffers: [String: MTLBuffer] = [:]
+    
+    // MARK: - Initialization
+    public init(device: MTLDevice) {
+        self.device = device
+    }
+    
+    // MARK: - Public Interface
+    
+    /// Initialize the compute shader manager
+    public func initialize() throws {
+        guard let commandQueue = device.makeCommandQueue() else {
+            throw ComputeError.commandQueueCreationFailed
+        }
+        self.commandQueue = commandQueue
+        
+        try setupComputeShaders()
+        print("ComputeShaderManager initialized successfully")
+    }
+    
+    /// Execute a compute shader by name
+    public func dispatchShader(named name: String,
+                               data: UnsafeMutableRawPointer?,
+                               dataSize: Int,
+                               threadsPerGrid: MTLSize,
+                               threadsPerThreadgroup: MTLSize) throws {
+        
+        guard let pipelineState = computePipelineStates[name] else {
+            throw ComputeError.shaderNotFound(name)
+        }
+        
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+            throw ComputeError.commandBufferCreationFailed
+        }
+        
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw ComputeError.encoderCreationFailed
+        }
+        
+        encoder.setComputePipelineState(pipelineState)
+        
+        // Set buffer data if provided
+        if let data = data, dataSize > 0 {
+            if let buffer = computeBuffers[name] {
+                buffer.contents().copyMemory(from: data, byteCount: dataSize)
+                encoder.setBuffer(buffer, offset: 0, index: 0)
+            } else {
+                let buffer = device.makeBuffer(bytes: data, length: dataSize, options: [])
+                encoder.setBuffer(buffer, offset: 0, index: 0)
+                computeBuffers[name] = buffer
+            }
+        }
+        
+        encoder.dispatchThreadgroups(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+        encoder.endEncoding()
+        
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+    }
+    
+    /// Execute audio visualization compute shader
+    public func visualizeAudio(audioData: [Float], outputTexture: MTLTexture) throws {
+        let audioBuffer = device.makeBuffer(bytes: audioData,
+                                           length: audioData.count * MemoryLayout<Float>.size,
+                                           options: [])
+        
+        guard let pipelineState = computePipelineStates["audio_visualization"] else {
+            throw ComputeError.shaderNotFound("audio_visualization")
+        }
+        
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+            throw ComputeError.commandBufferCreationFailed
+        }
+        
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw ComputeError.encoderCreationFailed
+        }
+        
+        encoder.setComputePipelineState(pipelineState)
+        encoder.setBuffer(audioBuffer, offset: 0, index: 0)
+        encoder.setTexture(outputTexture, index: 0)
+        
+        let threadsPerGrid = MTLSize(width: outputTexture.width,
+                                     height: outputTexture.height,
+                                     depth: 1)
+        let threadsPerThreadgroup = MTLSize(width: 8, height: 8, depth: 1)
+        
+        encoder.dispatchThreadgroups(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+        encoder.endEncoding()
+        
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+    }
+    
+    /// Execute particle system update
+    public func updateParticles(particles: inout [Particle], deltaTime: Float) throws {
+        let particleBuffer = device.makeBuffer(bytes: &particles,
+                                             length: particles.count * MemoryLayout<Particle>.size,
+                                             options: [])
+        
+        guard let pipelineState = computePipelineStates["particle_update"] else {
+            try setupParticlePipeline()
+        }
+        
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+            throw ComputeError.commandBufferCreationFailed
+        }
+        
+        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+            throw ComputeError.encoderCreationFailed
+        }
+        
+        encoder.setComputePipelineState(computePipelineStates["particle_update"]!)
+        encoder.setBuffer(particleBuffer, offset: 0, index: 0)
+        
+        var dt = deltaTime
+        encoder.setBytes(&dt, length: MemoryLayout<Float>.size, index: 1)
+        
+        let threadsPerGrid = MTLSize(width: particles.count, height: 1, depth: 1)
+        let threadsPerThreadgroup = MTLSize(width: 256, height: 1, depth: 1)
+        
+        encoder.dispatchThreadgroups(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+        encoder.endEncoding()
+        
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+    }
+    
+    // MARK: - Private Methods
+    
+    private func setupComputeShaders() throws {
+        guard let library = device.makeDefaultLibrary() else {
+            throw ComputeError.libraryNotFound
+        }
+        
+        // Setup compute shaders
+        if let computeFunction = library.makeFunction(name: "compute_main") {
+            let pipelineState = try device.makeComputePipelineState(function: computeFunction)
+            computePipelineStates["compute_main"] = pipelineState
+        }
+        
+        if let audioVisualizationFunction = library.makeFunction(name: "audio_visualization") {
+            let pipelineState = try device.makeComputePipelineState(function: audioVisualizationFunction)
+            computePipelineStates["audio_visualization"] = pipelineState
+        }
+    }
+    
+    private func setupParticlePipeline() throws {
+        guard let library = device.makeDefaultLibrary() else {
+            throw ComputeError.libraryNotFound
+        }
+        
+        // Create a simple particle update function
+        // This would require a custom metal shader for particles
+        print("Particle pipeline would be setup here")
+    }
+}
+
+// MARK: - Data Structures
+public struct Particle {
+    public var position: SIMD3<Float>
+    public var velocity: SIMD3<Float>
+    public var color: SIMD4<Float>
+    public var lifetime: Float
+    
+    public init(position: SIMD3<Float>, velocity: SIMD3<Float>, color: SIMD4<Float>, lifetime: Float) {
+        self.position = position
+        self.velocity = velocity
+        self.color = color
+        self.lifetime = lifetime
+    }
+}
+
+// MARK: - Errors
+public enum ComputeError: Error {
+    case commandQueueCreationFailed
+    case commandBufferCreationFailed
+    case encoderCreationFailed
+    case libraryNotFound
+    case shaderNotFound(String)
+}
+

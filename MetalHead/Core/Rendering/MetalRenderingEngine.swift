@@ -27,6 +27,12 @@ public class MetalRenderingEngine: ObservableObject {
     // Model Loading
     public let modelLoader: ModelLoader
     
+    // Advanced Rendering
+    public let computeShaderManager: ComputeShaderManager
+    public let offscreenRenderer: OffscreenRenderer
+    public let deferredRenderer: DeferredRenderer
+    public let textureManager: TextureManager
+    
     // 3D Scene
     private var camera: Camera
     private var projectionMatrix: matrix_float4x4
@@ -45,6 +51,10 @@ public class MetalRenderingEngine: ObservableObject {
     public init(device: MTLDevice) {
         self.device = device
         self.modelLoader = ModelLoader(device: device)
+        self.computeShaderManager = ComputeShaderManager(device: device)
+        self.offscreenRenderer = OffscreenRenderer(device: device)
+        self.deferredRenderer = DeferredRenderer(device: device)
+        self.textureManager = TextureManager(device: device)
         self.camera = Camera()
         self.projectionMatrix = matrix_identity_float4x4
         self.viewMatrix = matrix_identity_float4x4
@@ -57,6 +67,11 @@ public class MetalRenderingEngine: ObservableObject {
         try setupBuffers()
         try setupPipeline()
         setupMatrices()
+        
+        // Initialize advanced rendering systems
+        try computeShaderManager.initialize()
+        try offscreenRenderer.initialize()
+        
         print("Metal Rendering Engine initialized successfully")
     }
     
