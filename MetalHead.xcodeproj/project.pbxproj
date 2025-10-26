@@ -22,6 +22,7 @@
 		1A2B3C4D5E6F78A8 /* SIMDExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78A9 /* SIMDExtensions.swift */; };
 		1A2B3C4D5E6F78AA /* PerformanceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78AB /* PerformanceMonitor.swift */; };
 		1A2B3C4D5E6F78AC /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78AD /* ErrorHandler.swift */; };
+		1A2B3C4D5E6F78ED /* ModelLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78EE /* ModelLoader.swift */; };
 		1A2B3C4D5E6F78AE /* MetalHeadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78AF /* MetalHeadTests.swift */; };
 		1A2B3C4D5E6F78EB /* ModelLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78EC /* ModelLoaderTests.swift */; };
 		1A2B3C4D5E6F78B0 /* RenderingEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78B1 /* RenderingEngineTests.swift */; };
@@ -61,6 +62,7 @@
 		1A2B3C4D5E6F78A9 /* SIMDExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIMDExtensions.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AB /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AD /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F78EE /* ModelLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoader.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AF /* MetalHeadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHeadTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78EC /* ModelLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoaderTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78B1 /* RenderingEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingEngineTests.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 			children = (
 				1A2B3C4D5E6F7899 /* MetalRenderingEngine.swift */,
 				1A2B3C4D5E6F789B /* Graphics2D.swift */,
+				1A2B3C4D5E6F78EE /* ModelLoader.swift */,
 				1A2B3C4D5E6F789D /* Shaders.metal */,
 			);
 			path = Rendering;
@@ -338,6 +341,7 @@
 				1A2B3C4D5E6F7892 /* ContentView.swift in Sources */,
 				1A2B3C4D5E6F7898 /* MetalRenderingEngine.swift in Sources */,
 				1A2B3C4D5E6F789A /* Graphics2D.swift in Sources */,
+				1A2B3C4D5E6F78ED /* ModelLoader.swift in Sources */,
 				1A2B3C4D5E6F789C /* Shaders.metal in Sources */,
 				1A2B3C4D5E6F789E /* AudioEngine.swift in Sources */,
 				1A2B3C4D5E6F78A0 /* InputManager.swift in Sources */,
