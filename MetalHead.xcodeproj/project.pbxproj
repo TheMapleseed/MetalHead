@@ -23,6 +23,7 @@
 		1A2B3C4D5E6F78AA /* PerformanceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78AB /* PerformanceMonitor.swift */; };
 		1A2B3C4D5E6F78AC /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78AD /* ErrorHandler.swift */; };
 		1A2B3C4D5E6F78AE /* MetalHeadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78AF /* MetalHeadTests.swift */; };
+		1A2B3C4D5E6F78EB /* ModelLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78EC /* ModelLoaderTests.swift */; };
 		1A2B3C4D5E6F78B0 /* RenderingEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78B1 /* RenderingEngineTests.swift */; };
 		1A2B3C4D5E6F78B2 /* AudioEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78B3 /* AudioEngineTests.swift */; };
 		1A2B3C4D5E6F78B4 /* InputManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78B5 /* InputManagerTests.swift */; };
@@ -61,6 +62,7 @@
 		1A2B3C4D5E6F78AB /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AD /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AF /* MetalHeadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHeadTests.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F78EC /* ModelLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoaderTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78B1 /* RenderingEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingEngineTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78B3 /* AudioEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78B5 /* InputManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputManagerTests.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F78CF /* MetalHeadTests.swift */,
+				1A2B3C4D5E6F78EC /* ModelLoaderTests.swift */,
 				1A2B3C4D5E6F78D0 /* RenderingEngineTests.swift */,
 				1A2B3C4D5E6F78D1 /* AudioEngineTests.swift */,
 				1A2B3C4D5E6F78D2 /* InputManagerTests.swift */,
@@ -352,6 +355,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A2B3C4D5E6F78F8 /* MetalHeadTests.swift in Sources */,
+				1A2B3C4D5E6F78EB /* ModelLoaderTests.swift in Sources */,
 				1A2B3C4D5E6F78F9 /* RenderingEngineTests.swift in Sources */,
 				1A2B3C4D5E6F78FA /* AudioEngineTests.swift in Sources */,
 				1A2B3C4D5E6F78FB /* InputManagerTests.swift in Sources */,
