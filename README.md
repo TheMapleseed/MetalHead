@@ -5,6 +5,8 @@ A high-performance macOS multimedia engine with 3D acceleration, 2D drawing, aud
 ## Features
 
 - **Metal 4 Rendering**: Hardware-accelerated 3D graphics with ray tracing support
+- **3D Model Loading**: Automatic loading of OBJ, USDZ, and other formats via MetalKit and Model I/O
+- **PBR Materials**: Physically-based rendering with texture support (Albedo, Normal, Roughness, Metallic)
 - **2D Graphics**: Efficient 2D drawing operations
 - **Real-time Audio**: Low-latency audio processing with FFT analysis and 3D spatial audio
 - **Input Handling**: Keyboard, mouse, and gamepad support
@@ -42,7 +44,8 @@ make release  # Build for release
 The engine is organized into modular components:
 
 ### Core Systems
-- **MetalRenderingEngine**: 3D rendering with Metal 4
+- **MetalRenderingEngine**: 3D rendering with Metal 4 and model loading
+- **ModelLoader**: 3D model loading with MetalKit (OBJ, USDZ, etc.) and PBR materials
 - **Graphics2D**: 2D drawing operations
 - **AudioEngine**: Real-time audio processing
 - **InputManager**: Keyboard, mouse, and gamepad input
@@ -69,8 +72,23 @@ try await engine.start()
 ### Rendering 3D Objects
 
 ```swift
+// Render primitive objects
 let renderingEngine = engine.getSubsystem(MetalRenderingEngine.self)
 renderingEngine?.renderCube(at: SIMD3<Float>(0, 0, -5))
+
+// Load and render 3D models
+if let modelURL = Bundle.main.url(forResource: "myModel", withExtension: "obj") {
+    let mesh = try renderingEngine?.loadModel(from: modelURL)
+    // Render the loaded mesh
+}
+
+// Load PBR materials
+let material = try renderingEngine?.loadPBRMaterial(
+    baseColor: bundleURL(forResource: "albedo.png"),
+    normal: bundleURL(forResource: "normal.png"),
+    roughness: bundleURL(forResource: "roughness.png"),
+    metallic: bundleURL(forResource: "metallic.png")
+)
 ```
 
 ### Audio Playback
@@ -97,6 +115,10 @@ inputManager?.keyboardEvents
 MetalHead/
 ├── Core/
 │   ├── Rendering/        # 3D and 2D rendering
+│   │   ├── MetalRenderingEngine.swift
+│   │   ├── ModelLoader.swift      # 3D model loading with MetalKit
+│   │   ├── Graphics2D.swift
+│   │   └── Shaders.metal
 │   ├── Audio/            # Audio processing
 │   ├── Input/            # Input handling
 │   ├── Memory/           # Memory management

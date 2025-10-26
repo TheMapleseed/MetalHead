@@ -24,6 +24,9 @@ public class MetalRenderingEngine: ObservableObject {
     private var uniformBuffer: MTLBuffer!
     private var indexBuffer: MTLBuffer!
     
+    // Model Loading
+    public let modelLoader: ModelLoader
+    
     // 3D Scene
     private var camera: Camera
     private var projectionMatrix: matrix_float4x4
@@ -41,6 +44,7 @@ public class MetalRenderingEngine: ObservableObject {
     // MARK: - Initialization
     public init(device: MTLDevice) {
         self.device = device
+        self.modelLoader = ModelLoader(device: device)
         self.camera = Camera()
         self.projectionMatrix = matrix_identity_float4x4
         self.viewMatrix = matrix_identity_float4x4
@@ -103,6 +107,24 @@ public class MetalRenderingEngine: ObservableObject {
     public func updateDrawableSize(_ size: CGSize) {
         let aspectRatio = Float(size.width / size.height)
         projectionMatrix = matrix_perspective_right_hand(fovyRadians: Float.pi / 4, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100.0)
+    }
+    
+    /// Load a 3D model from a file path
+    public func loadModel(from url: URL) throws -> MTKMesh {
+        return try modelLoader.loadModel(from: url)
+    }
+    
+    /// Load a 3D model from bundle resources
+    public func loadModel(name: String, extension ext: String = "obj") throws -> MTKMesh {
+        return try modelLoader.loadModel(name: name, extension: ext)
+    }
+    
+    /// Load a PBR material with textures
+    public func loadPBRMaterial(baseColor: URL? = nil,
+                               normal: URL? = nil,
+                               roughness: URL? = nil,
+                               metallic: URL? = nil) throws -> PBRMaterial {
+        return try modelLoader.loadPBRMaterial(baseColor: baseColor, normal: normal, roughness: roughness, metallic: metallic)
     }
     
     // MARK: - Private Methods
