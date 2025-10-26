@@ -24,8 +24,18 @@ final class AudioEngineTests: XCTestCase {
         // Given
         XCTAssertNotNil(audioEngine)
         
-        // When
-        try await audioEngine.initialize()
+        // When - initialize with timeout (AudioEngine can hang without proper setup)
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask {
+                try await self.audioEngine.initialize()
+            }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 2_000_000_000) // 2 second timeout
+                throw TestError.assertionFailed
+            }
+            _ = try await group.next()
+            group.cancelAll()
+        }
         
         // Then
         XCTAssertFalse(audioEngine.isPlaying) // Should not be playing initially

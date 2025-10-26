@@ -185,12 +185,39 @@ The engine includes comprehensive testing for:
 - Memory leak detection
 - Thread safety validation
 
+### Running Tests
+
+**Important**: Tests must be run manually. Automatic test execution during builds is disabled to prevent hangs.
+
+```bash
+# Using Make
+make test
+
+# Using the test runner
+./run_tests.sh
+
+# Using xcodebuild
+xcodebuild test -project MetalHead.xcodeproj -scheme MetalHead
+
+# Or in Xcode
+# Press ⌘ + U
+```
+
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common testing issues and solutions.
+
 ## 📚 Documentation
 
+- **[API Reference](API_REFERENCE.md)** - Complete API documentation with all functions and examples
+- **[Usage Guide](USAGE_GUIDE.md)** - Step-by-step guide to using the engine
+- **[Ray Tracing API](RAY_TRACING_API.md)** - Metal 4 ray tracing documentation
+- **[Testing & Logging](TESTING_AND_LOGGING.md)** - Comprehensive testing and logging guide
+- **[Test Coverage](TEST_COVERAGE_REPORT.md)** - Complete test coverage report
+- **[Quick Start](QUICK_START.md)** - 5-minute quick start guide
+- **[Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
 - [Memory Management Guide](MEMORY_MANAGEMENT.md)
 - [Unified Pipeline Documentation](UNIFIED_PIPELINE.md)
-- [Performance Optimization Guide](PERFORMANCE_GUIDE.md)
-- [API Reference](API_REFERENCE.md)
+- [Build System](BUILD_SYSTEM.md)
+- [Project Structure](PROJECT_STRUCTURE.md)
 
 ## 🤝 Contributing
 

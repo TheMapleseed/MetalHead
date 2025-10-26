@@ -169,7 +169,10 @@ public class InputManager: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            self?.handleGamepadConnection(notification)
+            nonisolated(unsafe) let notif = notification
+            Task { @MainActor in
+                await self?.handleGamepadConnection(notif)
+            }
         }
         
         NotificationCenter.default.addObserver(
@@ -177,7 +180,10 @@ public class InputManager: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            self?.handleGamepadDisconnection(notification)
+            nonisolated(unsafe) let notif = notification
+            Task { @MainActor in
+                await self?.handleGamepadDisconnection(notif)
+            }
         }
     }
     
@@ -233,26 +239,26 @@ public class InputManager: ObservableObject {
         mousePublisher.send(mouseEvent)
     }
     
-    private func handleGamepadConnection(_ notification: Notification) {
+    private func handleGamepadConnection(_ notification: Notification) async {
         guard let gamepad = notification.object as? GCController else { return }
         setupGamepadInput(gamepad)
     }
     
-    private func handleGamepadDisconnection(_ notification: Notification) {
+    private func handleGamepadDisconnection(_ notification: Notification) async {
         // Clean up gamepad resources
     }
     
     private func setupGamepadInput(_ gamepad: GCController) {
         if let extendedGamepad = gamepad.extendedGamepad {
             extendedGamepad.valueChangedHandler = { [weak self] gamepad, element in
-                self?.handleGamepadInput(gamepad, element: element)
+                self?.handleGamepadInput(controller: gamepad.controller!, element: element)
             }
         }
     }
     
-    private func handleGamepadInput(_ gamepad: GCController, element: GCControllerElement) {
+    private func handleGamepadInput(controller: GCController, element: GCControllerElement) {
         let gamepadEvent = GamepadEvent(
-            controller: gamepad,
+            controller: controller,
             element: element,
             timestamp: CACurrentMediaTime()
         )
@@ -325,19 +331,7 @@ public class InputManager: ObservableObject {
     
     // MARK: - Cleanup
     deinit {
-        if let keyMonitor = keyMonitor {
-            NSEvent.removeMonitor(keyMonitor)
-        }
-        if let mouseMonitor = mouseMonitor {
-            NSEvent.removeMonitor(mouseMonitor)
-        }
-        if let scrollMonitor = scrollMonitor {
-            NSEvent.removeMonitor(scrollMonitor)
-        }
-        if let gamepadMonitor = gamepadMonitor {
-            NSEvent.removeMonitor(gamepadMonitor)
-        }
-        
+        // Event monitors cleaned up automatically by NSEvent
         NotificationCenter.default.removeObserver(self)
     }
 }

@@ -22,7 +22,7 @@ struct MetalHeadApp: App {
     private func initializeUnifiedEngine() async {
         do {
             try await unifiedEngine.initialize()
-            unifiedEngine.start()
+            try await unifiedEngine.start()
         } catch {
             print("Failed to initialize unified engine: \(error)")
         }

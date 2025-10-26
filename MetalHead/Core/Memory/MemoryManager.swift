@@ -2,6 +2,144 @@ import Foundation
 import Metal
 import simd
 
+// MARK: - NSLock Extension
+extension NSLock {
+    func sync<T>(_ body: () throws -> T) rethrows -> T {
+        lock()
+        defer { unlock() }
+        return try body()
+    }
+}
+
+// MARK: - Memory Types
+
+/// Types of memory regions
+public enum MemoryRegionType: String, CaseIterable {
+    case vertex = "vertex"
+    case uniform = "uniform"
+    case audio = "audio"
+    case texture = "texture"
+}
+
+/// Memory pool for efficient allocation
+public class MemoryPool {
+    private let device: MTLDevice
+    private var buffers: [MTLBuffer] = []
+    private let chunkSize: Int = 1024 * 1024 // 1MB chunks
+    private var bufferCache: [String: [MTLBuffer]] = [:]
+    
+    public init(device: MTLDevice) {
+        self.device = device
+    }
+    
+    public func allocateBuffer(size: Int) -> MTLBuffer? {
+        guard let buffer = device.makeBuffer(length: max(size, chunkSize), options: [.storageModeShared]) else {
+            return nil
+        }
+        buffers.append(buffer)
+        return buffer
+    }
+    
+    public func getBuffer(size: Int, options: MTLResourceOptions, key: String) -> MTLBuffer? {
+        // Check cache first
+        if let cached = bufferCache[key]?.first(where: { $0.length >= size }) {
+            return cached
+        }
+        
+        // Allocate new buffer
+        return allocateBuffer(size: size)
+    }
+    
+    public func returnBuffer(_ buffer: MTLBuffer, key: String) {
+        if bufferCache[key] == nil {
+            bufferCache[key] = []
+        }
+        bufferCache[key]?.append(buffer)
+    }
+}
+
+/// Memory region for specific types of allocations
+public class MemoryRegion {
+    private let pool: MemoryPool
+    private let type: MemoryRegionType
+    private var allocations: [MemoryRegion.Allocation] = []
+    
+    // Metrics
+    public var capacity: Int = 0
+    public var allocatedSize: Int = 0
+    public var activeAllocations: Int = 0
+    public var freeBlocks: Int = 0
+    
+    public struct Allocation {
+        let offset: Int
+        let size: Int
+        let buffer: MTLBuffer
+        var isFree: Bool = false
+        
+        var pointer: UnsafeMutableRawPointer {
+            return buffer.contents().advanced(by: offset)
+        }
+    }
+    
+    public init(pool: MemoryPool, type: MemoryRegionType) {
+        self.pool = pool
+        self.type = type
+    }
+    
+    public func allocate(size: Int, alignment: Int) -> Allocation {
+        // Find or create free space
+        if let freeAlloc = allocations.first(where: { $0.isFree && $0.size >= size }) {
+            return freeAlloc
+        }
+        
+        // Allocate new buffer
+        guard let buffer = pool.allocateBuffer(size: size) else {
+            fatalError("Failed to allocate memory buffer")
+        }
+        
+        let allocation = Allocation(
+            offset: 0,
+            size: size,
+            buffer: buffer
+        )
+        
+        allocations.append(allocation)
+        
+        // Update metrics
+        allocatedSize += size
+        activeAllocations += 1
+        capacity += buffer.length
+        
+        return allocation
+    }
+    
+    public func deallocate(allocation: Allocation) {
+        if let index = allocations.firstIndex(where: { $0.buffer === allocation.buffer && $0.offset == allocation.offset }) {
+            allocations[index].isFree = true
+            activeAllocations -= 1
+            freeBlocks += 1
+        }
+    }
+    
+    public func compact() {
+        // Remove free allocations
+        allocations.removeAll(where: { $0.isFree })
+        freeBlocks = 0
+    }
+    
+    public func getReport() -> RegionReport {
+        let utilization = capacity > 0 ? Float(allocatedSize) / Float(capacity) : 0.0
+        return RegionReport(
+            name: type.rawValue.capitalized,
+            capacity: capacity,
+            allocatedSize: allocatedSize,
+            activeAllocations: activeAllocations,
+            freeBlocks: freeBlocks,
+            utilization: utilization
+        )
+    }
+}
+
 /// Core memory management system with dynamic arrays and unified memory optimization
 @MainActor
 public class MemoryManager: ObservableObject {
@@ -136,33 +274,10 @@ public class MemoryManager: ObservableObject {
     
     // MARK: - Private Methods
     private func setupMemoryRegions() {
-        memoryRegions[.vertex] = MemoryRegion(
-            name: "VertexData",
-            alignment: 16,
-            initialSize: 1024 * 1024,
-            device: device
-        )
-        
-        memoryRegions[.uniform] = MemoryRegion(
-            name: "UniformData",
-            alignment: 256,
-            initialSize: 64 * 1024,
-            device: device
-        )
-        
-        memoryRegions[.audio] = MemoryRegion(
-            name: "AudioData",
-            alignment: 4,
-            initialSize: 512 * 1024,
-            device: device
-        )
-        
-        memoryRegions[.texture] = MemoryRegion(
-            name: "TextureData",
-            alignment: 64,
-            initialSize: 4 * 1024 * 1024,
-            device: device
-        )
+        memoryRegions[.vertex] = MemoryRegion(pool: memoryPool, type: .vertex)
+        memoryRegions[.uniform] = MemoryRegion(pool: memoryPool, type: .uniform)
+        memoryRegions[.audio] = MemoryRegion(pool: memoryPool, type: .audio)
+        memoryRegions[.texture] = MemoryRegion(pool: memoryPool, type: .texture)
     }
     
     private func updateMetrics() {
@@ -174,20 +289,12 @@ public class MemoryManager: ObservableObject {
     }
 }
 
-// MARK: - Memory Region Types
-public enum MemoryRegionType: CaseIterable {
-    case vertex
-    case uniform
-    case audio
-    case texture
-}
-
 // MARK: - Allocated Memory
 public struct AllocatedMemory<T> {
     public let pointer: UnsafeMutablePointer<T>
     public let count: Int
     public let region: MemoryRegion
-    public let allocation: MemoryAllocation
+    public let allocation: MemoryRegion.Allocation
     
     public var bufferPointer: UnsafeMutableBufferPointer<T> {
         return UnsafeMutableBufferPointer(start: pointer, count: count)

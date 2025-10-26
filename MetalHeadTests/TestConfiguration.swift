@@ -11,6 +11,26 @@ final class TestConfiguration {
     static let memoryThreshold: UInt64 = 1024 * 1024 // 1MB
     static let frameRateThreshold: Double = 60.0
     static let latencyThreshold: TimeInterval = 0.016 // 16ms
+    static let defaultTimeout: TimeInterval = 10.0 // 10 seconds per test
+    static let asyncTimeout: TimeInterval = 5.0 // 5 seconds for async operations
+    
+    static func withTimeout<T>(seconds: TimeInterval, operation: () async throws -> T) async throws -> T {
+        try await withThrowingTaskGroup(of: T.self) { group in
+            // Add timeout task
+            group.addTask {
+                try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+                throw TestError.assertionFailed
+            }
+            // Add actual operation
+            group.addTask {
+                try await operation()
+            }
+            // Return first completed
+            let result = try await group.next()
+            group.cancelAll()
+            return result!
+        }
+    }
     
     // MARK: - Test Data
     

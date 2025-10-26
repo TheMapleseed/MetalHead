@@ -1,6 +1,7 @@
 import Foundation
 import Metal
 import simd
+import QuartzCore
 
 /// Performance monitoring and optimization utilities
 @MainActor
@@ -76,7 +77,7 @@ public class PerformanceMonitor: ObservableObject {
         }
         
         // Update average frame time
-        frameTime = frameTimes.reduce(0, +) / Double(frameTimes.count)
+        self.frameTime = frameTimes.reduce(0, +) / Double(frameTimes.count)
     }
     
     public func getPerformanceReport() -> PerformanceReport {

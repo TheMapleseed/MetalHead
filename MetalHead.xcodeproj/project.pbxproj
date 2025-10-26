@@ -45,10 +45,10 @@
 /* Begin PBXFileReference section */
 		1A2B3C4D5E6F78C1 /* MetalHead.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalHead.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2B3C4D5E6F78C2 /* MetalHeadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MetalHeadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A2B3C4D5E6F7891 /* MetalHeadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHeadApp.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F7893 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F7895 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1A2B3C4D5E6F7897 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7891 /* MetalHeadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHead/MetalHeadApp.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7893 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHead/ContentView.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7895 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = MetalHead/Assets.xcassets; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7897 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "MetalHead/Preview Content/Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7899 /* MetalRenderingEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderingEngine.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F789B /* Graphics2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graphics2D.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F789D /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
@@ -56,7 +56,7 @@
 		1A2B3C4D5E6F78A1 /* InputManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputManager.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78A3 /* MemoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryManager.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78A5 /* UnifiedClockSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedClockSystem.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F78A7 /* UnifiedMultimediaEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedMultimediaEngine.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F78A7 /* UnifiedMultimediaEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHead/Core/UnifiedMultimediaEngine.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78A9 /* SIMDExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIMDExtensions.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AB /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AD /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
@@ -331,19 +331,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A2B3C4D5E6F78EB /* MetalHeadApp.swift in Sources */,
-				1A2B3C4D5E6F78EC /* ContentView.swift in Sources */,
-				1A2B3C4D5E6F78ED /* MetalRenderingEngine.swift in Sources */,
-				1A2B3C4D5E6F78EE /* Graphics2D.swift in Sources */,
-				1A2B3C4D5E6F78EF /* Shaders.metal in Sources */,
-				1A2B3C4D5E6F78F0 /* AudioEngine.swift in Sources */,
-				1A2B3C4D5E6F78F1 /* InputManager.swift in Sources */,
-				1A2B3C4D5E6F78F2 /* MemoryManager.swift in Sources */,
-				1A2B3C4D5E6F78F3 /* UnifiedClockSystem.swift in Sources */,
-				1A2B3C4D5E6F78F4 /* UnifiedMultimediaEngine.swift in Sources */,
-				1A2B3C4D5E6F78F5 /* SIMDExtensions.swift in Sources */,
-				1A2B3C4D5E6F78F6 /* PerformanceMonitor.swift in Sources */,
-				1A2B3C4D5E6F78F7 /* ErrorHandler.swift in Sources */,
+				1A2B3C4D5E6F7890 /* MetalHeadApp.swift in Sources */,
+				1A2B3C4D5E6F7892 /* ContentView.swift in Sources */,
+				1A2B3C4D5E6F7898 /* MetalRenderingEngine.swift in Sources */,
+				1A2B3C4D5E6F789A /* Graphics2D.swift in Sources */,
+				1A2B3C4D5E6F789C /* Shaders.metal in Sources */,
+				1A2B3C4D5E6F789E /* AudioEngine.swift in Sources */,
+				1A2B3C4D5E6F78A0 /* InputManager.swift in Sources */,
+				1A2B3C4D5E6F78A2 /* MemoryManager.swift in Sources */,
+				1A2B3C4D5E6F78A4 /* UnifiedClockSystem.swift in Sources */,
+				1A2B3C4D5E6F78A6 /* UnifiedMultimediaEngine.swift in Sources */,
+				1A2B3C4D5E6F78A8 /* SIMDExtensions.swift in Sources */,
+				1A2B3C4D5E6F78AA /* PerformanceMonitor.swift in Sources */,
+				1A2B3C4D5E6F78AC /* ErrorHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,6 +497,10 @@
 		1A2B3C4D5E6F7902 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
+				ARCHS_STANDARD = arm64;
+				VALID_ARCHS = arm64;
+				EXCLUDED_ARCHS = "arm64e i386 x86_64";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MetalHead/MetalHead.entitlements;
@@ -523,6 +527,10 @@
 		1A2B3C4D5E6F7903 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
+				ARCHS_STANDARD = arm64;
+				VALID_ARCHS = arm64;
+				EXCLUDED_ARCHS = "arm64e i386 x86_64";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MetalHead/MetalHead.entitlements;

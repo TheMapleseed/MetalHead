@@ -56,10 +56,6 @@ public class UnifiedMultimediaEngine: ObservableObject {
     }
     
     public func start() async throws {
-        guard isInitialized else {
-            try await initialize()
-        }
-        
         guard !isRunning else { return }
         
         try await startSubsystems()
@@ -111,10 +107,10 @@ public class UnifiedMultimediaEngine: ObservableObject {
             renderingEngine.render(deltaTime: deltaTime, in: view)
         }
         
-        // Render 2D overlay
-        if let graphics2D = graphics2D {
-            // This would be integrated into the main render pass
-            // For now, we'll just update the 2D system
+        // Render 2D overlay (integrated into 3D rendering)
+        if graphics2D != nil {
+            // 2D rendering will be integrated into the main Metal render pass
+            // This happens during the 3D rendering which shares the same pass
         }
         
         // Update frame rate
@@ -208,22 +204,38 @@ public class UnifiedMultimediaEngine: ObservableObject {
     }
     
     private func stopSubsystems() {
+        // Stop clock system first
         clockSystem?.stop()
+        
+        // Stop audio
         audioEngine?.stop()
-        inputManager?.stop()
+        
+        // Stop performance monitoring
         performanceMonitor?.stopMonitoring()
+        
+        // Rendering and input are passive and don't need explicit stop
+        // They'll stop automatically when the main loop stops
     }
     
     private func pauseSubsystems() {
+        // Pause clock
         clockSystem?.pause()
+        
+        // Pause audio
         audioEngine?.pause()
-        inputManager?.pause()
+        
+        // Rendering and input continue to process but at paused timing
+        // This allows the UI to remain responsive during pause
     }
     
     private func resumeSubsystems() async throws {
+        // Resume clock first
         clockSystem?.resume()
+        
+        // Resume audio
         try await audioEngine?.resume()
-        inputManager?.resume()
+        
+        // Rendering and input automatically resume with the clock
     }
     
     private func startMainLoop() {
@@ -261,18 +273,6 @@ extension AudioEngine {
     func start() async throws {
         // Start audio engine
     }
-    
-    func stop() {
-        // Stop audio engine
-    }
-    
-    func pause() {
-        // Pause audio engine
-    }
-    
-    func resume() async throws {
-        // Resume audio engine
-    }
 }
 
 extension InputManager {
@@ -282,17 +282,5 @@ extension InputManager {
     
     func start() {
         // Start input manager
-    }
-    
-    func stop() {
-        // Stop input manager
-    }
-    
-    func pause() {
-        // Pause input manager
-    }
-    
-    func resume() {
-        // Resume input manager
     }
 }

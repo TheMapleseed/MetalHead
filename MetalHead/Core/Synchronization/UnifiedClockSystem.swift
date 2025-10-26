@@ -1,8 +1,10 @@
 import Foundation
+import AVFoundation
 import CoreAudio
 import AudioToolbox
 import Combine
 import simd
+import QuartzCore
 
 /// Unified clock system that synchronizes all multimedia subsystems
 @MainActor
@@ -168,13 +170,8 @@ public class UnifiedClockSystem: ObservableObject {
             self?.handleSystemTimeChange()
         }
         
-        NotificationCenter.default.addObserver(
-            forName: AVAudioSession.interruptionNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] notification in
-            self?.handleAudioInterruption(notification)
-        }
+        // AVAudioSession is not available on macOS
+        // On macOS, audio interruptions are handled differently
     }
     
     private func handleSystemTimeChange() {
@@ -184,19 +181,8 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     private func handleAudioInterruption(_ notification: Notification) {
-        if let userInfo = notification.userInfo,
-           let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-           let type = AVAudioSession.InterruptionType(rawValue: typeValue) {
-            
-            switch type {
-            case .began:
-                pause()
-            case .ended:
-                resume()
-            @unknown default:
-                break
-            }
-        }
+        // AVAudioSession not available on macOS
+        // Handle audio interruption through other mechanisms if needed
     }
     
     private func initializeSubsystemClocks() {
@@ -298,7 +284,8 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     private func correctTimingDrift() {
-        let correctionFactor = 1.0 - (timingDrift / expectedTime)
+        let expectedFrameTime = 1.0 / targetFrameRate
+        let correctionFactor = 1.0 - (timingDrift / expectedFrameTime)
         frameInterval *= correctionFactor
         
         for (_, clock) in subsystemClocks {
@@ -308,7 +295,6 @@ public class UnifiedClockSystem: ObservableObject {
     
     // MARK: - Cleanup
     deinit {
-        stop()
         NotificationCenter.default.removeObserver(self)
     }
 }

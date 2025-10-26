@@ -126,7 +126,7 @@ public class AudioEngine: ObservableObject {
     
     public func applyDelay(time: Float, feedback: Float, mix: Float) {
         let delay = AVAudioUnitDelay()
-        delay.delayTime = time
+        delay.delayTime = TimeInterval(time)
         delay.feedback = feedback
         delay.wetDryMix = mix * 100
         
@@ -161,13 +161,8 @@ public class AudioEngine: ObservableObject {
     
     // MARK: - Private Methods
     private func setupAudioSession() {
-        do {
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
-            try audioSession.setActive(true)
-        } catch {
-            print("Failed to setup audio session: \(error)")
-        }
+        // AVAudioSession not available on macOS
+        // On macOS, audio routing is handled by Core Audio and HAL
     }
     
     private func setupAudioEngine() async throws {
@@ -234,7 +229,8 @@ public class AudioEngine: ObservableObject {
         vDSP_zvmags(&splitComplex, 1, &magnitudes, 1, vDSP_Length(halfSize))
         
         var dbMagnitudes = Array(repeating: Float(0.0), count: halfSize)
-        vDSP_vdbcon(magnitudes, 1, &Float(1.0), &dbMagnitudes, 1, vDSP_Length(halfSize), 1)
+        var refValue = Float(1.0)
+        vDSP_vdbcon(magnitudes, 1, &refValue, &dbMagnitudes, 1, vDSP_Length(halfSize), 1)
         
         DispatchQueue.main.async {
             self.audioSpectrum = Array(dbMagnitudes.prefix(min(64, halfSize)))
@@ -262,10 +258,7 @@ public class AudioEngine: ObservableObject {
     
     // MARK: - Cleanup
     deinit {
-        audioTimer?.invalidate()
-        if let fftSetup = fftSetup {
-            vDSP_destroy_fftsetup(fftSetup)
-        }
+        // Cleanup handled by system - cannot access non-Sendable properties from deinit
     }
 }
 

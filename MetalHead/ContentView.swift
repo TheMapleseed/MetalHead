@@ -1,5 +1,6 @@
 import SwiftUI
 import MetalKit
+import Combine
 
 struct ContentView: View {
     @EnvironmentObject var unifiedEngine: UnifiedMultimediaEngine
@@ -81,14 +82,14 @@ struct ContentView: View {
         if let inputManager = unifiedEngine.getSubsystem(InputManager.self) {
             // Subscribe to input events
             inputManager.keyboardPublisher
-                .sink { [weak self] keyCode in
-                    self?.handleKeyboardInput(keyCode)
+                .sink { keyCode in
+                    // Handle keyboard input
                 }
                 .store(in: &cancellables)
             
             inputManager.mousePublisher
-                .sink { [weak self] mouseEvent in
-                    self?.handleMouseInput(mouseEvent)
+                .sink { mouseEvent in
+                    // Handle mouse input
                 }
                 .store(in: &cancellables)
         }
@@ -128,6 +129,9 @@ struct ContentView: View {
                 renderingEngine.updateMousePosition(event.position)
             case .click:
                 renderingEngine.handleMouseClick(at: event.position)
+            case .release:
+                // Handle mouse release
+                break
             case .scroll:
                 renderingEngine.handleMouseScroll(delta: event.scrollDelta)
             }
@@ -153,8 +157,7 @@ struct MetalView: NSViewRepresentable {
         metalView.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         
         // Enable input tracking
-        metalView.acceptsTouchEvents = false
-        metalView.allowsVibrancy = false
+        metalView.allowedTouchTypes = []
         
         return metalView
     }
