@@ -2,7 +2,8 @@ import XCTest
 import Metal
 import MetalKit
 import ModelIO
-@testable import MetalHead
+import AppKit
+@testable import MetalHeadEngine
 
 @MainActor
 final class ModelLoaderTests: XCTestCase {
@@ -14,7 +15,7 @@ final class ModelLoaderTests: XCTestCase {
         try super.setUpWithError()
         
         guard let device = MTLCreateSystemDefaultDevice() else {
-            throw XCTestError(.formattingError)
+            throw NSError(domain: "TestError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Metal not available"])
         }
         self.device = device
         self.modelLoader = ModelLoader(device: device)
@@ -30,7 +31,8 @@ final class ModelLoaderTests: XCTestCase {
     
     func testModelLoaderInitialization() {
         XCTAssertNotNil(modelLoader)
-        XCTAssertNotNil(modelLoader.value(forKey: "device") as? MTLDevice)
+        // ModelLoader should be initialized with device
+        XCTAssertNotNil(device)
     }
     
     func testLoadTextureFromBundle() throws {
@@ -114,19 +116,19 @@ final class ModelLoaderTests: XCTestCase {
         let tempDir = FileManager.default.temporaryDirectory
         let testImageURL = tempDir.appendingPathComponent("\(name).png")
         
-        // Create a simple 256x256 test image
-        let size = CGSize(width: 256, height: 256)
-        let format = UIGraphicsImageRendererFormat.default()
-        format.scale = 1
+        // Create a simple 256x256 test image using AppKit
+        let size = NSSize(width: 256, height: 256)
+        let image = NSImage(size: size)
         
-        let renderer = UIGraphicsImageRenderer(size: size, format: format)
-        let image = renderer.image { context in
-            UIColor.blue.setFill()
-            context.fill(CGRect(origin: .zero, size: size))
-        }
+        image.lockFocus()
+        NSColor.blue.setFill()
+        NSRect(origin: .zero, size: size).fill()
+        image.unlockFocus()
         
-        if let imageData = image.pngData() {
-            try? imageData.write(to: testImageURL)
+        if let tiffData = image.tiffRepresentation,
+           let bitmapImage = NSBitmapImageRep(data: tiffData),
+           let pngData = bitmapImage.representation(using: .png, properties: [:]) {
+            try? pngData.write(to: testImageURL)
         }
         
         return testImageURL

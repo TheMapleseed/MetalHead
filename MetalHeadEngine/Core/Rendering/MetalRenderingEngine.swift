@@ -28,6 +28,9 @@ public class MetalRenderingEngine: ObservableObject {
     // Model Loading
     public let modelLoader: ModelLoader
     
+    // Geometry Generation
+    private let geometryShaders: GeometryShaders
+    
     // Advanced Rendering
     public let computeShaderManager: ComputeShaderManager
     public let offscreenRenderer: OffscreenRenderer
@@ -39,6 +42,15 @@ public class MetalRenderingEngine: ObservableObject {
     private var projectionMatrix: matrix_float4x4
     private var viewMatrix: matrix_float4x4
     private var modelMatrix: matrix_float4x4
+    
+    // Scene objects - persistent geometry to render
+    private struct SceneObject {
+        let vertexBuffer: MTLBuffer
+        let indexBuffer: MTLBuffer
+        let indexCount: Int
+        let modelMatrix: matrix_float4x4
+    }
+    private var sceneObjects: [SceneObject] = []
     
     // Performance tracking
     private var frameCount: Int = 0
@@ -52,6 +64,7 @@ public class MetalRenderingEngine: ObservableObject {
     public init(device: MTLDevice) {
         self.device = device
         self.modelLoader = ModelLoader(device: device)
+        self.geometryShaders = GeometryShaders(device: device)
         self.computeShaderManager = ComputeShaderManager(device: device)
         self.offscreenRenderer = OffscreenRenderer(device: device)
         self.deferredRenderer = DeferredRenderer(device: device)
@@ -73,7 +86,26 @@ public class MetalRenderingEngine: ObservableObject {
         try computeShaderManager.initialize()
         try offscreenRenderer.initialize()
         
+        // Add default cube to scene
+        addDefaultCube()
+        
         print("Metal Rendering Engine initialized successfully")
+    }
+    
+    private func addDefaultCube() {
+        // Use the existing cube buffers from setupBuffers
+        guard let defaultVertexBuffer = vertexBuffer,
+              let defaultIndexBuffer = indexBuffer else {
+            return
+        }
+        
+        let defaultObject = SceneObject(
+            vertexBuffer: defaultVertexBuffer,
+            indexBuffer: defaultIndexBuffer,
+            indexCount: 36,
+            modelMatrix: matrix_identity_float4x4
+        )
+        sceneObjects.append(defaultObject)
     }
     
     public func render(deltaTime: CFTimeInterval, in view: MTKView) {
@@ -142,6 +174,66 @@ public class MetalRenderingEngine: ObservableObject {
                                roughness: URL? = nil,
                                metallic: URL? = nil) throws -> PBRMaterial {
         return try modelLoader.loadPBRMaterial(baseColor: baseColor, normal: normal, roughness: roughness, metallic: metallic)
+    }
+    
+    /// Render a cube at the specified position
+    public func renderCube(at position: SIMD3<Float>) {
+        // Create cube geometry
+        let vertices = geometryShaders.createCube()
+        let indices = geometryShaders.createCubeIndices()
+        
+        // Create buffers for this cube instance
+        guard let vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Vertex>.stride, options: []),
+              let indexBuffer = device.makeBuffer(bytes: indices, length: indices.count * MemoryLayout<UInt16>.stride, options: []) else {
+            print("Failed to create buffers for cube")
+            return
+        }
+        
+        // Create model matrix for position
+        var cubeModelMatrix = matrix_identity_float4x4
+        cubeModelMatrix.columns.3 = SIMD4<Float>(position.x, position.y, position.z, 1.0)
+        
+        // Add to scene objects for persistent rendering
+        let cubeObject = SceneObject(
+            vertexBuffer: vertexBuffer,
+            indexBuffer: indexBuffer,
+            indexCount: indices.count,
+            modelMatrix: cubeModelMatrix
+        )
+        sceneObjects.append(cubeObject)
+        print("Cube added to scene at position: \(position)")
+    }
+    
+    /// Render a sphere at the specified position with given radius
+    public func renderSphere(at position: SIMD3<Float>, radius: Float) {
+        // Create sphere geometry
+        let (vertices, indices) = geometryShaders.createSphere(segments: 32)
+        
+        // Scale vertices by radius
+        let scaledVertices = vertices.map { vertex in
+            Vertex(position: vertex.position * radius, color: vertex.color)
+        }
+        
+        // Create buffers for this sphere instance
+        guard let vertexBuffer = device.makeBuffer(bytes: scaledVertices, length: scaledVertices.count * MemoryLayout<Vertex>.stride, options: []),
+              let indexBuffer = device.makeBuffer(bytes: indices, length: indices.count * MemoryLayout<UInt16>.stride, options: []) else {
+            print("Failed to create buffers for sphere")
+            return
+        }
+        
+        // Create model matrix for position
+        var sphereModelMatrix = matrix_identity_float4x4
+        sphereModelMatrix.columns.3 = SIMD4<Float>(position.x, position.y, position.z, 1.0)
+        
+        // Add to scene objects for persistent rendering
+        let sphereObject = SceneObject(
+            vertexBuffer: vertexBuffer,
+            indexBuffer: indexBuffer,
+            indexCount: indices.count,
+            modelMatrix: sphereModelMatrix
+        )
+        sceneObjects.append(sphereObject)
+        print("Sphere added to scene at position: \(position), radius: \(radius)")
     }
     
     // MARK: - Private Methods
@@ -255,75 +347,22 @@ public class MetalRenderingEngine: ObservableObject {
     }
     
     private func updateUniforms() {
-        let uniforms = Uniforms(
-            modelMatrix: modelMatrix,
+        // Base uniforms (view and projection are shared, model matrix is per-object)
+        let baseUniforms = Uniforms(
+            modelMatrix: matrix_identity_float4x4, // Not used, model matrix passed separately
             viewMatrix: viewMatrix,
             projectionMatrix: projectionMatrix,
             time: Float(CACurrentMediaTime())
         )
         
         let uniformPointer = uniformBuffer.contents().bindMemory(to: Uniforms.self, capacity: 1)
-        uniformPointer.pointee = uniforms
+        uniformPointer.pointee = baseUniforms
     }
     
     private func render3DParallel(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor) {
-        // Create parallel render command encoder to utilize all CPU cores
-        guard let parallelEncoder = commandBuffer.makeParallelRenderCommandEncoder(descriptor: renderPassDescriptor) else {
-            // Fallback if parallel rendering not available
-            render3D(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
-            return
-        }
-        
-        // Determine number of sub-encoders based on CPU cores
-        let cpuCount = ProcessInfo.processInfo.processorCount
-        let threadCount = min(cpuCount, 8) // Limit to 8 threads for optimal performance
-        
-        print("Parallel rendering across \(threadCount) CPU cores (total: \(cpuCount) cores available)")
-        
-        // Encode rendering commands concurrently across all CPU cores
-        let concurrentQueue = DispatchQueue(label: "com.metalhead.parallel", attributes: .concurrent)
-        let group = DispatchGroup()
-        let queue = DispatchQueue(label: "parallelEncoding", attributes: .concurrent)
-        
-        // Split work across multiple threads
-        for i in 0..<threadCount {
-            group.enter()
-            queue.async { [weak self] in
-                defer { group.leave() }
-                
-                guard let self = self else { return }
-                
-                // Get or create sub-encoder for this thread
-                if let subEncoder = parallelEncoder.makeRenderCommandEncoder() {
-                    subEncoder.setRenderPipelineState(self.renderPipelineState)
-                    subEncoder.setDepthStencilState(self.depthStencilState)
-                    subEncoder.setVertexBuffer(self.vertexBuffer, offset: 0, index: 0)
-                    subEncoder.setVertexBuffer(self.uniformBuffer, offset: 0, index: 1)
-                    
-                    // Each thread renders a portion of the geometry
-                    let triangleCount = 36
-                    let trianglesPerThread = triangleCount / threadCount
-                    let offset = (i * trianglesPerThread) * MemoryLayout<UInt16>.size
-                    let count = (i == threadCount - 1) ? (triangleCount - (trianglesPerThread * i)) : trianglesPerThread
-                    
-                    if count > 0 {
-                        subEncoder.drawIndexedPrimitives(type: .triangle,
-                                                        indexCount: count,
-                                                        indexType: .uint16,
-                                                        indexBuffer: self.indexBuffer,
-                                                        indexBufferOffset: offset)
-                    }
-                    
-                    subEncoder.endEncoding()
-                }
-            }
-        }
-        
-        // Wait for all threads to complete encoding
-        group.wait()
-        
-        // End the parallel encoder
-        parallelEncoder.endEncoding()
+        // For now, use simple rendering to ensure objects stay on screen
+        // Parallel rendering can be optimized later
+        render3D(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
     }
     
     private func render3D(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor) {
@@ -331,9 +370,35 @@ public class MetalRenderingEngine: ObservableObject {
         
         renderEncoder.setRenderPipelineState(renderPipelineState)
         renderEncoder.setDepthStencilState(depthStencilState)
-        renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+        
+        // Update base uniforms (view and projection) once
+        updateUniforms()
         renderEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
-        renderEncoder.drawIndexedPrimitives(type: .triangle, indexCount: 36, indexType: .uint16, indexBuffer: indexBuffer, indexBufferOffset: 0)
+        
+        // Ensure we have at least the default cube
+        if sceneObjects.isEmpty {
+            addDefaultCube()
+        }
+        
+        // Render all scene objects
+        for object in sceneObjects {
+            // Set vertex buffer for this object
+            renderEncoder.setVertexBuffer(object.vertexBuffer, offset: 0, index: 0)
+            
+            // Set model matrix per-object using setVertexBytes (avoids buffer conflicts)
+            var modelMatrix = object.modelMatrix
+            renderEncoder.setVertexBytes(&modelMatrix, length: MemoryLayout<matrix_float4x4>.stride, index: 2)
+            
+            // Draw the object
+            renderEncoder.drawIndexedPrimitives(
+                type: .triangle,
+                indexCount: object.indexCount,
+                indexType: .uint16,
+                indexBuffer: object.indexBuffer,
+                indexBufferOffset: 0
+            )
+        }
+        
         renderEncoder.endEncoding()
     }
     
@@ -383,16 +448,21 @@ class Camera {
     var farPlane: Float = 100.0
     
     var viewMatrix: matrix_float4x4 {
-        let rotationMatrix = matrix_multiply(
+        // View matrix transforms world space to view space
+        // First rotate the world by negative rotation (inverse rotation)
+        let invRotationMatrix = matrix_multiply(
             matrix_multiply(
-                matrix_rotate_x(rotation.x),
-                matrix_rotate_y(rotation.y)
+                matrix_rotate_z(-rotation.z),
+                matrix_rotate_y(-rotation.y)
             ),
-            matrix_rotate_z(rotation.z)
+            matrix_rotate_x(-rotation.x)
         )
         
-        let translationMatrix = matrix_translate(position)
-        return matrix_multiply(rotationMatrix, translationMatrix)
+        // Then translate the world by negative position (inverse translation)
+        let invTranslationMatrix = matrix_translate(-position)
+        
+        // Combine: first translate, then rotate
+        return matrix_multiply(invRotationMatrix, invTranslationMatrix)
     }
     
     func update(deltaTime: CFTimeInterval, mouseDelta: SIMD2<Float>) {

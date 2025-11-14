@@ -1,0 +1,37 @@
+#!/bin/bash
+# Script to restructure MetalHead into a standalone framework
+
+set -e
+
+echo "=== Restructuring MetalHead to Standalone Framework ==="
+echo ""
+echo "This will:"
+echo "1. Create MetalHeadEngine framework target"
+echo "2. Move Core/ and Utilities/ to framework"
+echo "3. Update app and test targets to use framework"
+echo ""
+echo "Note: This requires manual Xcode project editing."
+echo "Please open the project in Xcode and:"
+echo ""
+echo "1. File > New > Target > Framework & Library > Framework"
+echo "   - Name: MetalHeadEngine"
+echo "   - Language: Swift"
+echo ""
+echo "2. Move files to framework:"
+echo "   - MetalHead/Core/ → MetalHeadEngine/"
+echo "   - MetalHead/Utilities/ → MetalHeadEngine/"
+echo ""
+echo "3. Update target memberships:"
+echo "   - Core/* → MetalHeadEngine framework"
+echo "   - Utilities/* → MetalHeadEngine framework"
+echo "   - MetalHeadApp.swift → MetalHead app only"
+echo "   - ContentView.swift → MetalHead app only"
+echo ""
+echo "4. Add framework dependency:"
+echo "   - MetalHead app → Link MetalHeadEngine.framework"
+echo "   - MetalHeadTests → Link MetalHeadEngine.framework"
+echo ""
+echo "5. Update imports in app files:"
+echo "   - Add: import MetalHeadEngine"
+echo ""
+

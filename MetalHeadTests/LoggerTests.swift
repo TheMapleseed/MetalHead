@@ -1,6 +1,6 @@
 import XCTest
 import os.log
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Unit tests for Logger system
 /// Comprehensive testing of logging functionality

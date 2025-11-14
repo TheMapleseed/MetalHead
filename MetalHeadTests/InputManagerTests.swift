@@ -1,6 +1,6 @@
 import XCTest
 import simd
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Unit tests for InputManager
 final class InputManagerTests: XCTestCase {

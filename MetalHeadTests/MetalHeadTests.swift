@@ -1,7 +1,7 @@
 import XCTest
 import Metal
 import simd
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Main test suite for MetalHead engine
 final class MetalHeadTests: XCTestCase {

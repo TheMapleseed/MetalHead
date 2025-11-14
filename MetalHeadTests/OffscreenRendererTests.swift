@@ -1,6 +1,6 @@
 import XCTest
 import Metal
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 @MainActor
 final class OffscreenRendererTests: XCTestCase {
@@ -12,7 +12,7 @@ final class OffscreenRendererTests: XCTestCase {
         try super.setUpWithError()
         
         guard let device = MTLCreateSystemDefaultDevice() else {
-            throw XCTestError(.formattingError)
+            throw NSError(domain: "TestError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Metal not available"])
         }
         self.device = device
         self.offscreenRenderer = OffscreenRenderer(device: device)

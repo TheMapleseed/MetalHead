@@ -109,21 +109,17 @@ public class TestAPI: ObservableObject {
         }
         
         // Test small allocation
-        let testSize = 1024
-        guard let ptr = memoryManager.allocate(size: testSize, alignment: 16, type: .vertex) else {
-            addReport(subsystem: "Memory", testName: "Allocation",
-                     result: .failed, message: "Failed to allocate \(testSize) bytes")
-            return
-        }
+        let testCount = 256
+        let allocatedMemory = memoryManager.allocateVertexData(count: testCount, type: Float.self)
         
         // Test deallocation
-        memoryManager.deallocate(ptr)
+        memoryManager.deallocate(allocatedMemory)
         
         let duration = CFAbsoluteTimeGetCurrent() - startTime
         let report = memoryManager.getMemoryReport()
         addReport(subsystem: "Memory", testName: "Allocation", 
                  result: .passed, duration: duration,
-                 message: "Total: \(report.totalCapacity) bytes, Active: \(report.activeAllocations)")
+                 message: "Total: \(report.totalAllocated) bytes, Active: \(report.activeAllocations)")
     }
     
     private func testRenderingEngine() async {
@@ -256,6 +252,7 @@ public class TestAPI: ObservableObject {
         // Quick subsystem availability check
         let subsystems = [
             ("Rendering", engine.getSubsystem(MetalRenderingEngine.self) != nil),
+            ("Ray Tracing", engine.getSubsystem(MetalRayTracingEngine.self) != nil),
             ("Audio", engine.getSubsystem(AudioEngine.self) != nil),
             ("Input", engine.getSubsystem(InputManager.self) != nil),
             ("Memory", engine.getSubsystem(MemoryManager.self) != nil),
@@ -282,7 +279,7 @@ extension UnifiedMultimediaEngine {
     
     /// Verify all subsystems are available
     public func verifySubsystems() -> Bool {
-        let subsystems = [
+        let subsystems: [Any?] = [
             getSubsystem(MetalRenderingEngine.self),
             getSubsystem(AudioEngine.self),
             getSubsystem(InputManager.self),
@@ -291,7 +288,17 @@ extension UnifiedMultimediaEngine {
             getSubsystem(PerformanceMonitor.self)
         ]
         
-        return subsystems.allSatisfy { $0 != nil }
+        // Ray tracing is optional, so we don't require it
+        // But we check if it's available
+        let rayTracingAvailable = getSubsystem(MetalRayTracingEngine.self) != nil
+        
+        let allRequired = subsystems.allSatisfy { $0 != nil }
+        
+        if !rayTracingAvailable {
+            print("Note: Ray tracing not available (optional feature)")
+        }
+        
+        return allRequired
     }
 }
 

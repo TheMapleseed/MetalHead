@@ -1,7 +1,7 @@
 import XCTest
 import Metal
 import MetalKit
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 @MainActor
 final class ComputeShaderManagerTests: XCTestCase {
@@ -13,7 +13,7 @@ final class ComputeShaderManagerTests: XCTestCase {
         try super.setUpWithError()
         
         guard let device = MTLCreateSystemDefaultDevice() else {
-            throw XCTestError(.formattingError)
+            throw NSError(domain: "TestError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Metal not available"])
         }
         self.device = device
         self.computeShaderManager = ComputeShaderManager(device: device)

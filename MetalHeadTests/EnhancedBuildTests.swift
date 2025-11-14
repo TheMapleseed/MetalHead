@@ -1,6 +1,6 @@
 import XCTest
 import Metal
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Enhanced build tests with comprehensive error handling and logging
 final class EnhancedBuildTests: XCTestCase {

@@ -1,6 +1,6 @@
 import XCTest
 import AVFoundation
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Unit tests for AudioEngine
 final class AudioEngineTests: XCTestCase {

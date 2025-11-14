@@ -4,6 +4,10 @@ import MetalKit
 import Combine
 import simd
 
+// Import ray tracing engine
+// Note: MetalRayTracingEngine is in the same module, so no explicit import needed
+// But we need to ensure it's accessible
+
 /// Unified multimedia engine that orchestrates all subsystems
 @MainActor
 public class UnifiedMultimediaEngine: ObservableObject {
@@ -17,6 +21,7 @@ public class UnifiedMultimediaEngine: ObservableObject {
     // Core subsystems
     private let device: MTLDevice
     private var renderingEngine: MetalRenderingEngine?
+    private var rayTracingEngine: MetalRayTracingEngine?
     private var graphics2D: Graphics2D?
     private var audioEngine: AudioEngine?
     private var inputManager: InputManager?
@@ -30,6 +35,8 @@ public class UnifiedMultimediaEngine: ObservableObject {
     // Performance tracking
     private var lastFrameTime: CFTimeInterval = 0
     private var frameCount: UInt64 = 0
+    private var targetFrameRate: Double = 120.0
+    private var memoryPoolSize: Int = 256 * 1024 * 1024 // 256 MB default
     
     // Concurrency
     private let engineQueue = DispatchQueue(label: "com.metalhead.engine", qos: .userInteractive)
@@ -135,6 +142,28 @@ public class UnifiedMultimediaEngine: ObservableObject {
         return memoryManager?.getMemoryReport()
     }
     
+    /// Configure the target frame rate for the engine
+    public func configureFrameRate(_ fps: Double) {
+        guard fps > 0 && fps <= 240 else {
+            print("Invalid frame rate: \(fps). Must be between 1 and 240 FPS")
+            return
+        }
+        targetFrameRate = fps
+        print("Target frame rate set to \(fps) FPS")
+    }
+    
+    /// Configure the memory pool size for the engine
+    public func configureMemoryPool(size: Int) {
+        guard size > 0 && size <= 1024 * 1024 * 1024 else {
+            print("Invalid memory pool size: \(size). Must be between 1 byte and 1 GB")
+            return
+        }
+        memoryPoolSize = size
+        print("Memory pool size set to \(size / (1024 * 1024)) MB")
+        // Note: Actual memory pool reconfiguration would require reinitializing MemoryManager
+        // This is a configuration setting for future use
+    }
+    
     // MARK: - Private Methods
     private func setupSubsystems() async throws {
         // Initialize memory manager
@@ -145,6 +174,17 @@ public class UnifiedMultimediaEngine: ObservableObject {
         renderingEngine = MetalRenderingEngine(device: device)
         try await renderingEngine?.initialize()
         subsystems["MetalRenderingEngine"] = renderingEngine!
+        
+        // Initialize ray tracing engine (optional - may fail on unsupported devices)
+        rayTracingEngine = MetalRayTracingEngine(device: device)
+        do {
+            try await rayTracingEngine?.initialize()
+            subsystems["MetalRayTracingEngine"] = rayTracingEngine!
+            print("Ray tracing engine initialized successfully")
+        } catch {
+            print("Ray tracing not supported on this device: \(error)")
+            // Ray tracing is optional, continue without it
+        }
         
         // Initialize 2D graphics
         graphics2D = Graphics2D(device: device)

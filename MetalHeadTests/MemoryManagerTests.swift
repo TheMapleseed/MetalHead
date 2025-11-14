@@ -1,6 +1,6 @@
 import XCTest
 import Metal
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Unit tests for MemoryManager
 final class MemoryManagerTests: XCTestCase {

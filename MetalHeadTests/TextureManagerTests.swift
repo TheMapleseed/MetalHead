@@ -2,7 +2,7 @@ import XCTest
 import Metal
 import MetalKit
 import AppKit
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 @MainActor
 final class TextureManagerTests: XCTestCase {
@@ -14,7 +14,7 @@ final class TextureManagerTests: XCTestCase {
         try super.setUpWithError()
         
         guard let device = MTLCreateSystemDefaultDevice() else {
-            throw XCTestError(.formattingError)
+            throw NSError(domain: "TestError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Metal not available"])
         }
         self.device = device
         self.textureManager = TextureManager(device: device)

@@ -1,4 +1,5 @@
 import SwiftUI
+import MetalHeadEngine
 
 @main
 struct MetalHeadApp: App {

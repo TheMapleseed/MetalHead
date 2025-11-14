@@ -1,6 +1,6 @@
 import XCTest
 import Metal
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Test configuration and utilities
 final class TestConfiguration {

@@ -7,7 +7,7 @@
 
 import XCTest
 import Metal
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 final class TestAPITests: XCTestCase {
     

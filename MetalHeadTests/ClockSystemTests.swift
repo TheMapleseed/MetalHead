@@ -1,5 +1,5 @@
 import XCTest
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Unit tests for UnifiedClockSystem
 final class ClockSystemTests: XCTestCase {

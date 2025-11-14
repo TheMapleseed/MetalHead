@@ -117,7 +117,9 @@ public class MetalRayTracingEngine: ObservableObject {
         commandQueue = device.makeCommandQueue()
         
         // Create ray tracing pipeline
-        let library = try device.makeDefaultLibrary()
+        guard let library = device.makeDefaultLibrary() else {
+            throw RayTracingError.libraryCreationFailed
+        }
         
         guard let raytracingFunction = library.makeFunction(name: "raytracing_kernel") else {
             throw RayTracingError.functionNotFound
@@ -127,15 +129,16 @@ public class MetalRayTracingEngine: ObservableObject {
         descriptor.computeFunction = raytracingFunction
         descriptor.maxCallStackDepth = 8
         
-        rayTracingPipelineState = try device.makeComputePipelineState(descriptor: descriptor)
+        do {
+            let result = try await device.makeComputePipelineState(descriptor: descriptor, options: [])
+            rayTracingPipelineState = result.0
+        } catch {
+            throw RayTracingError.libraryCreationFailed
+        }
         
         // Create intersection function table
         let tableDescriptor = MTLIntersectionFunctionTableDescriptor()
         tableDescriptor.functionCount = 16
-        
-        guard let library = device.makeDefaultLibrary() else {
-            throw RayTracingError.libraryCreationFailed
-        }
         
         intersectionFunctionTable = rayTracingPipelineState?.makeIntersectionFunctionTable(descriptor: tableDescriptor)
         

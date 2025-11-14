@@ -1,11 +1,12 @@
 import Foundation
 import os.log
+import QuartzCore
 
 /// Comprehensive logging system for MetalHead engine
-public class Logger {
+public final class Logger: @unchecked Sendable {
     
     // MARK: - Singleton
-    public static let shared = Logger()
+    public static nonisolated(unsafe) let shared = Logger()
     
     private init() {
         setupLogging()

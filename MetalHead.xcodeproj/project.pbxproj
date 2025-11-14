@@ -27,6 +27,8 @@
 		1A2B3C4D5E6F78F4 /* OffscreenRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78F0 /* OffscreenRenderer.swift */; };
 		1A2B3C4D5E6F78F5 /* DeferredRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78F1 /* DeferredRenderer.swift */; };
 		1A2B3C4D5E6F78F6 /* TextureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78F2 /* TextureManager.swift */; };
+		1A2B3C4D5E6F7A00 /* GeometryShaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7A01 /* GeometryShaders.swift */; };
+		1A2B3C4D5E6F7A02 /* MetalRayTracing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7A03 /* MetalRayTracing.swift */; };
 		1A2B3C4D5E6F78AE /* MetalHeadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78AF /* MetalHeadTests.swift */; };
 		1A2B3C4D5E6F78EB /* ModelLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78EC /* ModelLoaderTests.swift */; };
 		1A2B3C4D5E6F78B0 /* RenderingEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78B1 /* RenderingEngineTests.swift */; };
@@ -36,6 +38,10 @@
 		1A2B3C4D5E6F78B8 /* ClockSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78B9 /* ClockSystemTests.swift */; };
 		1A2B3C4D5E6F78BA /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78BB /* PerformanceTests.swift */; };
 		1A2B3C4D5E6F78BC /* TestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78BD /* TestConfiguration.swift */; };
+		1A2B3C4D5E6F7B00 /* MetalHeadEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B01 /* MetalHeadEngine.framework */; };
+		1A2B3C4D5E6F7B02 /* MetalHeadEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B01 /* MetalHeadEngine.framework */; };
+		1A2B3C4D5E6F7B1B /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B0D /* Logger.swift */; };
+		1A2B3C4D5E6F7B1C /* TestAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B0E /* TestAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +51,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1A2B3C4D5E6F78C0;
 			remoteInfo = MetalHead;
+		};
+		1A2B3C4D5E6F7B03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A2B3C4D5E6F78BF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A2B3C4D5E6F7B04;
+			remoteInfo = MetalHeadEngine;
+		};
+		1A2B3C4D5E6F7B05 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A2B3C4D5E6F78BF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A2B3C4D5E6F7B04;
+			remoteInfo = MetalHeadEngine;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -62,7 +82,7 @@
 		1A2B3C4D5E6F78A1 /* InputManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputManager.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78A3 /* MemoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryManager.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78A5 /* UnifiedClockSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedClockSystem.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F78A7 /* UnifiedMultimediaEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHead/Core/UnifiedMultimediaEngine.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F78A7 /* UnifiedMultimediaEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedMultimediaEngine.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78A9 /* SIMDExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIMDExtensions.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AB /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AD /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
@@ -71,6 +91,10 @@
 		1A2B3C4D5E6F78F0 /* OffscreenRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffscreenRenderer.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78F1 /* DeferredRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeferredRenderer.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78F2 /* TextureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureManager.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7A01 /* GeometryShaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryShaders.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7A03 /* MetalRayTracing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRayTracing.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7B0D /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7B0E /* TestAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAPI.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78AF /* MetalHeadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHeadTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78EC /* ModelLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoaderTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78B1 /* RenderingEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingEngineTests.swift; sourceTree = "<group>"; };
@@ -80,6 +104,7 @@
 		1A2B3C4D5E6F78B9 /* ClockSystemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockSystemTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78BB /* PerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F78BD /* TestConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfiguration.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7B01 /* MetalHeadEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetalHeadEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,10 +112,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A2B3C4D5E6F7B00 /* MetalHeadEngine.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1A2B3C4D5E6F78C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A2B3C4D5E6F7B02 /* MetalHeadEngine.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A2B3C4D5E6F7B06 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -104,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F78C6 /* MetalHead */,
+				1A2B3C4D5E6F7B07 /* MetalHeadEngine */,
 				1A2B3C4D5E6F78C7 /* MetalHeadTests */,
 				1A2B3C4D5E6F78C8 /* Products */,
 			);
@@ -112,14 +147,21 @@
 		1A2B3C4D5E6F78C6 /* MetalHead */ = {
 			isa = PBXGroup;
 			children = (
-				1A2B3C4D5E6F78C9 /* Core */,
-				1A2B3C4D5E6F78CA /* Utilities */,
 				1A2B3C4D5E6F78CB /* MetalHeadApp.swift */,
 				1A2B3C4D5E6F78CC /* ContentView.swift */,
 				1A2B3C4D5E6F78CD /* Assets.xcassets */,
 				1A2B3C4D5E6F78CE /* Preview Content */,
 			);
 			path = MetalHead;
+			sourceTree = "<group>";
+		};
+		1A2B3C4D5E6F7B07 /* MetalHeadEngine */ = {
+			isa = PBXGroup;
+			children = (
+				1A2B3C4D5E6F7B0F /* Core */,
+				1A2B3C4D5E6F7B10 /* Utilities */,
+			);
+			path = MetalHeadEngine;
 			sourceTree = "<group>";
 		};
 		1A2B3C4D5E6F78C7 /* MetalHeadTests */ = {
@@ -143,39 +185,44 @@
 			children = (
 				1A2B3C4D5E6F78C1 /* MetalHead.app */,
 				1A2B3C4D5E6F78C2 /* MetalHeadTests.xctest */,
+				1A2B3C4D5E6F7B01 /* MetalHeadEngine.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78C9 /* Core */ = {
+		1A2B3C4D5E6F7B0F /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				1A2B3C4D5E6F78D7 /* Rendering */,
-				1A2B3C4D5E6F78D8 /* Audio */,
-				1A2B3C4D5E6F78D9 /* Input */,
-				1A2B3C4D5E6F78DA /* Memory */,
-				1A2B3C4D5E6F78DB /* Synchronization */,
-				1A2B3C4D5E6F78DC /* UnifiedMultimediaEngine.swift */,
+				1A2B3C4D5E6F7B11 /* Rendering */,
+				1A2B3C4D5E6F7B12 /* Audio */,
+				1A2B3C4D5E6F7B13 /* Input */,
+				1A2B3C4D5E6F7B14 /* Memory */,
+				1A2B3C4D5E6F7B15 /* Synchronization */,
+				1A2B3C4D5E6F78A7 /* UnifiedMultimediaEngine.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78CA /* Utilities */ = {
+		1A2B3C4D5E6F7B10 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				1A2B3C4D5E6F78DD /* Extensions */,
-				1A2B3C4D5E6F78DE /* Performance */,
-				1A2B3C4D5E6F78DF /* ErrorHandling */,
+				1A2B3C4D5E6F7B16 /* Extensions */,
+				1A2B3C4D5E6F7B17 /* Performance */,
+				1A2B3C4D5E6F7B18 /* ErrorHandling */,
+				1A2B3C4D5E6F7B19 /* Logging */,
+				1A2B3C4D5E6F7B1A /* Testing */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78D7 /* Rendering */ = {
+		1A2B3C4D5E6F7B11 /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F7899 /* MetalRenderingEngine.swift */,
 				1A2B3C4D5E6F789B /* Graphics2D.swift */,
 				1A2B3C4D5E6F78EE /* ModelLoader.swift */,
+				1A2B3C4D5E6F7A01 /* GeometryShaders.swift */,
+				1A2B3C4D5E6F7A03 /* MetalRayTracing.swift */,
 				1A2B3C4D5E6F78EF /* ComputeShaderManager.swift */,
 				1A2B3C4D5E6F78F0 /* OffscreenRenderer.swift */,
 				1A2B3C4D5E6F78F1 /* DeferredRenderer.swift */,
@@ -185,7 +232,7 @@
 			path = Rendering;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78D8 /* Audio */ = {
+		1A2B3C4D5E6F7B12 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F789F /* AudioEngine.swift */,
@@ -193,7 +240,7 @@
 			path = Audio;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78D9 /* Input */ = {
+		1A2B3C4D5E6F7B13 /* Input */ = {
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F78A1 /* InputManager.swift */,
@@ -201,7 +248,7 @@
 			path = Input;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78DA /* Memory */ = {
+		1A2B3C4D5E6F7B14 /* Memory */ = {
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F78A3 /* MemoryManager.swift */,
@@ -209,7 +256,7 @@
 			path = Memory;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78DB /* Synchronization */ = {
+		1A2B3C4D5E6F7B15 /* Synchronization */ = {
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F78A5 /* UnifiedClockSystem.swift */,
@@ -217,7 +264,7 @@
 			path = Synchronization;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78DD /* Extensions */ = {
+		1A2B3C4D5E6F7B16 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F78A9 /* SIMDExtensions.swift */,
@@ -225,7 +272,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78DE /* Performance */ = {
+		1A2B3C4D5E6F7B17 /* Performance */ = {
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F78AB /* PerformanceMonitor.swift */,
@@ -233,12 +280,28 @@
 			path = Performance;
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F78DF /* ErrorHandling */ = {
+		1A2B3C4D5E6F7B18 /* ErrorHandling */ = {
 			isa = PBXGroup;
 			children = (
 				1A2B3C4D5E6F78AD /* ErrorHandler.swift */,
 			);
 			path = ErrorHandling;
+			sourceTree = "<group>";
+		};
+		1A2B3C4D5E6F7B19 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				1A2B3C4D5E6F7B0D /* Logger.swift */,
+			);
+			path = Logging;
+			sourceTree = "<group>";
+		};
+		1A2B3C4D5E6F7B1A /* Testing */ = {
+			isa = PBXGroup;
+			children = (
+				1A2B3C4D5E6F7B0E /* TestAPI.swift */,
+			);
+			path = Testing;
 			sourceTree = "<group>";
 		};
 		1A2B3C4D5E6F78CE /* Preview Content */ = {
@@ -263,11 +326,29 @@
 			buildRules = (
 			);
 			dependencies = (
+				1A2B3C4D5E6F7B0C /* PBXTargetDependency */,
 			);
 			name = MetalHead;
 			productName = MetalHead;
 			productReference = 1A2B3C4D5E6F78C1 /* MetalHead.app */;
 			productType = "com.apple.product-type.application";
+		};
+		1A2B3C4D5E6F7B04 /* MetalHeadEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A2B3C4D5E6F7B09 /* Build configuration list for PBXNativeTarget "MetalHeadEngine" */;
+			buildPhases = (
+				1A2B3C4D5E6F7B0A /* Sources */,
+				1A2B3C4D5E6F7B06 /* Frameworks */,
+				1A2B3C4D5E6F7B0B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MetalHeadEngine;
+			productName = MetalHeadEngine;
+			productReference = 1A2B3C4D5E6F7B01 /* MetalHeadEngine.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 		1A2B3C4D5E6F78E3 /* MetalHeadTests */ = {
 			isa = PBXNativeTarget;
@@ -281,6 +362,7 @@
 			);
 			dependencies = (
 				1A2B3C4D5E6F78E7 /* PBXTargetDependency */,
+				1A2B3C4D5E6F7B08 /* PBXTargetDependency */,
 			);
 			name = MetalHeadTests;
 			productName = MetalHeadTests;
@@ -320,6 +402,7 @@
 			projectRoot = "";
 			targets = (
 				1A2B3C4D5E6F78C0 /* MetalHead */,
+				1A2B3C4D5E6F7B04 /* MetalHeadEngine */,
 				1A2B3C4D5E6F78E3 /* MetalHeadTests */,
 			);
 		};
@@ -342,6 +425,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1A2B3C4D5E6F7B0B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -351,6 +441,13 @@
 			files = (
 				1A2B3C4D5E6F7890 /* MetalHeadApp.swift in Sources */,
 				1A2B3C4D5E6F7892 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A2B3C4D5E6F7B0A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 				1A2B3C4D5E6F7898 /* MetalRenderingEngine.swift in Sources */,
 				1A2B3C4D5E6F789A /* Graphics2D.swift in Sources */,
 				1A2B3C4D5E6F78ED /* ModelLoader.swift in Sources */,
@@ -358,6 +455,8 @@
 				1A2B3C4D5E6F78F4 /* OffscreenRenderer.swift in Sources */,
 				1A2B3C4D5E6F78F5 /* DeferredRenderer.swift in Sources */,
 				1A2B3C4D5E6F78F6 /* TextureManager.swift in Sources */,
+				1A2B3C4D5E6F7A00 /* GeometryShaders.swift in Sources */,
+				1A2B3C4D5E6F7A02 /* MetalRayTracing.swift in Sources */,
 				1A2B3C4D5E6F789C /* Shaders.metal in Sources */,
 				1A2B3C4D5E6F789E /* AudioEngine.swift in Sources */,
 				1A2B3C4D5E6F78A0 /* InputManager.swift in Sources */,
@@ -367,6 +466,8 @@
 				1A2B3C4D5E6F78A8 /* SIMDExtensions.swift in Sources */,
 				1A2B3C4D5E6F78AA /* PerformanceMonitor.swift in Sources */,
 				1A2B3C4D5E6F78AC /* ErrorHandler.swift in Sources */,
+				1A2B3C4D5E6F7B1B /* Logger.swift in Sources */,
+				1A2B3C4D5E6F7B1C /* TestAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,7 +688,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.metalhead.engine.MetalHeadTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -607,7 +708,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.metalhead.engine.MetalHeadTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -615,6 +716,66 @@
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MetalHead.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MetalHead";
+			};
+			name = Release;
+		};
+		1A2B3C4D5E6F7B1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ARCHS_STANDARD = arm64;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.metalhead.engine.MetalHeadEngine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_MODULE_INTERFACE = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		1A2B3C4D5E6F7B1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ARCHS_STANDARD = arm64;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.metalhead.engine.MetalHeadEngine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_MODULE_INTERFACE = YES;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -644,6 +805,15 @@
 			buildConfigurations = (
 				1A2B3C4D5E6F7904 /* Debug */,
 				1A2B3C4D5E6F7905 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A2B3C4D5E6F7B09 /* Build configuration list for PBXNativeTarget "MetalHeadEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A2B3C4D5E6F7B1D /* Debug */,
+				1A2B3C4D5E6F7B1E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

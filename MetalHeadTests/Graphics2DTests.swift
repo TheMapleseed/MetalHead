@@ -1,7 +1,7 @@
 import XCTest
 import Metal
 import simd
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Unit tests for Graphics2D
 /// Comprehensive testing of 2D rendering system

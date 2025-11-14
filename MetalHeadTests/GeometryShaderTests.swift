@@ -1,7 +1,7 @@
 import XCTest
 import Metal
 import simd
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Unit tests for GeometryShaders
 /// Tests comprehensive error handling and all code paths

@@ -1,6 +1,7 @@
 import SwiftUI
 import MetalKit
 import Combine
+import MetalHeadEngine
 
 struct ContentView: View {
     @EnvironmentObject var unifiedEngine: UnifiedMultimediaEngine

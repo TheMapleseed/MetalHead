@@ -1,6 +1,6 @@
 import XCTest
 import Metal
-@testable import MetalHead
+@testable import MetalHeadEngine
 
 /// Performance tests for MetalHead engine
 final class PerformanceTests: XCTestCase {

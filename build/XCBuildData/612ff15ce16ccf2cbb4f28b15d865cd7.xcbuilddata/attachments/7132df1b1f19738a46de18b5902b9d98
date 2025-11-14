@@ -1,0 +1,199 @@
+{
+  "" : {
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalHeadEngine-primary.dia",
+    "emit-module-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalHeadEngine-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalHeadEngine-primary-emit-module.dia",
+    "pch" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalHeadEngine-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalHeadEngine-primary.swiftdeps"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Audio/MetalHeadEngine/Core/Audio/AudioEngine.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/AudioEngine.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/AudioEngine.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/AudioEngine.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/AudioEngine.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/AudioEngine.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/AudioEngine.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/AudioEngine.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/AudioEngine~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Input/MetalHeadEngine/Core/Input/InputManager.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/InputManager.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/InputManager.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/InputManager.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/InputManager.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/InputManager.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/InputManager.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/InputManager.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/InputManager~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Memory/MetalHeadEngine/Core/Memory/MemoryManager.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MemoryManager.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MemoryManager.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MemoryManager.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MemoryManager.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MemoryManager.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MemoryManager.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MemoryManager.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MemoryManager~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/ComputeShaderManager.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ComputeShaderManager.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ComputeShaderManager.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ComputeShaderManager.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ComputeShaderManager.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ComputeShaderManager.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ComputeShaderManager.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ComputeShaderManager.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ComputeShaderManager~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/DeferredRenderer.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/DeferredRenderer.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/DeferredRenderer.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/DeferredRenderer.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/DeferredRenderer.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/DeferredRenderer.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/DeferredRenderer.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/DeferredRenderer.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/DeferredRenderer~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/GeometryShaders.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/GeometryShaders.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/GeometryShaders.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/GeometryShaders.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/GeometryShaders.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/GeometryShaders.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/GeometryShaders.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/GeometryShaders.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/GeometryShaders~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/Graphics2D.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Graphics2D.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Graphics2D.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Graphics2D.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Graphics2D.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Graphics2D.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Graphics2D.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Graphics2D.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Graphics2D~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/MetalRayTracing.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRayTracing.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRayTracing.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRayTracing.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRayTracing.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRayTracing.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRayTracing.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRayTracing.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRayTracing~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/MetalRenderingEngine.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRenderingEngine.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRenderingEngine.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRenderingEngine.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRenderingEngine.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRenderingEngine.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRenderingEngine.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRenderingEngine.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/MetalRenderingEngine~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/ModelLoader.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ModelLoader.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ModelLoader.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ModelLoader.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ModelLoader.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ModelLoader.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ModelLoader.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ModelLoader.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ModelLoader~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/OffscreenRenderer.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/OffscreenRenderer.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/OffscreenRenderer.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/OffscreenRenderer.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/OffscreenRenderer.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/OffscreenRenderer.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/OffscreenRenderer.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/OffscreenRenderer.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/OffscreenRenderer~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Rendering/MetalHeadEngine/Core/Rendering/TextureManager.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TextureManager.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TextureManager.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TextureManager.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TextureManager.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TextureManager.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TextureManager.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TextureManager.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TextureManager~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/MetalHeadEngine/Core/Synchronization/MetalHeadEngine/Core/Synchronization/UnifiedClockSystem.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedClockSystem.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedClockSystem.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedClockSystem.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedClockSystem.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedClockSystem.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedClockSystem.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedClockSystem.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedClockSystem~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Core/UnifiedMultimediaEngine.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedMultimediaEngine.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedMultimediaEngine.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedMultimediaEngine.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedMultimediaEngine.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedMultimediaEngine.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedMultimediaEngine.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedMultimediaEngine.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/UnifiedMultimediaEngine~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Utilities/MetalHeadEngine/Utilities/ErrorHandling/MetalHeadEngine/Utilities/ErrorHandling/ErrorHandler.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ErrorHandler.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ErrorHandler.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ErrorHandler.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ErrorHandler.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ErrorHandler.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ErrorHandler.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ErrorHandler.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/ErrorHandler~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Utilities/MetalHeadEngine/Utilities/Extensions/MetalHeadEngine/Utilities/Extensions/SIMDExtensions.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/SIMDExtensions.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/SIMDExtensions.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/SIMDExtensions.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/SIMDExtensions.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/SIMDExtensions.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/SIMDExtensions.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/SIMDExtensions.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/SIMDExtensions~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Utilities/MetalHeadEngine/Utilities/Logging/MetalHeadEngine/Utilities/Logging/Logger.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Logger.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Logger.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Logger.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Logger.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Logger.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Logger.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Logger.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/Logger~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Utilities/MetalHeadEngine/Utilities/Performance/MetalHeadEngine/Utilities/Performance/PerformanceMonitor.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/PerformanceMonitor.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/PerformanceMonitor.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/PerformanceMonitor.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/PerformanceMonitor.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/PerformanceMonitor.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/PerformanceMonitor.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/PerformanceMonitor.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/PerformanceMonitor~partial.swiftmodule"
+  },
+  "/Users/themapleseedinc/Documents/GitHub/MetalHead/MetalHeadEngine/Utilities/MetalHeadEngine/Utilities/Testing/MetalHeadEngine/Utilities/Testing/TestAPI.swift" : {
+    "const-values" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TestAPI.swiftconstvalues",
+    "dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TestAPI.d",
+    "diagnostics" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TestAPI.dia",
+    "index-unit-output-path" : "/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TestAPI.o",
+    "llvm-bc" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TestAPI.bc",
+    "object" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TestAPI.o",
+    "swift-dependencies" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TestAPI.swiftdeps",
+    "swiftmodule" : "/Users/themapleseedinc/Documents/GitHub/MetalHead/build/MetalHead.build/Debug/MetalHeadEngine.build/Objects-normal/arm64/TestAPI~partial.swiftmodule"
+  }
+}

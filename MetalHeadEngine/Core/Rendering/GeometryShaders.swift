@@ -78,12 +78,12 @@ public class GeometryShaders: ObservableObject {
                 let second = UInt16(first + 1)
                 
                 indices.append(first)
-                indices.append(UInt16(first + segments + 1))
+                indices.append(UInt16(Int(first) + segments + 1))
                 indices.append(second)
                 
                 indices.append(second)
-                indices.append(UInt16(first + segments + 1))
-                indices.append(UInt16(second + segments + 1))
+                indices.append(UInt16(Int(first) + segments + 1))
+                indices.append(UInt16(Int(second) + segments + 1))
             }
         }
         
@@ -176,15 +176,15 @@ public class GeometryShaders: ObservableObject {
         for i in 0..<rings {
             for j in 0..<totalSegments {
                 let current = UInt16(i * (totalSegments + 1) + j)
-                let next = UInt16(current + totalSegments + 1)
+                let next = UInt16(Int(current) + totalSegments + 1)
                 
                 indices.append(current)
                 indices.append(next)
-                indices.append(UInt16(current + 1))
+                indices.append(UInt16(Int(current) + 1))
                 
-                indices.append(UInt16(current + 1))
+                indices.append(UInt16(Int(current) + 1))
                 indices.append(next)
-                indices.append(UInt16(next + 1))
+                indices.append(UInt16(Int(next) + 1))
             }
         }
         
@@ -238,7 +238,7 @@ public class GeometryShaders: ObservableObject {
         for lat in 0..<segments/2 {
             for long in 0..<segments {
                 let first = UInt16(lat * (segments + 1) + long + 1)
-                let second = UInt16(first + segments + 1)
+                let second = UInt16(Int(first) + segments + 1)
                 
                 indices.append(0) // Center
                 indices.append(first)
@@ -306,7 +306,7 @@ extension GeometryShaders {
             if i > 0 {
                 let idx = UInt16((i - 1) * 2)
                 indices.append(idx)
-                indices.append(UInt16(idx + 1))
+                indices.append(UInt16(Int(idx) + 1))
             }
         }
         
@@ -329,26 +329,33 @@ extension GeometryShaders {
 
 // MARK: - Export Functions
 
+@MainActor
 public func createCubeGeometry() -> ([Vertex], [UInt16]) {
-    let (vertices, indices) = GeometryShaders(device: MTLCreateSystemDefaultDevice()!).createCube(), createCubeIndices()
+    let geometryShaders = GeometryShaders(device: MTLCreateSystemDefaultDevice()!)
+    let vertices = geometryShaders.createCube()
+    let indices = geometryShaders.createCubeIndices()
     return (vertices, indices)
 }
 
+@MainActor
 public func createSphereGeometry(segments: Int = 32) -> ([Vertex], [UInt16]) {
     let geometryShaders = GeometryShaders(device: MTLCreateSystemDefaultDevice()!)
     return geometryShaders.createSphere(segments: segments)
 }
 
+@MainActor
 public func createPlaneGeometry() -> ([Vertex], [UInt16]) {
     let geometryShaders = GeometryShaders(device: MTLCreateSystemDefaultDevice()!)
     return geometryShaders.createPlane()
 }
 
+@MainActor
 public func createCylinderGeometry(segments: Int = 16) -> ([Vertex], [UInt16]) {
     let geometryShaders = GeometryShaders(device: MTLCreateSystemDefaultDevice()!)
     return geometryShaders.createCylinder(segments: segments)
 }
 
+@MainActor
 public func createBoxGeometry(width: Float = 1.0, height: Float = 1.0, depth: Float = 1.0) -> ([Vertex], [UInt16]) {
     let geometryShaders = GeometryShaders(device: MTLCreateSystemDefaultDevice()!)
     return geometryShaders.createBox(width: width, height: height, depth: depth)

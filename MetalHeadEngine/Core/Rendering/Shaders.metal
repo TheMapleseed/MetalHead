@@ -23,11 +23,12 @@ struct VertexOut {
 
 // MARK: - Vertex Shader
 vertex VertexOut vertex_main(Vertex in [[stage_in]],
-                           constant Uniforms& uniforms [[buffer(1)]]) {
+                           constant Uniforms& uniforms [[buffer(1)]],
+                           constant float4x4& modelMatrix [[buffer(2)]]) {
     VertexOut out;
     
-    // Transform position to world space
-    float4 worldPosition = uniforms.modelMatrix * float4(in.position, 1.0);
+    // Transform position to world space using per-object model matrix
+    float4 worldPosition = modelMatrix * float4(in.position, 1.0);
     
     // Transform to view space
     float4 viewPosition = uniforms.viewMatrix * worldPosition;
@@ -42,7 +43,7 @@ vertex VertexOut vertex_main(Vertex in [[stage_in]],
     out.worldPosition = worldPosition.xyz;
     
     // Calculate normal (simplified for cube)
-    out.normal = normalize((uniforms.modelMatrix * float4(in.position, 0.0)).xyz);
+    out.normal = normalize((modelMatrix * float4(in.position, 0.0)).xyz);
     
     return out;
 }
@@ -164,4 +165,50 @@ fragment float4 post_process_main(Vertex2DOut in [[stage_in]],
     color *= vignette;
     
     return color;
+}
+
+// MARK: - Ray Tracing Shader
+kernel void raytracing_kernel(device float* rayData [[buffer(0)]],
+                              device float* outputData [[buffer(1)]],
+                              constant float4x4& viewMatrix [[buffer(2)]],
+                              constant float4x4& projectionMatrix [[buffer(3)]],
+                              uint2 gid [[thread_position_in_grid]],
+                              uint2 gSize [[threads_per_grid]]) {
+    if (gid.x >= gSize.x || gid.y >= gSize.y) {
+        return;
+    }
+    
+    uint index = gid.y * gSize.x + gid.x;
+    
+    // Ray generation
+    float2 uv = float2(float(gid.x) / float(gSize.x), float(gid.y) / float(gSize.y));
+    uv = uv * 2.0 - 1.0; // Convert to NDC
+    
+    // Create ray from camera
+    float4 rayOrigin = float4(0.0, 0.0, 0.0, 1.0);
+    float4 rayDirection = float4(uv.x, uv.y, -1.0, 0.0);
+    
+    // Transform ray to world space
+    // Note: For simplicity, we'll use the view matrix directly
+    // In a full implementation, you would compute the inverse matrix
+    // For now, we'll use a simplified approach
+    rayOrigin = viewMatrix * rayOrigin;
+    float4 transformedDir = viewMatrix * rayDirection;
+    rayDirection = float4(normalize(transformedDir.xyz), 0.0);
+    
+    // Simple ray tracing computation
+    // In a full implementation, this would:
+    // 1. Trace ray through acceleration structure
+    // 2. Compute intersections
+    // 3. Apply lighting and materials
+    // 4. Handle reflections/refractions
+    
+    // Placeholder: simple distance field
+    float3 pos = rayOrigin.xyz + rayDirection.xyz * 5.0;
+    float dist = length(pos);
+    
+    // Output result
+    outputData[index * 3 + 0] = dist * 0.1; // R
+    outputData[index * 3 + 1] = dist * 0.1; // G
+    outputData[index * 3 + 2] = dist * 0.1; // B
 }
