@@ -2,6 +2,7 @@ import Metal
 import MetalKit
 import simd
 import Foundation
+import QuartzCore
 
 /// Core 3D rendering engine using Metal 4
 /// Handles all 3D graphics operations with Apple Silicon optimization
@@ -77,25 +78,33 @@ public class MetalRenderingEngine: ObservableObject {
     
     // MARK: - Public Interface
     public func initialize() async throws {
+        print("🚀 MetalRenderingEngine.initialize() called")
         try await setupMetal()
+        print("   ✅ Metal setup complete")
         try setupBuffers()
+        print("   ✅ Buffers setup complete: vertexBuffer=\(vertexBuffer?.length ?? 0), indexBuffer=\(indexBuffer?.length ?? 0)")
         try setupPipeline()
+        print("   ✅ Pipeline setup complete")
         setupMatrices()
+        print("   ✅ Matrices setup complete")
         
         // Initialize advanced rendering systems
-        try computeShaderManager.initialize()
+        try await computeShaderManager.initialize()
         try offscreenRenderer.initialize()
         
         // Add default cube to scene
+        print("   Adding default cube...")
         addDefaultCube()
+        print("   Scene objects after initialization: \(sceneObjects.count)")
         
-        print("Metal Rendering Engine initialized successfully")
+        print("✅ Metal Rendering Engine initialized successfully")
     }
     
     private func addDefaultCube() {
         // Use the existing cube buffers from setupBuffers
         guard let defaultVertexBuffer = vertexBuffer,
               let defaultIndexBuffer = indexBuffer else {
+            print("ERROR: Cannot add default cube - buffers not initialized")
             return
         }
         
@@ -106,27 +115,72 @@ public class MetalRenderingEngine: ObservableObject {
             modelMatrix: matrix_identity_float4x4
         )
         sceneObjects.append(defaultObject)
+        print("Default cube added to scene: vertexBuffer=\(defaultVertexBuffer.length) bytes, indexBuffer=\(defaultIndexBuffer.length) bytes, indexCount=36")
     }
     
     public func render(deltaTime: CFTimeInterval, in view: MTKView) {
         guard let drawable = view.currentDrawable,
               let renderPassDescriptor = view.currentRenderPassDescriptor else {
+            if frameCount % 60 == 0 {
+                print("⚠️ No drawable or render pass descriptor available")
+            }
             return
+        }
+        
+        // Debug: Log that we're rendering (first 10 frames, then every 60)
+        if frameCount < 10 || frameCount % 60 == 0 {
+            print("🎬 MetalRenderingEngine.render() called - frameCount=\(frameCount), sceneObjects=\(sceneObjects.count), is3DMode=\(is3DMode)")
+            if frameCount < 5 {
+                print("   Drawable: \(drawable != nil ? "✅" : "❌"), RenderPass: \(renderPassDescriptor != nil ? "✅" : "❌")")
+            }
+        }
+        
+        // Ensure render pass descriptor is properly configured
+        // Note: We modify the descriptor's properties, which is allowed even with 'let'
+        if renderPassDescriptor.colorAttachments[0].loadAction == .dontCare {
+            renderPassDescriptor.colorAttachments[0].loadAction = .clear
+            renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
+        }
+        
+        if renderPassDescriptor.depthAttachment.loadAction == .dontCare {
+            renderPassDescriptor.depthAttachment.loadAction = .clear
+            renderPassDescriptor.depthAttachment.clearDepth = 1.0
+        }
+        
+        // Update projection matrix if view size changed
+        let currentAspect = Float(view.drawableSize.width / view.drawableSize.height)
+        if abs(currentAspect - (projectionMatrix.columns.1.y / projectionMatrix.columns.0.x)) > 0.01 {
+            updateDrawableSize(view.drawableSize)
         }
         
         updatePerformanceMetrics(deltaTime: deltaTime)
         updateCamera(deltaTime: deltaTime)
         updateUniforms()
         
-        guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+            if frameCount % 60 == 0 {
+                print("❌ Failed to create command buffer")
+            }
+            return
+        }
         
         if is3DMode {
-            // Use parallel rendering for better performance
-            render3DParallel(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
+            // Render 3D scene - use direct render3D for now (parallel rendering disabled for debugging)
+            render3D(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor)
+        } else {
+            // 2D rendering would go here
+            if frameCount % 60 == 0 {
+                print("⚠️ 2D mode not implemented")
+            }
         }
         
         commandBuffer.present(drawable)
         commandBuffer.commit()
+        
+        // Debug: Log successful frame
+        if frameCount < 10 {
+            print("   ✅ Frame \(frameCount) rendered and committed - sceneObjects=\(sceneObjects.count)")
+        }
     }
     
     public func updateMousePosition(_ position: SIMD2<Float>) {
@@ -178,16 +232,23 @@ public class MetalRenderingEngine: ObservableObject {
     
     /// Render a cube at the specified position
     public func renderCube(at position: SIMD3<Float>) {
+        print("🔷 renderCube called at position: \(position)")
+        print("   Current scene objects: \(sceneObjects.count)")
+        
         // Create cube geometry
         let vertices = geometryShaders.createCube()
         let indices = geometryShaders.createCubeIndices()
         
+        print("   Created \(vertices.count) vertices, \(indices.count) indices")
+        
         // Create buffers for this cube instance
         guard let vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Vertex>.stride, options: []),
               let indexBuffer = device.makeBuffer(bytes: indices, length: indices.count * MemoryLayout<UInt16>.stride, options: []) else {
-            print("Failed to create buffers for cube")
+            print("❌ Failed to create buffers for cube")
             return
         }
+        
+        print("   ✅ Buffers created: vertexBuffer=\(vertexBuffer.length) bytes, indexBuffer=\(indexBuffer.length) bytes")
         
         // Create model matrix for position
         var cubeModelMatrix = matrix_identity_float4x4
@@ -201,7 +262,7 @@ public class MetalRenderingEngine: ObservableObject {
             modelMatrix: cubeModelMatrix
         )
         sceneObjects.append(cubeObject)
-        print("Cube added to scene at position: \(position)")
+        print("✅ Cube added to scene at position: \(position), total objects: \(sceneObjects.count)")
     }
     
     /// Render a sphere at the specified position with given radius
@@ -284,14 +345,32 @@ public class MetalRenderingEngine: ObservableObject {
         }
         self.indexBuffer = indexBuffer
         
-        guard let uniformBuffer = device.makeBuffer(length: MemoryLayout<Uniforms>.stride, options: []) else {
+        // Metal requires constant buffers to be aligned to 256 bytes
+        let uniformSize = MemoryLayout<Uniforms>.stride
+        let alignedSize = (uniformSize + 255) & ~255  // Round up to 256-byte boundary
+        guard let uniformBuffer = device.makeBuffer(length: alignedSize, options: []) else {
             throw RenderingError.bufferCreationFailed
         }
         self.uniformBuffer = uniformBuffer
     }
     
     private func setupPipeline() throws {
-        guard let library = device.makeDefaultLibrary() else {
+        // Load Metal library from framework bundle
+        // makeDefaultLibrary() searches main bundle, but we're in a framework
+        let frameworkBundle = Bundle(for: type(of: self))
+        let library: MTLLibrary
+        
+        if let metalLibURL = frameworkBundle.url(forResource: "default", withExtension: "metallib") {
+            // Load from framework bundle
+            library = try device.makeLibrary(URL: metalLibURL)
+        } else if let defaultLibrary = device.makeDefaultLibrary() {
+            // Fall back to default (searches main bundle)
+            library = defaultLibrary
+        } else {
+            print("❌ ERROR: Failed to create Metal library")
+            print("   Framework bundle: \(frameworkBundle.bundlePath)")
+            print("   Main bundle: \(Bundle.main.bundlePath)")
+            print("   Device: \(device.name)")
             throw RenderingError.libraryCreationFailed
         }
         
@@ -335,10 +414,14 @@ public class MetalRenderingEngine: ObservableObject {
     }
     
     private func setupMatrices() {
+        // Default aspect ratio, will be updated when view size is known
         let aspectRatio: Float = 16.0 / 9.0
         projectionMatrix = matrix_perspective_right_hand(fovyRadians: Float.pi / 4, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100.0)
         viewMatrix = camera.viewMatrix
         modelMatrix = matrix_identity_float4x4
+        
+        print("Camera initialized: position=\(camera.position), rotation=\(camera.rotation)")
+        print("Projection matrix initialized with aspect ratio: \(aspectRatio)")
     }
     
     private func updateCamera(deltaTime: CFTimeInterval) {
@@ -366,22 +449,72 @@ public class MetalRenderingEngine: ObservableObject {
     }
     
     private func render3D(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor) {
-        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else { return }
+        guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            print("❌ ERROR: Failed to create render command encoder")
+            return
+        }
         
-        renderEncoder.setRenderPipelineState(renderPipelineState)
+        guard let pipelineState = renderPipelineState else {
+            print("❌ ERROR: Render pipeline state is nil!")
+            renderEncoder.endEncoding()
+            return
+        }
+        
+        renderEncoder.setRenderPipelineState(pipelineState)
         renderEncoder.setDepthStencilState(depthStencilState)
+        
+        // Debug: Verify pipeline is set
+        if frameCount < 5 {
+            print("   🔗 Pipeline state set: ✅, Depth stencil: ✅")
+        }
+        
+        // Set viewport and scissor rect
+        let viewport = MTLViewport(originX: 0, originY: 0, width: Double(renderPassDescriptor.colorAttachments[0].texture?.width ?? 800), height: Double(renderPassDescriptor.colorAttachments[0].texture?.height ?? 600), znear: 0.0, zfar: 1.0)
+        renderEncoder.setViewport(viewport)
         
         // Update base uniforms (view and projection) once
         updateUniforms()
         renderEncoder.setVertexBuffer(uniformBuffer, offset: 0, index: 1)
         
+        // Debug: Print uniform values on first frame
+        if frameCount == 0 {
+            let viewPos = viewMatrix.columns.3
+            print("   📐 View matrix translation: (\(viewPos.x), \(viewPos.y), \(viewPos.z))")
+            print("   📐 Projection matrix: near=0.1, far=100.0, fov=45°")
+        }
+        
         // Ensure we have at least the default cube
         if sceneObjects.isEmpty {
             addDefaultCube()
+            print("Added default cube to scene (sceneObjects was empty)")
+        }
+        
+        // Debug: Print scene object count and camera info every second
+        if frameCount % 60 == 0 {
+            print("🎨 Rendering \(sceneObjects.count) scene objects")
+            print("   Camera position: \(camera.position), rotation: \(camera.rotation)")
+            let viewPos = viewMatrix.columns.3
+            print("   View matrix translation: (\(viewPos.x), \(viewPos.y), \(viewPos.z))")
+            print("   Projection matrix scale: x=\(projectionMatrix.columns.0.x), y=\(projectionMatrix.columns.1.y)")
+            print("   Command buffer created: ✅")
+            print("   Render encoder created: ✅")
+            print("   Pipeline state set: ✅")
+        }
+        
+        // CRITICAL: If no scene objects, add default cube immediately
+        if sceneObjects.isEmpty {
+            print("⚠️ No scene objects! Adding default cube...")
+            addDefaultCube()
+            // If still empty after trying to add, something is wrong
+            if sceneObjects.isEmpty {
+                print("❌ CRITICAL: Failed to add default cube - buffers may not be initialized!")
+                renderEncoder.endEncoding()
+                return
+            }
         }
         
         // Render all scene objects
-        for object in sceneObjects {
+        for (index, object) in sceneObjects.enumerated() {
             // Set vertex buffer for this object
             renderEncoder.setVertexBuffer(object.vertexBuffer, offset: 0, index: 0)
             
@@ -397,6 +530,17 @@ public class MetalRenderingEngine: ObservableObject {
                 indexBuffer: object.indexBuffer,
                 indexBufferOffset: 0
             )
+            
+            // Debug first object every frame for first 10 frames
+            if index == 0 && frameCount < 10 {
+                let pos = modelMatrix.columns.3
+                print("   ✅ Drew object 0: indexCount=\(object.indexCount), position=(\(pos.x), \(pos.y), \(pos.z))")
+            }
+        }
+        
+        // Debug: Log if we actually drew anything
+        if frameCount % 60 == 0 && !sceneObjects.isEmpty {
+            print("   ✅ Completed rendering \(sceneObjects.count) objects")
         }
         
         renderEncoder.endEncoding()
@@ -415,7 +559,7 @@ public class MetalRenderingEngine: ObservableObject {
 }
 
 // MARK: - Data Structures
-public struct Vertex {
+public struct Vertex: Sendable {
     public var position: SIMD3<Float>
     public var color: SIMD4<Float>
     
@@ -425,7 +569,7 @@ public struct Vertex {
     }
 }
 
-public struct Uniforms {
+public struct Uniforms: Sendable {
     public var modelMatrix: matrix_float4x4
     public var viewMatrix: matrix_float4x4
     public var projectionMatrix: matrix_float4x4
@@ -530,7 +674,7 @@ func matrix_translate(_ translation: SIMD3<Float>) -> matrix_float4x4 {
 }
 
 // MARK: - Errors
-public enum RenderingError: Error {
+public enum RenderingError: Error, Sendable {
     case commandQueueCreationFailed
     case bufferCreationFailed
     case libraryCreationFailed

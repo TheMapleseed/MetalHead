@@ -22,7 +22,9 @@ public class AudioEngine: ObservableObject {
     // Real-time audio processing
     private var audioBuffer: [Float] = []
     private var fftBuffer: [Float] = []
-    private var fftSetup: FFTSetup?
+    // Note: nonisolated(unsafe) is safe here because fftSetup is only written during initialization
+    // and only read from nonisolated real-time methods after initialization
+    nonisolated(unsafe) private var fftSetup: FFTSetup?
     private var audioDataPublisher = PassthroughSubject<[Float], Never>()
     
     // Audio visualization data
@@ -34,7 +36,7 @@ public class AudioEngine: ObservableObject {
     private var currentAudioFile: AVAudioFile?
     
     // Concurrency
-    private let audioQueue = DispatchQueue(label: "com.metalhead.audio", qos: .userInteractive)
+    // Note: Removed DispatchQueue - use Task with proper actor isolation instead
     private var audioTimer: Timer?
     
     // MARK: - Initialization
@@ -44,9 +46,16 @@ public class AudioEngine: ObservableObject {
     
     // MARK: - Public Interface
     public func initialize() async throws {
+        // Audio engine initialization - make it non-blocking
+        // If audio fails, we should still be able to render
+        do {
         try await setupAudioEngine()
         try await setupFFT()
         print("Audio Engine initialized successfully")
+        } catch {
+            print("⚠️ Audio Engine initialization failed (non-critical): \(error)")
+            // Don't throw - audio is optional for rendering
+        }
     }
     
     public func play() {
@@ -182,8 +191,30 @@ public class AudioEngine: ObservableObject {
     }
     
     private func setupRealTimeProcessing() {
-        audioMixer.installTap(onBus: 0, bufferSize: bufferSize, format: audioFormat) { [weak self] buffer, time in
-            self?.processAudioBuffer(buffer)
+        // Note: Audio tap callback runs on audio thread (RealtimeMessenger.mServiceQueue), not main actor
+        // The closure must be @Sendable and only do real-time-safe work
+        // All @MainActor updates must be deferred via Task { @MainActor in }
+        audioMixer.installTap(onBus: 0, bufferSize: bufferSize, format: audioFormat) { @Sendable [weak self] buffer, time in
+            guard let self = self else { return }
+            
+            // Real-time safe processing only - no @MainActor access here
+            // Extract audio data on the audio thread
+            guard let channelData = buffer.floatChannelData?[0] else { return }
+            let frameCount = Int(buffer.frameLength)
+            let audioData = Array(UnsafeBufferPointer(start: channelData, count: frameCount))
+            
+            // Compute level and FFT on audio thread (real-time safe)
+            let level = self.computeAudioLevelRealtime(audioData)
+            let spectrum = self.computeFFTRealtime(audioData)
+            
+            // Defer all @MainActor updates off the real-time queue
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.audioBuffer = audioData
+                self.audioLevel = level
+                self.audioSpectrum = spectrum
+                self.audioDataPublisher.send(audioData)
+            }
         }
     }
     
@@ -195,35 +226,27 @@ public class AudioEngine: ObservableObject {
         audioSpectrum = Array(repeating: 0.0, count: Int(bufferSize / 2))
     }
     
-    private func processAudioBuffer(_ buffer: AVAudioPCMBuffer) {
-        guard let channelData = buffer.floatChannelData?[0] else { return }
-        let frameCount = Int(buffer.frameLength)
-        
-        let audioData = Array(UnsafeBufferPointer(start: channelData, count: frameCount))
-        audioBuffer = audioData
-        
-        calculateAudioLevel(audioData)
-        performFFT(audioData)
-        
-        audioDataPublisher.send(audioData)
-    }
-    
-    private func calculateAudioLevel(_ audioData: [Float]) {
+    // Real-time safe computation - nonisolated to allow calling from audio thread
+    // Note: This method is called from the audio tap closure which runs on a real-time thread
+    nonisolated private func computeAudioLevelRealtime(_ audioData: [Float]) -> Float {
         var rms: Float = 0.0
         vDSP_rmsqv(audioData, 1, &rms, vDSP_Length(audioData.count))
-        
-        DispatchQueue.main.async {
-            self.audioLevel = rms
-        }
+        return rms
     }
     
-    private func performFFT(_ audioData: [Float]) {
-        guard fftSetup != nil else { return }
-        let fftSetup = fftSetup!
+    // Real-time safe FFT computation - nonisolated to allow calling from audio thread
+    // Note: fftSetup is accessed via nonisolated(unsafe) since it's only read after initialization
+    // and FFT operations are thread-safe for read-only access
+    nonisolated private func computeFFTRealtime(_ audioData: [Float]) -> [Float] {
+        // Access fftSetup safely - it's initialized before the tap is installed
+        // and only read from here, so it's safe to access from nonisolated context
+        guard let fftSetup = self.fftSetup else { return [] }
         
         let halfSize = audioData.count / 2
         var realParts = Array(audioData.prefix(halfSize))
         var imaginaryParts = Array(repeating: Float(0.0), count: halfSize)
+        
+        var dbMagnitudes = Array(repeating: Float(0.0), count: halfSize)
         
         realParts.withUnsafeMutableBufferPointer { realBuffer in
             imaginaryParts.withUnsafeMutableBufferPointer { imagBuffer in
@@ -233,15 +256,12 @@ public class AudioEngine: ObservableObject {
                 var magnitudes = Array(repeating: Float(0.0), count: halfSize)
                 vDSP_zvmags(&splitComplex, 1, &magnitudes, 1, vDSP_Length(halfSize))
                 
-                var dbMagnitudes = Array(repeating: Float(0.0), count: halfSize)
                 var refValue = Float(1.0)
                 vDSP_vdbcon(magnitudes, 1, &refValue, &dbMagnitudes, 1, vDSP_Length(halfSize), 1)
-                
-                DispatchQueue.main.async {
-                    self.audioSpectrum = Array(dbMagnitudes.prefix(min(64, halfSize)))
-                }
             }
         }
+        
+        return Array(dbMagnitudes.prefix(min(64, halfSize)))
     }
     
     private func generateTestTone() {
@@ -270,7 +290,7 @@ public class AudioEngine: ObservableObject {
 }
 
 // MARK: - Errors
-public enum AudioEngineError: Error {
+public enum AudioEngineError: Error, Sendable {
     case engineStartFailed
     case fileLoadFailed
     case recordingFailed

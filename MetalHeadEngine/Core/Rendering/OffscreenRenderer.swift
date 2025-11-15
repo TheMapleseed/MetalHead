@@ -128,7 +128,7 @@ public class OffscreenRenderer {
 }
 
 // MARK: - Errors
-public enum OffscreenRenderError: Error {
+public enum OffscreenRenderError: Error, Sendable {
     case commandQueueCreationFailed
     case commandBufferCreationFailed
     case encoderCreationFailed

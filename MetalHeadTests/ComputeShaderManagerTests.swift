@@ -30,7 +30,7 @@ final class ComputeShaderManagerTests: XCTestCase {
     }
     
     func testInitializeComputeShaderManager() async throws {
-        try computeShaderManager.initialize()
+        try await computeShaderManager.initialize()
         // If we get here, initialization succeeded
         XCTAssertTrue(true)
     }

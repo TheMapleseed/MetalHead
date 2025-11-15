@@ -46,9 +46,11 @@ public class PerformanceMonitor: ObservableObject {
     public func startMonitoring() {
         guard monitoringTimer == nil else { return }
         
+        // Timer callback must be @MainActor to access @MainActor properties
         monitoringTimer = Timer.scheduledTimer(withTimeInterval: monitoringInterval, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                await self?.updatePerformanceMetrics()
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                await self.updatePerformanceMetrics()
             }
         }
         
@@ -148,7 +150,7 @@ public class PerformanceMonitor: ObservableObject {
 }
 
 // MARK: - Performance Report
-public struct PerformanceReport {
+public struct PerformanceReport: Sendable {
     public let fps: Double
     public let frameTime: TimeInterval
     public let memoryUsage: UInt64
@@ -274,7 +276,7 @@ public class PerformanceTimer {
 }
 
 // MARK: - Benchmark Result
-public struct BenchmarkResult {
+public struct BenchmarkResult: Sendable {
     public let times: [TimeInterval]
     
     public init(times: [TimeInterval]) {

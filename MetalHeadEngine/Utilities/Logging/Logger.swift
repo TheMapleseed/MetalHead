@@ -3,10 +3,13 @@ import os.log
 import QuartzCore
 
 /// Comprehensive logging system for MetalHead engine
+/// Note: Uses @unchecked Sendable because Logger needs to be accessible from any thread
+/// All logging operations are thread-safe through OSLog
 public final class Logger: @unchecked Sendable {
     
     // MARK: - Singleton
-    public static nonisolated(unsafe) let shared = Logger()
+    // Note: Logger is @unchecked Sendable, so shared can be accessed from any isolation domain
+    public static let shared = Logger()
     
     private init() {
         setupLogging()
@@ -23,10 +26,41 @@ public final class Logger: @unchecked Sendable {
     private let rayTracingLog = OSLog(subsystem: "com.metalhead.raytracing", category: "RayTracing")
     private let geometryLog = OSLog(subsystem: "com.metalhead.geometry", category: "Geometry")
     
+    // Category name mapping for test capture
+    private func getCategoryName(for log: OSLog) -> String {
+        if log === renderingLog { return "Rendering" }
+        if log === audioLog { return "Audio" }
+        if log === inputLog { return "Input" }
+        if log === memoryLog { return "Memory" }
+        if log === clockLog { return "Clock" }
+        if log === performanceLog { return "Performance" }
+        if log === errorLog { return "Error" }
+        if log === rayTracingLog { return "RayTracing" }
+        if log === geometryLog { return "Geometry" }
+        // Handle OSLog.default and other unknown logs
+        return "Default"
+    }
+    
     // MARK: - Log Configuration
     public var isVerbose: Bool = false
     public var isDebug: Bool = true
     public var isProduction: Bool = false
+    
+    // MARK: - Test Support
+    // Note: Using nonisolated(unsafe) for log capture since Logger is @unchecked Sendable
+    // This is safe because log capture is only used in tests with sequential access
+    private nonisolated(unsafe) var logCapture: [(message: String, category: String, level: LogLevel)] = []
+    public var enableLogCapture: Bool = false
+    
+    public func getCapturedLogs() -> [(message: String, category: String, level: LogLevel)] {
+        // Note: Accessing nonisolated(unsafe) property - safe for test-only usage
+        return logCapture
+    }
+    
+    public func clearCapturedLogs() {
+        // Note: Accessing nonisolated(unsafe) property - safe for test-only usage
+        logCapture.removeAll()
+    }
     
     // MARK: - Logging Methods
     
@@ -99,6 +133,13 @@ public final class Logger: @unchecked Sendable {
         
         let timestamp = DateFormatter.logFormatter.string(from: Date())
         let logMessage = "[\(timestamp)] \(level.rawValue.uppercased()): \(message)"
+        
+        // Capture log for testing
+        if enableLogCapture {
+            // Note: Accessing nonisolated(unsafe) property - safe for test-only usage
+            let categoryName = getCategoryName(for: category)
+            logCapture.append((message: message, category: categoryName, level: level))
+        }
         
         os_log("%{public}s", log: category, type: osLogLevel, logMessage)
         
@@ -240,7 +281,7 @@ public final class Logger: @unchecked Sendable {
 
 // MARK: - Supporting Types
 
-public enum LogLevel: String {
+public enum LogLevel: String, Sendable {
     case debug = "DEBUG"
     case info = "INFO"
     case warning = "WARNING"

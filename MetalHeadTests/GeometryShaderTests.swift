@@ -1,6 +1,7 @@
 import XCTest
 import Metal
 import simd
+import QuartzCore
 @testable import MetalHeadEngine
 
 /// Unit tests for GeometryShaders

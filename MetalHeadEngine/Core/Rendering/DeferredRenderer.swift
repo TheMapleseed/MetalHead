@@ -214,7 +214,15 @@ public class DeferredRenderer {
     }
     
     private func setupPipelineStates() throws {
-        guard let library = device.makeDefaultLibrary() else {
+        // Load Metal library from framework bundle
+        let frameworkBundle = Bundle(for: type(of: self))
+        let library: MTLLibrary
+        
+        if let metalLibURL = frameworkBundle.url(forResource: "default", withExtension: "metallib") {
+            library = try device.makeLibrary(URL: metalLibURL)
+        } else if let defaultLibrary = device.makeDefaultLibrary() {
+            library = defaultLibrary
+        } else {
             throw DeferredRenderError.libraryNotFound
         }
         
@@ -247,7 +255,7 @@ public struct DeferredGeometry {
     }
 }
 
-public struct DeferredMaterial {
+public struct DeferredMaterial: Sendable {
     public let albedo: SIMD3<Float>
     public let roughness: Float
     public let metallic: Float
@@ -259,7 +267,7 @@ public struct DeferredMaterial {
     }
 }
 
-public struct DeferredLight {
+public struct DeferredLight: Sendable {
     public let position: SIMD3<Float>
     public let color: SIMD3<Float>
     public let intensity: Float
@@ -274,7 +282,7 @@ public struct DeferredLight {
 }
 
 // MARK: - Errors
-public enum DeferredRenderError: Error {
+public enum DeferredRenderError: Error, Sendable {
     case commandQueueCreationFailed
     case textureCreationFailed
     case encoderCreationFailed

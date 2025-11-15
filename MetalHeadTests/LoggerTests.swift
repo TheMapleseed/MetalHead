@@ -13,9 +13,14 @@ final class LoggerTests: XCTestCase {
         logger = Logger.shared
         logger.isVerbose = true
         logger.isDebug = true
+        logger.isProduction = false
+        logger.enableLogCapture = true
+        logger.clearCapturedLogs()
     }
     
     override func tearDownWithError() throws {
+        logger.clearCapturedLogs()
+        logger.enableLogCapture = false
         logger = nil
         try super.tearDownWithError()
     }
@@ -29,7 +34,14 @@ final class LoggerTests: XCTestCase {
         logger.logRendering("Warning: Low frame rate", level: .warning)
         
         // Then
-        XCTAssertTrue(true, "Rendering logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture 3 rendering logs")
+        XCTAssertEqual(logs[0].message, "Frame rendered", "First log message should match")
+        XCTAssertEqual(logs[0].category, "Rendering", "First log category should be Rendering")
+        XCTAssertEqual(logs[0].level, .info, "First log level should be info")
+        XCTAssertEqual(logs[1].message, "Rendering pipeline created", "Second log message should match")
+        XCTAssertEqual(logs[1].level, .debug, "Second log level should be debug")
+        XCTAssertEqual(logs[2].level, .warning, "Third log level should be warning")
     }
     
     // MARK: - Audio Logs
@@ -41,7 +53,12 @@ final class LoggerTests: XCTestCase {
         logger.logAudio("Warning: Audio interruption", level: .warning)
         
         // Then
-        XCTAssertTrue(true, "Audio logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture 3 audio logs")
+        XCTAssertEqual(logs[0].category, "Audio", "First log category should be Audio")
+        XCTAssertEqual(logs[0].message, "Audio playback started", "First log message should match")
+        XCTAssertEqual(logs[1].message, "Buffer size: 1024", "Second log message should match")
+        XCTAssertEqual(logs[2].message, "Warning: Audio interruption", "Third log message should match")
     }
     
     // MARK: - Input Logs
@@ -53,7 +70,11 @@ final class LoggerTests: XCTestCase {
         logger.logInput("Mouse captured", level: .info)
         
         // Then
-        XCTAssertTrue(true, "Input logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture 3 input logs")
+        XCTAssertEqual(logs[0].category, "Input", "First log category should be Input")
+        XCTAssertTrue(logs.contains { $0.message == "Key pressed: Space" }, "Should contain key press log")
+        XCTAssertTrue(logs.contains { $0.message == "Mouse position: (100, 200)" }, "Should contain mouse position log")
     }
     
     // MARK: - Memory Logs
@@ -65,7 +86,10 @@ final class LoggerTests: XCTestCase {
         logger.logMemory("Warning: High memory usage", level: .warning)
         
         // Then
-        XCTAssertTrue(true, "Memory logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture 3 memory logs")
+        XCTAssertEqual(logs[0].category, "Memory", "First log category should be Memory")
+        XCTAssertTrue(logs.contains { $0.message == "Allocated 100MB" }, "Should contain allocation log")
     }
     
     // MARK: - Clock Logs
@@ -77,7 +101,10 @@ final class LoggerTests: XCTestCase {
         logger.logClock("Warning: Timing drift detected", level: .warning)
         
         // Then
-        XCTAssertTrue(true, "Clock logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture 3 clock logs")
+        XCTAssertEqual(logs[0].category, "Clock", "First log category should be Clock")
+        XCTAssertTrue(logs.contains { $0.message.contains("Frame time") }, "Should contain frame time log")
     }
     
     // MARK: - Performance Logs
@@ -89,7 +116,10 @@ final class LoggerTests: XCTestCase {
         logger.logPerformance("GPU usage: 80%", level: .info)
         
         // Then
-        XCTAssertTrue(true, "Performance logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture 3 performance logs")
+        XCTAssertEqual(logs[0].category, "Performance", "First log category should be Performance")
+        XCTAssertTrue(logs.contains { $0.message == "FPS: 120" }, "Should contain FPS log")
     }
     
     // MARK: - Error Logs
@@ -103,7 +133,13 @@ final class LoggerTests: XCTestCase {
         logger.logError("System error", error: nil)
         
         // Then
-        XCTAssertTrue(true, "Error logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 2, "Should capture 2 error logs")
+        XCTAssertEqual(logs[0].category, "Error", "First log category should be Error")
+        XCTAssertEqual(logs[0].level, .error, "First log level should be error")
+        XCTAssertTrue(logs[0].message.contains("Operation failed"), "Should contain error message")
+        XCTAssertTrue(logs[0].message.contains("Test error"), "Should contain error description")
+        XCTAssertEqual(logs[1].message, "System error", "Second log message should match")
     }
     
     func test_LogErrorWithContext_whenCalled_expectLogged() {
@@ -120,7 +156,15 @@ final class LoggerTests: XCTestCase {
         logger.logErrorWithContext("Detailed error", context: context, error: testError)
         
         // Then
-        XCTAssertTrue(true, "Error with context logged")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 1, "Should capture 1 error log with context")
+        XCTAssertEqual(logs[0].category, "Error", "Log category should be Error")
+        XCTAssertEqual(logs[0].level, .error, "Log level should be error")
+        XCTAssertTrue(logs[0].message.contains("Detailed error"), "Should contain error message")
+        XCTAssertTrue(logs[0].message.contains("Context:"), "Should contain context section")
+        XCTAssertTrue(logs[0].message.contains("frame: 1234"), "Should contain frame context")
+        XCTAssertTrue(logs[0].message.contains("Domain: Test"), "Should contain error domain")
+        XCTAssertTrue(logs[0].message.contains("Code: 456"), "Should contain error code")
     }
     
     // MARK: - Ray Tracing Logs
@@ -132,7 +176,10 @@ final class LoggerTests: XCTestCase {
         logger.logRayTracing("Sample count: 4", level: .info)
         
         // Then
-        XCTAssertTrue(true, "Ray tracing logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture 3 ray tracing logs")
+        XCTAssertEqual(logs[0].category, "RayTracing", "First log category should be RayTracing")
+        XCTAssertTrue(logs.contains { $0.message == "Traced 1M rays" }, "Should contain ray count log")
     }
     
     // MARK: - Geometry Logs
@@ -144,7 +191,10 @@ final class LoggerTests: XCTestCase {
         logger.logGeometry("Geometry optimization complete", level: .info)
         
         // Then
-        XCTAssertTrue(true, "Geometry logs recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture 3 geometry logs")
+        XCTAssertEqual(logs[0].category, "Geometry", "First log category should be Geometry")
+        XCTAssertTrue(logs.contains { $0.message.contains("sphere") }, "Should contain sphere creation log")
     }
     
     // MARK: - Static Methods
@@ -162,7 +212,11 @@ final class LoggerTests: XCTestCase {
         Logger.geometry("Static geometry log")
         
         // Then
-        XCTAssertTrue(true, "Static methods logged")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 9, "Should capture 9 static method logs")
+        XCTAssertTrue(logs.contains { $0.message == "Static rendering log" && $0.category == "Rendering" }, "Should contain static rendering log")
+        XCTAssertTrue(logs.contains { $0.message == "Static audio log" && $0.category == "Audio" }, "Should contain static audio log")
+        XCTAssertTrue(logs.contains { $0.message == "Static error log" && $0.category == "Error" }, "Should contain static error log")
     }
     
     // MARK: - Performance Timing
@@ -177,7 +231,11 @@ final class LoggerTests: XCTestCase {
         logger.endTimer(label: label, startTime: startTime)
         
         // Then
-        XCTAssertTrue(true, "Timer measured time")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 1, "Should capture 1 performance log from timer")
+        XCTAssertEqual(logs[0].category, "Performance", "Log category should be Performance")
+        XCTAssertTrue(logs[0].message.contains(label), "Log should contain timer label")
+        XCTAssertTrue(logs[0].message.contains("ms"), "Log should contain time in milliseconds")
     }
     
     func test_MeasureTime_whenCalled_expectMeasured() {
@@ -191,7 +249,9 @@ final class LoggerTests: XCTestCase {
         
         // Then
         XCTAssertEqual(result, 42, "Block should return result")
-        XCTAssertTrue(true, "Time measured")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 1, "Should capture 1 performance log from measureTime")
+        XCTAssertTrue(logs[0].message.contains(label), "Log should contain block label")
     }
     
     // MARK: - Memory Usage
@@ -201,19 +261,41 @@ final class LoggerTests: XCTestCase {
         logger.logMemoryUsage()
         
         // Then
-        XCTAssertTrue(true, "Memory usage logged")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 1, "Should capture 1 memory log")
+        XCTAssertEqual(logs[0].category, "Memory", "Log category should be Memory")
+        XCTAssertTrue(logs[0].message.contains("Current memory:"), "Log should contain memory usage")
+        XCTAssertTrue(logs[0].message.contains("B") || logs[0].message.contains("KB") || logs[0].message.contains("MB"), "Log should contain memory unit")
     }
     
     // MARK: - Frame Logging
     
     func test_LogFrame_whenCalled_expectLogged() {
         // When
-        for _ in 0..<120 {
+        // Call logFrame multiple times - it will log when 1 second has passed
+        // Since lastLogTime starts at 0, first call will log immediately with count=1
+        logger.logFrame()
+        
+        // Then
+        let logs = logger.getCapturedLogs()
+        XCTAssertGreaterThanOrEqual(logs.count, 1, "Should capture at least 1 FPS log")
+        let fpsLogs = logs.filter { $0.category == "Performance" && $0.message.contains("FPS:") }
+        XCTAssertGreaterThanOrEqual(fpsLogs.count, 1, "Should have at least one FPS log")
+        if let fpsLog = fpsLogs.first {
+            XCTAssertTrue(fpsLog.message.contains("FPS:"), "FPS log should contain FPS prefix")
+        }
+        
+        // Test that frame counter increments
+        logger.clearCapturedLogs()
+        // Wait a bit to ensure next log happens
+        Thread.sleep(forTimeInterval: 1.1)
+        for _ in 0..<60 {
             logger.logFrame()
         }
         
-        // Then
-        XCTAssertTrue(true, "Frames logged")
+        let logs2 = logger.getCapturedLogs()
+        let fpsLogs2 = logs2.filter { $0.category == "Performance" && $0.message.contains("FPS:") }
+        XCTAssertGreaterThanOrEqual(fpsLogs2.count, 1, "Should log FPS after waiting and counting frames")
     }
     
     // MARK: - Conditional Logging
@@ -226,7 +308,9 @@ final class LoggerTests: XCTestCase {
         logger.logIf(condition, "Condition true", category: OSLog.default, level: .info)
         
         // Then
-        XCTAssertTrue(true, "Conditional log recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 1, "Should capture 1 log when condition is true")
+        XCTAssertEqual(logs[0].message, "Condition true", "Log message should match")
     }
     
     func test_LogIf_whenConditionFalse_expectNotLogged() {
@@ -237,7 +321,8 @@ final class LoggerTests: XCTestCase {
         logger.logIf(condition, "Should not log", category: OSLog.default, level: .info)
         
         // Then
-        XCTAssertTrue(true, "Conditional log not recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 0, "Should not capture any logs when condition is false")
     }
     
     // MARK: - Batch Logging
@@ -254,7 +339,11 @@ final class LoggerTests: XCTestCase {
         logger.logBatch(messages, category: OSLog.default, level: .info)
         
         // Then
-        XCTAssertTrue(true, "All messages logged")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should capture all 3 batch messages")
+        XCTAssertEqual(logs[0].message, "Message 1", "First message should match")
+        XCTAssertEqual(logs[1].message, "Message 2", "Second message should match")
+        XCTAssertEqual(logs[2].message, "Message 3", "Third message should match")
     }
     
     // MARK: - Log Levels
@@ -268,24 +357,64 @@ final class LoggerTests: XCTestCase {
         logger.log("Fault message", category: OSLog.default, level: .fault)
         
         // Then
-        XCTAssertTrue(true, "All log levels recorded")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 5, "Should capture all 5 log levels")
+        XCTAssertTrue(logs.contains { $0.message == "Debug message" && $0.level == .debug }, "Should contain debug log")
+        XCTAssertTrue(logs.contains { $0.message == "Info message" && $0.level == .info }, "Should contain info log")
+        XCTAssertTrue(logs.contains { $0.message == "Warning message" && $0.level == .warning }, "Should contain warning log")
+        XCTAssertTrue(logs.contains { $0.message == "Error message" && $0.level == .error }, "Should contain error log")
+        XCTAssertTrue(logs.contains { $0.message == "Fault message" && $0.level == .fault }, "Should contain fault log")
     }
     
     // MARK: - Production Mode
     
     func test_ProductionMode_whenEnabled_expectOnlyErrors() {
         // Given
+        logger.clearCapturedLogs()
         logger.isProduction = true
         
         // When
         logger.log("Debug should not log", category: OSLog.default, level: .debug)
         logger.log("Info should not log", category: OSLog.default, level: .info)
+        logger.log("Warning should not log", category: OSLog.default, level: .warning)
         logger.log("Error should log", category: OSLog.default, level: .error)
+        logger.log("Fault should log", category: OSLog.default, level: .fault)
         
         // Then
-        XCTAssertTrue(true, "Production mode respects level filtering")
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 2, "Should only capture error and fault logs in production mode")
+        XCTAssertTrue(logs.contains { $0.message == "Error should log" && $0.level == .error }, "Should contain error log")
+        XCTAssertTrue(logs.contains { $0.message == "Fault should log" && $0.level == .fault }, "Should contain fault log")
+        XCTAssertFalse(logs.contains { $0.message == "Debug should not log" }, "Should not contain debug log")
+        XCTAssertFalse(logs.contains { $0.message == "Info should not log" }, "Should not contain info log")
+        XCTAssertFalse(logs.contains { $0.message == "Warning should not log" }, "Should not contain warning log")
         
         // Reset
         logger.isProduction = false
+    }
+    
+    // MARK: - Debug Mode Filtering
+    
+    func test_DebugMode_whenDisabled_expectNoDebugLogs() {
+        // Given
+        logger.clearCapturedLogs()
+        logger.isDebug = false
+        
+        // When
+        logger.log("Debug should not log", category: OSLog.default, level: .debug)
+        logger.log("Info should log", category: OSLog.default, level: .info)
+        logger.log("Warning should log", category: OSLog.default, level: .warning)
+        logger.log("Error should log", category: OSLog.default, level: .error)
+        
+        // Then
+        let logs = logger.getCapturedLogs()
+        XCTAssertEqual(logs.count, 3, "Should only capture 3 logs (no debug)")
+        XCTAssertFalse(logs.contains { $0.message == "Debug should not log" }, "Should not contain debug log")
+        XCTAssertTrue(logs.contains { $0.message == "Info should log" }, "Should contain info log")
+        XCTAssertTrue(logs.contains { $0.message == "Warning should log" }, "Should contain warning log")
+        XCTAssertTrue(logs.contains { $0.message == "Error should log" }, "Should contain error log")
+        
+        // Reset
+        logger.isDebug = true
     }
 }

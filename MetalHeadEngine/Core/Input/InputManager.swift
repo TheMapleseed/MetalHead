@@ -337,7 +337,7 @@ public class InputManager: ObservableObject {
 }
 
 // MARK: - Data Structures
-public struct MouseEvent {
+public struct MouseEvent: Sendable {
     public let type: MouseEventType
     public let position: SIMD2<Float>
     public let button: MouseButton
@@ -353,14 +353,14 @@ public struct MouseEvent {
     }
 }
 
-public enum MouseEventType {
+public enum MouseEventType: Sendable {
     case move
     case click
     case release
     case scroll
 }
 
-public enum MouseButton: CaseIterable, Hashable {
+public enum MouseButton: CaseIterable, Hashable, Sendable {
     case left
     case right
     case middle

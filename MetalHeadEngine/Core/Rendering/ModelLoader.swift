@@ -135,7 +135,7 @@ public struct PBRMaterial {
 }
 
 // MARK: - Error Types
-public enum ModelLoaderError: Error {
+public enum ModelLoaderError: Error, Sendable {
     case fileNotFound
     case invalidModel
     case loadFailed

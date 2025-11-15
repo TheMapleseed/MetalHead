@@ -40,6 +40,7 @@
 		1A2B3C4D5E6F78BC /* TestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F78BD /* TestConfiguration.swift */; };
 		1A2B3C4D5E6F7B00 /* MetalHeadEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B01 /* MetalHeadEngine.framework */; };
 		1A2B3C4D5E6F7B02 /* MetalHeadEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B01 /* MetalHeadEngine.framework */; };
+		1A2B3C4D5E6F7B1F /* MetalHeadEngine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B01 /* MetalHeadEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A2B3C4D5E6F7B1B /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B0D /* Logger.swift */; };
 		1A2B3C4D5E6F7B1C /* TestAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7B0E /* TestAPI.swift */; };
 /* End PBXBuildFile section */
@@ -132,6 +133,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1A2B3C4D5E6F7B20 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1A2B3C4D5E6F7B1F /* MetalHeadEngine.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXGroup section */
 		1A2B3C4D5E6F78C5 = {
@@ -322,6 +337,7 @@
 				1A2B3C4D5E6F78E1 /* Sources */,
 				1A2B3C4D5E6F78C3 /* Frameworks */,
 				1A2B3C4D5E6F78E2 /* Resources */,
+				1A2B3C4D5E6F7B20 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -361,7 +377,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1A2B3C4D5E6F78E7 /* PBXTargetDependency */,
 				1A2B3C4D5E6F7B08 /* PBXTargetDependency */,
 			);
 			name = MetalHeadTests;
@@ -490,10 +505,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1A2B3C4D5E6F78E7 /* PBXTargetDependency */ = {
+		1A2B3C4D5E6F7B0C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1A2B3C4D5E6F78C0 /* MetalHead */;
-			targetProxy = 1A2B3C4D5E6F78BE /* PBXContainerItemProxy */;
+			target = 1A2B3C4D5E6F7B04 /* MetalHeadEngine */;
+			targetProxy = 1A2B3C4D5E6F7B03 /* PBXContainerItemProxy */;
+		};
+		1A2B3C4D5E6F7B08 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A2B3C4D5E6F7B04 /* MetalHeadEngine */;
+			targetProxy = 1A2B3C4D5E6F7B05 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -683,7 +703,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -695,7 +714,6 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MetalHead.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MetalHead";
 			};
 			name = Debug;
 		};
@@ -703,7 +721,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -715,7 +732,6 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MetalHead.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MetalHead";
 			};
 			name = Release;
 		};

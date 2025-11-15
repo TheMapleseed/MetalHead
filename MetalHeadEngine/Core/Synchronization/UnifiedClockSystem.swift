@@ -36,7 +36,7 @@ public class UnifiedClockSystem: ObservableObject {
     
     // Subsystem synchronization
     private var subsystemClocks: [SubsystemType: SubsystemClock] = [:]
-    private var synchronizationQueue = DispatchQueue(label: "com.metalhead.sync", qos: .userInteractive)
+    // Note: Removed DispatchQueue - @MainActor provides isolation
     
     // Timing callbacks
     private var timingCallbacks: [SubsystemType: [TimingCallback]] = [:]
@@ -48,8 +48,7 @@ public class UnifiedClockSystem: ObservableObject {
     private var maxDriftThreshold: TimeInterval = 0.016
     
     // Thread safety
-    private let clockLock = NSLock()
-    private let callbackLock = NSLock()
+    // Note: Removed NSLock - @MainActor provides isolation for all access
     
     // MARK: - Initialization
     public init() {
@@ -60,9 +59,7 @@ public class UnifiedClockSystem: ObservableObject {
     
     // MARK: - Public Interface
     public func start() {
-        clockLock.lock()
-        defer { clockLock.unlock() }
-        
+        // @MainActor isolation ensures thread safety
         guard !isRunning else { return }
         
         startTime = CACurrentMediaTime()
@@ -81,9 +78,7 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     public func stop() {
-        clockLock.lock()
-        defer { clockLock.unlock() }
-        
+        // @MainActor isolation ensures thread safety
         guard isRunning else { return }
         
         isRunning = false
@@ -96,9 +91,7 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     public func pause() {
-        clockLock.lock()
-        defer { clockLock.unlock() }
-        
+        // @MainActor isolation ensures thread safety
         isRunning = false
         
         for (_, clock) in subsystemClocks {
@@ -107,9 +100,7 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     public func resume() {
-        clockLock.lock()
-        defer { clockLock.unlock() }
-        
+        // @MainActor isolation ensures thread safety
         isRunning = true
         
         for (_, clock) in subsystemClocks {
@@ -140,9 +131,7 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     public func addTimingCallback(for subsystemType: SubsystemType, callback: @escaping TimingCallback) {
-        callbackLock.lock()
-        defer { callbackLock.unlock() }
-        
+        // @MainActor isolation ensures thread safety
         if timingCallbacks[subsystemType] == nil {
             timingCallbacks[subsystemType] = []
         }
@@ -150,9 +139,7 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     public func addGlobalTimingCallback(_ callback: @escaping GlobalTimingCallback) {
-        callbackLock.lock()
-        defer { callbackLock.unlock() }
-        
+        // @MainActor isolation ensures thread safety
         globalCallbacks.append(callback)
     }
     
@@ -249,9 +236,7 @@ public class UnifiedClockSystem: ObservableObject {
     }
     
     private func executeTimingCallbacks(deltaTime: TimeInterval) {
-        callbackLock.lock()
-        defer { callbackLock.unlock() }
-        
+        // @MainActor isolation ensures thread safety
         for callback in globalCallbacks {
             callback(masterTime, deltaTime)
         }
@@ -302,6 +287,7 @@ public class UnifiedClockSystem: ObservableObject {
 }
 
 // MARK: - Subsystem Clock
+@MainActor
 public class SubsystemClock {
     public let type: SubsystemType
     private weak var masterClock: UnifiedClockSystem?
@@ -362,17 +348,17 @@ public class SubsystemClock {
 }
 
 // MARK: - Supporting Types
-public enum SubsystemType: CaseIterable {
+public enum SubsystemType: CaseIterable, Sendable {
     case rendering
     case audio
     case input
     case physics
 }
 
-public typealias TimingCallback = (TimeInterval, TimeInterval) -> Void
-public typealias GlobalTimingCallback = (TimeInterval, TimeInterval) -> Void
+public typealias TimingCallback = @Sendable (TimeInterval, TimeInterval) -> Void
+public typealias GlobalTimingCallback = @Sendable (TimeInterval, TimeInterval) -> Void
 
-public struct TimingPerformanceMetrics {
+public struct TimingPerformanceMetrics: Sendable {
     public var totalFrames: UInt64 = 0
     public var totalTime: TimeInterval = 0
     public var averageFrameTime: TimeInterval = 0

@@ -237,8 +237,9 @@ public class TestAPI: ObservableObject {
     public func startMonitoring(engine: UnifiedMultimediaEngine, interval: TimeInterval = 5.0) {
         self.engine = engine
         
+        // Timer callback must be @MainActor to access @MainActor properties
         Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
                 await self?.performQuickHealthCheck()
             }
         }

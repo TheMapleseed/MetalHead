@@ -100,7 +100,7 @@ public class TextureManager {
             mipmapped: false
         )
         descriptor.usage = [.shaderRead]
-        descriptor.storageMode = .shared
+        descriptor.storageMode = .private
         
         guard let texture = device.makeTexture(descriptor: descriptor) else {
             throw TextureError.creationFailed
@@ -178,7 +178,7 @@ public class TextureManager {
 }
 
 // MARK: - Errors
-public enum TextureError: Error {
+public enum TextureError: Error, Sendable {
     case imageConversionFailed
     case creationFailed
     case loadFailed

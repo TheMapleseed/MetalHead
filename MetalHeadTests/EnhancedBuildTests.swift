@@ -183,11 +183,15 @@ final class EnhancedBuildTests: XCTestCase {
         // When
         let initialMemory = getMemoryUsage()
         
-        var allocations: [Any] = []
+        var allocations: [AllocatedMemory<Vertex>] = []
         for _ in 0..<100 {
             let vertices = memoryManager.allocateVertexData(count: 100, type: Vertex.self)
             allocations.append(vertices)
-            memoryManager.deallocate(vertices as! AllocatedMemory<Vertex>)
+        }
+        
+        // Deallocate all
+        for allocation in allocations {
+            memoryManager.deallocate(allocation)
         }
         
         let finalMemory = getMemoryUsage()

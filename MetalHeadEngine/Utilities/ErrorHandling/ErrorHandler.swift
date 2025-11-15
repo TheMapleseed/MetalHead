@@ -230,7 +230,7 @@ public class ErrorHandler: ObservableObject {
 
 // MARK: - Error Types
 
-public struct EngineError: Error, Equatable {
+public struct EngineError: Error, Equatable, Sendable {
     public let type: ErrorType
     public let message: String
     public let severity: ErrorSeverity
@@ -246,7 +246,7 @@ public struct EngineError: Error, Equatable {
     }
 }
 
-public struct EngineWarning: Error, Equatable {
+public struct EngineWarning: Error, Equatable, Sendable {
     public let type: WarningType
     public let message: String
     public let context: [String: String]?

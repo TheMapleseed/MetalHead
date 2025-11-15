@@ -159,6 +159,10 @@ final class MetalHeadTests: XCTestCase {
         }
         return MetalRenderingEngine(device: device)
     }
+    
+    private func createMockView() -> MTKView {
+        return MTKView()
+    }
 }
 
 // MARK: - Test Errors

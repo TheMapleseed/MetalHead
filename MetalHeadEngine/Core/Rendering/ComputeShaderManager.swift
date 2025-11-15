@@ -22,13 +22,13 @@ public class ComputeShaderManager {
     // MARK: - Public Interface
     
     /// Initialize the compute shader manager
-    public func initialize() throws {
+    public func initialize() async throws {
         guard let commandQueue = device.makeCommandQueue() else {
             throw ComputeError.commandQueueCreationFailed
         }
         self.commandQueue = commandQueue
         
-        try setupComputeShaders()
+        try await setupComputeShaders()
         print("ComputeShaderManager initialized successfully")
     }
     
@@ -142,25 +142,45 @@ public class ComputeShaderManager {
     
     // MARK: - Private Methods
     
-    private func setupComputeShaders() throws {
-        guard let library = device.makeDefaultLibrary() else {
+    private func setupComputeShaders() async throws {
+        // Load Metal library from framework bundle (same as MetalRenderingEngine)
+        let frameworkBundle = Bundle(for: type(of: self))
+        let library: MTLLibrary
+        
+        if let metalLibURL = frameworkBundle.url(forResource: "default", withExtension: "metallib") {
+            library = try device.makeLibrary(URL: metalLibURL)
+        } else if let defaultLibrary = device.makeDefaultLibrary() {
+            library = defaultLibrary
+        } else {
             throw ComputeError.libraryNotFound
         }
         
-        // Setup compute shaders
+        // Setup compute shaders using Metal 4 descriptor-based API
         if let computeFunction = library.makeFunction(name: "compute_main") {
-            let pipelineState = try device.makeComputePipelineState(function: computeFunction)
-            computePipelineStates["compute_main"] = pipelineState
+            let descriptor = MTLComputePipelineDescriptor()
+            descriptor.computeFunction = computeFunction
+            let result = try await device.makeComputePipelineState(descriptor: descriptor, options: [])
+            computePipelineStates["compute_main"] = result.0
         }
         
         if let audioVisualizationFunction = library.makeFunction(name: "audio_visualization") {
-            let pipelineState = try device.makeComputePipelineState(function: audioVisualizationFunction)
-            computePipelineStates["audio_visualization"] = pipelineState
+            let descriptor = MTLComputePipelineDescriptor()
+            descriptor.computeFunction = audioVisualizationFunction
+            let result = try await device.makeComputePipelineState(descriptor: descriptor, options: [])
+            computePipelineStates["audio_visualization"] = result.0
         }
     }
     
     private func setupParticlePipeline() throws {
-        guard let library = device.makeDefaultLibrary() else {
+        // Load Metal library from framework bundle
+        let frameworkBundle = Bundle(for: type(of: self))
+        let library: MTLLibrary
+        
+        if let metalLibURL = frameworkBundle.url(forResource: "default", withExtension: "metallib") {
+            library = try device.makeLibrary(URL: metalLibURL)
+        } else if let defaultLibrary = device.makeDefaultLibrary() {
+            library = defaultLibrary
+        } else {
             throw ComputeError.libraryNotFound
         }
         
@@ -174,7 +194,7 @@ public class ComputeShaderManager {
 }
 
 // MARK: - Data Structures
-public struct Particle {
+public struct Particle: Sendable {
     public var position: SIMD3<Float>
     public var velocity: SIMD3<Float>
     public var color: SIMD4<Float>
@@ -189,7 +209,7 @@ public struct Particle {
 }
 
 // MARK: - Errors
-public enum ComputeError: Error {
+public enum ComputeError: Error, Sendable {
     case commandQueueCreationFailed
     case commandBufferCreationFailed
     case encoderCreationFailed

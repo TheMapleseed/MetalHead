@@ -2,7 +2,9 @@ import Foundation
 import Metal
 import simd
 
-// MARK: - NSLock Extension
+// MARK: - NSLock Extension (Deprecated - use actor isolation instead)
+// Note: This extension is kept for backward compatibility but should not be used in new code
+// Use @MainActor or actor types for thread safety in Swift 6
 extension NSLock {
     func sync<T>(_ body: () throws -> T) rethrows -> T {
         lock()
@@ -14,7 +16,7 @@ extension NSLock {
 // MARK: - Memory Types
 
 /// Types of memory regions
-public enum MemoryRegionType: String, CaseIterable {
+public enum MemoryRegionType: String, CaseIterable, Sendable {
     case vertex = "vertex"
     case uniform = "uniform"
     case audio = "audio"
@@ -153,7 +155,7 @@ public class MemoryManager: ObservableObject {
     private var memoryRegions: [MemoryRegionType: MemoryRegion] = [:]
     
     // Thread safety
-    private let memoryLock = NSLock()
+    // Note: Removed NSLock - @MainActor provides isolation for all access
     
     // MARK: - Initialization
     public init(device: MTLDevice) {
@@ -164,79 +166,73 @@ public class MemoryManager: ObservableObject {
     
     // MARK: - Public Interface
     public func allocateVertexData<T>(count: Int, type: T.Type) -> AllocatedMemory<T> {
-        return memoryLock.sync {
-            let size = count * MemoryLayout<T>.stride
-            let alignment = max(MemoryLayout<T>.alignment, 16)
-            
-            let allocation = memoryRegions[.vertex]!.allocate(size: size, alignment: alignment)
-            return AllocatedMemory(
-                pointer: allocation.pointer.assumingMemoryBound(to: T.self),
-                count: count,
-                region: memoryRegions[.vertex]!,
-                allocation: allocation
-            )
-        }
+        // @MainActor isolation ensures thread safety
+        let size = count * MemoryLayout<T>.stride
+        let alignment = max(MemoryLayout<T>.alignment, 16)
+        
+        let allocation = memoryRegions[.vertex]!.allocate(size: size, alignment: alignment)
+        return AllocatedMemory(
+            pointer: allocation.pointer.assumingMemoryBound(to: T.self),
+            count: count,
+            region: memoryRegions[.vertex]!,
+            allocation: allocation
+        )
     }
     
     public func allocateUniformData<T>(count: Int, type: T.Type) -> AllocatedMemory<T> {
-        return memoryLock.sync {
-            let size = count * MemoryLayout<T>.stride
-            let alignment = max(MemoryLayout<T>.alignment, 256)
-            
-            let allocation = memoryRegions[.uniform]!.allocate(size: size, alignment: alignment)
-            return AllocatedMemory(
-                pointer: allocation.pointer.assumingMemoryBound(to: T.self),
-                count: count,
-                region: memoryRegions[.uniform]!,
-                allocation: allocation
-            )
-        }
+        // @MainActor isolation ensures thread safety
+        let size = count * MemoryLayout<T>.stride
+        let alignment = max(MemoryLayout<T>.alignment, 256)
+        
+        let allocation = memoryRegions[.uniform]!.allocate(size: size, alignment: alignment)
+        return AllocatedMemory(
+            pointer: allocation.pointer.assumingMemoryBound(to: T.self),
+            count: count,
+            region: memoryRegions[.uniform]!,
+            allocation: allocation
+        )
     }
     
     public func allocateAudioData(count: Int) -> AllocatedMemory<Float> {
-        return memoryLock.sync {
-            let size = count * MemoryLayout<Float>.stride
-            let alignment = 4
-            
-            let allocation = memoryRegions[.audio]!.allocate(size: size, alignment: alignment)
-            return AllocatedMemory(
-                pointer: allocation.pointer.assumingMemoryBound(to: Float.self),
-                count: count,
-                region: memoryRegions[.audio]!,
-                allocation: allocation
-            )
-        }
+        // @MainActor isolation ensures thread safety
+        let size = count * MemoryLayout<Float>.stride
+        let alignment = 4
+        
+        let allocation = memoryRegions[.audio]!.allocate(size: size, alignment: alignment)
+        return AllocatedMemory(
+            pointer: allocation.pointer.assumingMemoryBound(to: Float.self),
+            count: count,
+            region: memoryRegions[.audio]!,
+            allocation: allocation
+        )
     }
     
     public func allocateTextureData(width: Int, height: Int, bytesPerPixel: Int) -> AllocatedMemory<UInt8> {
-        return memoryLock.sync {
-            let size = width * height * bytesPerPixel
-            let alignment = 64
-            
-            let allocation = memoryRegions[.texture]!.allocate(size: size, alignment: alignment)
-            return AllocatedMemory(
-                pointer: allocation.pointer.assumingMemoryBound(to: UInt8.self),
-                count: size,
-                region: memoryRegions[.texture]!,
-                allocation: allocation
-            )
-        }
+        // @MainActor isolation ensures thread safety
+        let size = width * height * bytesPerPixel
+        let alignment = 64
+        
+        let allocation = memoryRegions[.texture]!.allocate(size: size, alignment: alignment)
+        return AllocatedMemory(
+            pointer: allocation.pointer.assumingMemoryBound(to: UInt8.self),
+            count: size,
+            region: memoryRegions[.texture]!,
+            allocation: allocation
+        )
     }
     
     public func deallocate<T>(_ allocatedMemory: AllocatedMemory<T>) {
-        memoryLock.sync {
-            allocatedMemory.region.deallocate(allocation: allocatedMemory.allocation)
-            updateMetrics()
-        }
+        // @MainActor isolation ensures thread safety
+        allocatedMemory.region.deallocate(allocation: allocatedMemory.allocation)
+        updateMetrics()
     }
     
     public func compactMemory() {
-        memoryLock.sync {
-            for (_, region) in memoryRegions {
-                region.compact()
-            }
-            updateMetrics()
+        // @MainActor isolation ensures thread safety
+        for (_, region) in memoryRegions {
+            region.compact()
         }
+        updateMetrics()
     }
     
     public func getMetalBuffer(size: Int, options: MTLResourceOptions) -> MTLBuffer? {
@@ -248,28 +244,27 @@ public class MemoryManager: ObservableObject {
     }
     
     public func getMemoryReport() -> MemoryReport {
-        return memoryLock.sync {
-            var totalAllocated: UInt64 = 0
-            var activeAllocations = 0
-            var regionReports: [MemoryRegionType: RegionReport] = [:]
-            
-            for (type, region) in memoryRegions {
-                let report = region.getReport()
-                regionReports[type] = report
-                totalAllocated += UInt64(report.allocatedSize)
-                activeAllocations += report.activeAllocations
-            }
-            
-            let totalCapacity = regionReports.values.reduce(0) { $0 + $1.capacity }
-            let fragmentation = totalCapacity > 0 ? Float(totalAllocated) / Float(totalCapacity) : 0.0
-            
-            return MemoryReport(
-                totalAllocated: totalAllocated,
-                activeAllocations: activeAllocations,
-                fragmentation: fragmentation,
-                regionReports: regionReports
-            )
+        // @MainActor isolation ensures thread safety
+        var totalAllocated: UInt64 = 0
+        var activeAllocations = 0
+        var regionReports: [MemoryRegionType: RegionReport] = [:]
+        
+        for (type, region) in memoryRegions {
+            let report = region.getReport()
+            regionReports[type] = report
+            totalAllocated += UInt64(report.allocatedSize)
+            activeAllocations += report.activeAllocations
         }
+        
+        let totalCapacity = regionReports.values.reduce(0) { $0 + $1.capacity }
+        let fragmentation = totalCapacity > 0 ? Float(totalAllocated) / Float(totalCapacity) : 0.0
+        
+        return MemoryReport(
+            totalAllocated: totalAllocated,
+            activeAllocations: activeAllocations,
+            fragmentation: fragmentation,
+            regionReports: regionReports
+        )
     }
     
     // MARK: - Private Methods
@@ -328,7 +323,7 @@ public struct MemoryAllocation {
 }
 
 // MARK: - Memory Report
-public struct MemoryReport {
+public struct MemoryReport: Sendable {
     public let totalAllocated: UInt64
     public let activeAllocations: Int
     public let fragmentation: Float
@@ -343,7 +338,7 @@ public struct MemoryReport {
 }
 
 // MARK: - Region Report
-public struct RegionReport {
+public struct RegionReport: Sendable {
     public let name: String
     public let capacity: Int
     public let allocatedSize: Int

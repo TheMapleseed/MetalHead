@@ -39,7 +39,7 @@ public class UnifiedMultimediaEngine: ObservableObject {
     private var memoryPoolSize: Int = 256 * 1024 * 1024 // 256 MB default
     
     // Concurrency
-    private let engineQueue = DispatchQueue(label: "com.metalhead.engine", qos: .userInteractive)
+    // Note: Removed DispatchQueue - use Task with proper actor isolation instead
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
@@ -48,28 +48,59 @@ public class UnifiedMultimediaEngine: ObservableObject {
             fatalError("Metal is not supported on this device")
         }
         self.device = device
+        print("✅ UnifiedMultimediaEngine.init() - device created")
     }
     
     // MARK: - Public Interface
     public func initialize() async throws {
-        guard !isInitialized else { return }
+        guard !isInitialized else {
+            print("⚠️ Engine already initialized")
+            return
+        }
         
+        print("🔧 Setting up subsystems...")
         try await setupSubsystems()
-        try await setupSynchronization()
-        try await setupPerformanceMonitoring()
+        print("   ✅ Subsystems setup complete")
         
-        isInitialized = true
-        print("Unified Multimedia Engine initialized successfully")
+        print("🔧 Setting up synchronization...")
+        try await setupSynchronization()
+        print("   ✅ Synchronization setup complete")
+        
+        print("🔧 Setting up performance monitoring...")
+        try await setupPerformanceMonitoring()
+        print("   ✅ Performance monitoring setup complete")
+        
+        // Update @Published property - we're already @MainActor
+        self.isInitialized = true
+        print("✅ Unified Multimedia Engine initialized successfully - isInitialized=\(self.isInitialized)")
+        
+        // Force UI update - we're already on MainActor, just send the notification
+        self.objectWillChange.send()
     }
     
     public func start() async throws {
-        guard !isRunning else { return }
+        guard !isRunning else {
+            print("⚠️ Engine already running")
+            return
+        }
         
+        guard isInitialized else {
+            throw NSError(domain: "MetalHeadEngine", code: -1, userInfo: [NSLocalizedDescriptionKey: "Engine must be initialized before starting"])
+        }
+        
+        print("▶️ Starting subsystems...")
         try await startSubsystems()
-        startMainLoop()
+        print("   ✅ Subsystems started")
         
-        isRunning = true
-        print("Unified Multimedia Engine started")
+        startMainLoop()
+        print("   ✅ Main loop started")
+        
+        // Update @Published property - we're already @MainActor
+        self.isRunning = true
+        print("✅ Unified Multimedia Engine started - isRunning=\(self.isRunning)")
+        
+        // Force UI update - we're already on MainActor
+        self.objectWillChange.send()
     }
     
     public func stop() {
@@ -101,8 +132,29 @@ public class UnifiedMultimediaEngine: ObservableObject {
         return subsystems[typeName] as? T
     }
     
+    public var metalDevice: MTLDevice {
+        return device
+    }
+    
     public func render(deltaTime: CFTimeInterval, in view: MTKView) {
-        guard isRunning else { return }
+        // Always try to render, even if not "running" - rendering should work if initialized
+        guard isInitialized else {
+            print("⚠️ Render skipped: Engine not initialized")
+            return
+        }
+        
+        // If not running, start it automatically
+        if !isRunning {
+            print("⚠️ Engine not running, attempting to start...")
+            Task { @MainActor in
+                do {
+                    try await self.start()
+                } catch {
+                    print("❌ Failed to start engine: \(error)")
+                }
+            }
+            // Continue anyway - rendering should work if subsystems are initialized
+        }
         
         let startTime = CACurrentMediaTime()
         
@@ -166,44 +218,56 @@ public class UnifiedMultimediaEngine: ObservableObject {
     
     // MARK: - Private Methods
     private func setupSubsystems() async throws {
-        // Initialize memory manager
+        print("   📦 Initializing MemoryManager...")
         memoryManager = MemoryManager(device: device)
         subsystems["MemoryManager"] = memoryManager!
+        print("      ✅ MemoryManager initialized")
         
-        // Initialize rendering engine
+        print("   📦 Initializing MetalRenderingEngine...")
         renderingEngine = MetalRenderingEngine(device: device)
         try await renderingEngine?.initialize()
         subsystems["MetalRenderingEngine"] = renderingEngine!
+        print("      ✅ MetalRenderingEngine initialized")
         
         // Initialize ray tracing engine (optional - may fail on unsupported devices)
+        print("   📦 Initializing MetalRayTracingEngine (optional)...")
         rayTracingEngine = MetalRayTracingEngine(device: device)
         do {
             try await rayTracingEngine?.initialize()
             subsystems["MetalRayTracingEngine"] = rayTracingEngine!
-            print("Ray tracing engine initialized successfully")
+            print("      ✅ MetalRayTracingEngine initialized successfully")
         } catch {
-            print("Ray tracing not supported on this device: \(error)")
+            print("      ⚠️ Ray tracing not supported on this device: \(error)")
             // Ray tracing is optional, continue without it
         }
         
-        // Initialize 2D graphics
+        print("   📦 Initializing Graphics2D...")
         graphics2D = Graphics2D(device: device)
         try await graphics2D?.initialize()
         subsystems["Graphics2D"] = graphics2D!
+        print("      ✅ Graphics2D initialized")
         
-        // Initialize audio engine
+        print("   📦 Initializing AudioEngine...")
         audioEngine = AudioEngine()
+        do {
         try await audioEngine?.initialize()
         subsystems["AudioEngine"] = audioEngine!
+            print("      ✅ AudioEngine initialized")
+        } catch {
+            print("      ⚠️ AudioEngine failed (non-critical): \(error)")
+            // Audio is optional, continue without it
+        }
         
-        // Initialize input manager
+        print("   📦 Initializing InputManager...")
         inputManager = InputManager()
         try await inputManager?.initialize()
         subsystems["InputManager"] = inputManager!
+        print("      ✅ InputManager initialized")
         
-        // Initialize clock system
+        print("   📦 Initializing UnifiedClockSystem...")
         clockSystem = UnifiedClockSystem()
         subsystems["UnifiedClockSystem"] = clockSystem!
+        print("      ✅ UnifiedClockSystem initialized")
     }
     
     private func setupSynchronization() async throws {
@@ -211,20 +275,28 @@ public class UnifiedMultimediaEngine: ObservableObject {
         
         // Add timing callbacks for each subsystem
         clockSystem.addTimingCallback(for: .rendering) { [weak self] time, deltaTime in
-            self?.renderingEngine?.updateTiming(time: time, deltaTime: deltaTime)
+            Task { @MainActor [weak self] in
+                self?.renderingEngine?.updateTiming(time: time, deltaTime: deltaTime)
+            }
         }
         
         clockSystem.addTimingCallback(for: .audio) { [weak self] time, deltaTime in
-            self?.audioEngine?.updateTiming(time: time, deltaTime: deltaTime)
+            Task { @MainActor [weak self] in
+                self?.audioEngine?.updateTiming(time: time, deltaTime: deltaTime)
+            }
         }
         
         clockSystem.addTimingCallback(for: .input) { [weak self] time, deltaTime in
-            self?.inputManager?.updateTiming(time: time, deltaTime: deltaTime)
+            Task { @MainActor [weak self] in
+                self?.inputManager?.updateTiming(time: time, deltaTime: deltaTime)
+            }
         }
         
         // Add global timing callback
         clockSystem.addGlobalTimingCallback { [weak self] time, deltaTime in
-            self?.updateGlobalTiming(time: time, deltaTime: deltaTime)
+            Task { @MainActor [weak self] in
+                self?.updateGlobalTiming(time: time, deltaTime: deltaTime)
+            }
         }
     }
     

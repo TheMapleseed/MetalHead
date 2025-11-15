@@ -137,7 +137,15 @@ public class Graphics2D: ObservableObject {
     }
     
     private func setupPipeline() throws {
-        guard let library = device.makeDefaultLibrary() else {
+        // Load Metal library from framework bundle
+        let frameworkBundle = Bundle(for: type(of: self))
+        let library: MTLLibrary
+        
+        if let metalLibURL = frameworkBundle.url(forResource: "default", withExtension: "metallib") {
+            library = try device.makeLibrary(URL: metalLibURL)
+        } else if let defaultLibrary = device.makeDefaultLibrary() {
+            library = defaultLibrary
+        } else {
             throw Graphics2DError.libraryCreationFailed
         }
         
@@ -392,7 +400,7 @@ public class Text2D: Drawable2D {
     }
 }
 
-public struct Vertex2D {
+public struct Vertex2D: Sendable {
     public var position: SIMD2<Float>
     public var texCoord: SIMD2<Float>
     public var color: SIMD4<Float>
@@ -405,7 +413,7 @@ public struct Vertex2D {
 }
 
 // MARK: - Errors
-public enum Graphics2DError: Error {
+public enum Graphics2DError: Error, Sendable {
     case commandQueueCreationFailed
     case libraryCreationFailed
     case pipelineCreationFailed

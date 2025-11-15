@@ -1,5 +1,7 @@
 import XCTest
 import Metal
+import MetalKit
+import QuartzCore
 @testable import MetalHeadEngine
 
 /// Test configuration and utilities
@@ -43,15 +45,13 @@ final class TestConfiguration {
         }
     }
     
-    static func createTestUniforms(count: Int) -> [Uniforms] {
-        return (0..<count).map { i in
-            Uniforms(
-                modelMatrix: matrix_identity_float4x4,
-                viewMatrix: matrix_identity_float4x4,
-                projectionMatrix: matrix_identity_float4x4,
-                time: Float(i)
-            )
-        }
+    static func createTestUniforms() -> Uniforms {
+        return Uniforms(
+            modelMatrix: matrix_identity_float4x4,
+            viewMatrix: matrix_identity_float4x4,
+            projectionMatrix: matrix_identity_float4x4,
+            time: 0.0
+        )
     }
     
     static func createTestAudioData(count: Int) -> [Float] {

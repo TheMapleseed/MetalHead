@@ -65,7 +65,8 @@ public class GeometryShaders: ObservableObject {
                 let z = sinPhi * sinTheta
                 
                 let position = SIMD3<Float>(x, y, z)
-                let color = SIMD4<Float>(1, 1, 1, 1)
+                // Use bright white for spheres to ensure visibility
+                let color = SIMD4<Float>(1.0, 1.0, 1.0, 1.0)
                 
                 vertices.append(Vertex(position: position, color: color))
             }
