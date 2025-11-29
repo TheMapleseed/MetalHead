@@ -317,13 +317,19 @@ final class GeometryShaderTests: XCTestCase {
     // MARK: - Memory Tests
     
     func test_Memory_CreateLargeGeometry_expectNoLeak() {
-        // When
-        for _ in 0..<1000 {
-            let (_, _) = geometryShaders.createSphere(segments: 128)
+        // When & Then - should not throw
+        var sphereCount = 0
+        for i in 0..<1000 {
+            let (vertices, indices) = geometryShaders.createSphere(segments: 128)
+            XCTAssertNotNil(vertices, "Sphere \(i) vertices should not be nil")
+            XCTAssertNotNil(indices, "Sphere \(i) indices should not be nil")
+            XCTAssertGreaterThan(vertices.count, 0, "Sphere \(i) should have vertices")
+            XCTAssertGreaterThan(indices.count, 0, "Sphere \(i) should have indices")
+            sphereCount += 1
         }
         
-        // Then - Should not crash or leak memory
-        XCTAssertTrue(true)
+        // Then
+        XCTAssertEqual(sphereCount, 1000, "Should create all 1000 spheres")
     }
     
     // MARK: - Validation Tests

@@ -214,11 +214,11 @@ final class MemoryManagerTests: XCTestCase {
         let buffer = memoryManager.getMetalBuffer(size: 1024, options: [])
         XCTAssertNotNil(buffer)
         
-        // When
-        memoryManager.returnMetalBuffer(buffer!)
+        // When & Then - should not throw
+        XCTAssertNoThrow(memoryManager.returnMetalBuffer(buffer!), "Returning buffer should not throw")
         
-        // Then (should not crash)
-        XCTAssertTrue(true)
+        // Verify we can return the same buffer multiple times (should handle gracefully)
+        XCTAssertNoThrow(memoryManager.returnMetalBuffer(buffer!), "Returning buffer twice should be handled")
     }
     
     // MARK: - Memory Compaction Tests
@@ -230,11 +230,12 @@ final class MemoryManagerTests: XCTestCase {
         memoryManager.deallocate(allocatedMemory1)
         memoryManager.deallocate(allocatedMemory2)
         
-        // When
-        memoryManager.compactMemory()
+        // When & Then - should not throw
+        XCTAssertNoThrow(memoryManager.compactMemory(), "Memory compaction should not throw")
         
-        // Then (should not crash)
-        XCTAssertTrue(true)
+        // Verify we can allocate after compaction
+        let newAllocation = memoryManager.allocateVertexData(count: 50, type: Vertex.self)
+        XCTAssertNotNil(newAllocation, "Should be able to allocate after compaction")
     }
     
     // MARK: - Memory Report Tests

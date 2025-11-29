@@ -31,31 +31,50 @@ final class MetalHeadTests: XCTestCase {
     func testUnifiedEngineInitialization() async throws {
         // Given
         XCTAssertNotNil(unifiedEngine)
+        XCTAssertFalse(unifiedEngine.isInitialized, "Engine should not be initialized initially")
         
-        // When - with timeout (skip full initialization for speed)
-        // Note: Full engine initialization involves Audio/Input setup which can hang
-        // In a real scenario, this would test the engine with a quick timeout
-        
-        // Simulate initialization without actually calling it
-        // This verifies the test infrastructure works without hanging
+        // When - actually initialize (with timeout protection)
+        do {
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                // Add timeout task
+                group.addTask {
+                    try await Task.sleep(nanoseconds: 10_000_000_000) // 10 second timeout
+                    throw TestError.assertionFailed
+                }
+                // Add initialization task
+                group.addTask {
+                    try await self.unifiedEngine.initialize()
+                }
+                // Wait for first to complete
+                try await group.next()
+                group.cancelAll()
+            }
+        } catch TestError.assertionFailed {
+            XCTFail("Initialization timed out")
+            return
+        }
         
         // Then
-        XCTAssertNotNil(unifiedEngine)
-        // For actual initialization tests, use dedicated integration test suite
+        XCTAssertTrue(unifiedEngine.isInitialized, "Engine should be initialized")
     }
     
     func testEngineStartStop() async throws {
         // Given
         XCTAssertNotNil(unifiedEngine)
+        XCTAssertFalse(unifiedEngine.isRunning, "Engine should not be running initially")
         
-        // When & Then - lightweight test
-        // Full engine start/stop involves complex async operations
-        // Use integration tests for full engine lifecycle testing
+        // When - initialize and start
+        try await unifiedEngine.initialize()
+        try await unifiedEngine.start()
         
-        XCTAssertFalse(unifiedEngine.isRunning) // Initial state
+        // Then
+        XCTAssertTrue(unifiedEngine.isRunning, "Engine should be running after start")
         
-        // Simulate basic state changes without full initialization
-        // This tests the state machine without hanging on Audio/Input setup
+        // When - stop
+        unifiedEngine.stop()
+        
+        // Then
+        XCTAssertFalse(unifiedEngine.isRunning, "Engine should not be running after stop")
     }
     
     func testSubsystemAccess() {

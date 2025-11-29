@@ -182,18 +182,18 @@ public class MetalRayTracingEngine: ObservableObject {
         } else {
             // Fallback to compute kernel if ray generation not available
             guard let computeFunction = library.makeFunction(name: "raytracing_kernel") else {
-                throw RayTracingError.functionNotFound
-            }
-            
-            let descriptor = MTLComputePipelineDescriptor()
+            throw RayTracingError.functionNotFound
+        }
+        
+        let descriptor = MTLComputePipelineDescriptor()
             descriptor.computeFunction = computeFunction
-            descriptor.maxCallStackDepth = 8
-            
-            do {
-                let result = try await device.makeComputePipelineState(descriptor: descriptor, options: [])
-                rayTracingPipelineState = result.0
-            } catch {
-                throw RayTracingError.libraryCreationFailed
+        descriptor.maxCallStackDepth = 8
+        
+        do {
+            let result = try await device.makeComputePipelineState(descriptor: descriptor, options: [])
+            rayTracingPipelineState = result.0
+        } catch {
+            throw RayTracingError.libraryCreationFailed
             }
         }
         

@@ -90,11 +90,11 @@ final class EnhancedBuildTests: XCTestCase {
         // Given
         let context = ["operation": "invalid_test"]
         
-        // When
-        Logger.shared.logErrorWithContext("Test error handling", context: context)
+        // When & Then - should not throw
+        XCTAssertNoThrow(Logger.shared.logErrorWithContext("Test error handling", context: context), "Error logging should not throw")
         
-        // Then
-        XCTAssertTrue(true, "Error should be logged")
+        // Verify we can log multiple errors
+        XCTAssertNoThrow(Logger.shared.logErrorWithContext("Second error", context: [:]), "Multiple error logs should work")
     }
     
     func test_ErrorHandling_whenCriticalError_expectRecovery() {
@@ -151,9 +151,11 @@ final class EnhancedBuildTests: XCTestCase {
         
         // Then
         for module in modules {
-            Logger.shared.log("Verifying \(module)", category: OSLog.default, level: .info)
-            XCTAssertTrue(true, "\(module) verified")
+            XCTAssertNoThrow(Logger.shared.log("Verifying \(module)", category: OSLog.default, level: .info), "Logging for \(module) should not throw")
         }
+        
+        // Verify all modules are accessible
+        XCTAssertEqual(modules.count, 7, "Should verify all 7 modules")
     }
     
     func test_CodeCoverage_whenRunningTests_expectHighCoverage() {
@@ -270,10 +272,11 @@ final class EnhancedBuildTests: XCTestCase {
         }
         
         // Then
-        Logger.shared.endTimer(label: "Full Integration", startTime: startTime)
-        Logger.shared.log("Integration test completed successfully", category: OSLog.default, level: .info)
+        XCTAssertNoThrow(Logger.shared.endTimer(label: "Full Integration", startTime: startTime), "Ending timer should not throw")
+        XCTAssertNoThrow(Logger.shared.log("Integration test completed successfully", category: OSLog.default, level: .info), "Logging should not throw")
         
-        XCTAssertTrue(true, "Integration test passed")
+        // Verify engine is in a valid state
+        XCTAssertTrue(engine.isInitialized, "Engine should be initialized after integration test")
     }
     
     // MARK: - Helper Methods

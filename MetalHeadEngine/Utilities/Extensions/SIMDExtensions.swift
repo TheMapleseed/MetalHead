@@ -153,10 +153,49 @@ public extension SIMD4 where Scalar: FloatingPoint {
         return SIMD4<Scalar>(gray, gray, gray, w)
     }
     
-    /// Apply gamma correction - disabled for now
+    /// Apply gamma correction
     func gammaCorrected(_ gamma: Scalar) -> SIMD4<Scalar> {
-        // Gamma correction disabled to avoid type complexity
-        return SIMD4<Scalar>(x, y, z, w)
+        // Apply gamma correction: output = input^(1/gamma)
+        // For generic FloatingPoint types, we use a Taylor series approximation
+        // This avoids type-specific pow/log/exp issues
+        let invGamma = Scalar(1) / gamma
+        let clampedX = max(Scalar(0), min(Scalar(1), x))
+        let clampedY = max(Scalar(0), min(Scalar(1), y))
+        let clampedZ = max(Scalar(0), min(Scalar(1), z))
+        
+        // Simple power approximation using iterative multiplication
+        // For x^p where p = invGamma, we use: x^p ≈ exp(p * ln(x))
+        // But to avoid log/exp, we use a simpler polynomial approximation for common gamma values
+        func gammaCorrect(_ value: Scalar) -> Scalar {
+            let epsilon: Scalar = 0.001 as! Scalar
+            guard value > epsilon else { return Scalar(0) }
+            // For gamma = 2.2 (common), invGamma ≈ 0.45
+            // Use polynomial approximation: x^0.45 ≈ sqrt(sqrt(x)) * x^0.1
+            // Simplified: use iterative square roots for fractional powers
+            let half: Scalar = 0.5 as! Scalar
+            let tenth: Scalar = 0.1 as! Scalar
+            let one: Scalar = 1.0 as! Scalar
+            if abs(invGamma - half) < tenth {
+                // Close to sqrt
+                var result = value
+                let halfScalar: Scalar = half
+                for _ in 0..<2 {
+                    result = (result + value / result) * halfScalar // Newton's method for sqrt
+                }
+                return result
+            } else {
+                // General case: use linear interpolation between identity and sqrt
+                let sqrtApprox = (value + value * value) * half
+                return value + (sqrtApprox - value) * (invGamma - one)
+            }
+        }
+        
+        return SIMD4<Scalar>(
+            gammaCorrect(clampedX),
+            gammaCorrect(clampedY),
+            gammaCorrect(clampedZ),
+            w
+        )
     }
 }
 

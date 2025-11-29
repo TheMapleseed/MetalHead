@@ -167,72 +167,72 @@ public class MemoryManager: ObservableObject {
     // MARK: - Public Interface
     public func allocateVertexData<T>(count: Int, type: T.Type) -> AllocatedMemory<T> {
         // @MainActor isolation ensures thread safety
-        let size = count * MemoryLayout<T>.stride
-        let alignment = max(MemoryLayout<T>.alignment, 16)
-        
-        let allocation = memoryRegions[.vertex]!.allocate(size: size, alignment: alignment)
-        return AllocatedMemory(
-            pointer: allocation.pointer.assumingMemoryBound(to: T.self),
-            count: count,
-            region: memoryRegions[.vertex]!,
-            allocation: allocation
-        )
+            let size = count * MemoryLayout<T>.stride
+            let alignment = max(MemoryLayout<T>.alignment, 16)
+            
+            let allocation = memoryRegions[.vertex]!.allocate(size: size, alignment: alignment)
+            return AllocatedMemory(
+                pointer: allocation.pointer.assumingMemoryBound(to: T.self),
+                count: count,
+                region: memoryRegions[.vertex]!,
+                allocation: allocation
+            )
     }
     
     public func allocateUniformData<T>(count: Int, type: T.Type) -> AllocatedMemory<T> {
         // @MainActor isolation ensures thread safety
-        let size = count * MemoryLayout<T>.stride
-        let alignment = max(MemoryLayout<T>.alignment, 256)
-        
-        let allocation = memoryRegions[.uniform]!.allocate(size: size, alignment: alignment)
-        return AllocatedMemory(
-            pointer: allocation.pointer.assumingMemoryBound(to: T.self),
-            count: count,
-            region: memoryRegions[.uniform]!,
-            allocation: allocation
-        )
+            let size = count * MemoryLayout<T>.stride
+            let alignment = max(MemoryLayout<T>.alignment, 256)
+            
+            let allocation = memoryRegions[.uniform]!.allocate(size: size, alignment: alignment)
+            return AllocatedMemory(
+                pointer: allocation.pointer.assumingMemoryBound(to: T.self),
+                count: count,
+                region: memoryRegions[.uniform]!,
+                allocation: allocation
+            )
     }
     
     public func allocateAudioData(count: Int) -> AllocatedMemory<Float> {
         // @MainActor isolation ensures thread safety
-        let size = count * MemoryLayout<Float>.stride
-        let alignment = 4
-        
-        let allocation = memoryRegions[.audio]!.allocate(size: size, alignment: alignment)
-        return AllocatedMemory(
-            pointer: allocation.pointer.assumingMemoryBound(to: Float.self),
-            count: count,
-            region: memoryRegions[.audio]!,
-            allocation: allocation
-        )
+            let size = count * MemoryLayout<Float>.stride
+            let alignment = 4
+            
+            let allocation = memoryRegions[.audio]!.allocate(size: size, alignment: alignment)
+            return AllocatedMemory(
+                pointer: allocation.pointer.assumingMemoryBound(to: Float.self),
+                count: count,
+                region: memoryRegions[.audio]!,
+                allocation: allocation
+            )
     }
     
     public func allocateTextureData(width: Int, height: Int, bytesPerPixel: Int) -> AllocatedMemory<UInt8> {
         // @MainActor isolation ensures thread safety
-        let size = width * height * bytesPerPixel
-        let alignment = 64
-        
-        let allocation = memoryRegions[.texture]!.allocate(size: size, alignment: alignment)
-        return AllocatedMemory(
-            pointer: allocation.pointer.assumingMemoryBound(to: UInt8.self),
-            count: size,
-            region: memoryRegions[.texture]!,
-            allocation: allocation
-        )
+            let size = width * height * bytesPerPixel
+            let alignment = 64
+            
+            let allocation = memoryRegions[.texture]!.allocate(size: size, alignment: alignment)
+            return AllocatedMemory(
+                pointer: allocation.pointer.assumingMemoryBound(to: UInt8.self),
+                count: size,
+                region: memoryRegions[.texture]!,
+                allocation: allocation
+            )
     }
     
     public func deallocate<T>(_ allocatedMemory: AllocatedMemory<T>) {
         // @MainActor isolation ensures thread safety
-        allocatedMemory.region.deallocate(allocation: allocatedMemory.allocation)
-        updateMetrics()
+            allocatedMemory.region.deallocate(allocation: allocatedMemory.allocation)
+            updateMetrics()
     }
     
     public func compactMemory() {
         // @MainActor isolation ensures thread safety
-        for (_, region) in memoryRegions {
-            region.compact()
-        }
-        updateMetrics()
+            for (_, region) in memoryRegions {
+                region.compact()
+            }
+            updateMetrics()
     }
     
     public func getMetalBuffer(size: Int, options: MTLResourceOptions) -> MTLBuffer? {
@@ -245,26 +245,26 @@ public class MemoryManager: ObservableObject {
     
     public func getMemoryReport() -> MemoryReport {
         // @MainActor isolation ensures thread safety
-        var totalAllocated: UInt64 = 0
-        var activeAllocations = 0
-        var regionReports: [MemoryRegionType: RegionReport] = [:]
-        
-        for (type, region) in memoryRegions {
-            let report = region.getReport()
-            regionReports[type] = report
-            totalAllocated += UInt64(report.allocatedSize)
-            activeAllocations += report.activeAllocations
-        }
-        
-        let totalCapacity = regionReports.values.reduce(0) { $0 + $1.capacity }
-        let fragmentation = totalCapacity > 0 ? Float(totalAllocated) / Float(totalCapacity) : 0.0
-        
-        return MemoryReport(
-            totalAllocated: totalAllocated,
-            activeAllocations: activeAllocations,
-            fragmentation: fragmentation,
-            regionReports: regionReports
-        )
+            var totalAllocated: UInt64 = 0
+            var activeAllocations = 0
+            var regionReports: [MemoryRegionType: RegionReport] = [:]
+            
+            for (type, region) in memoryRegions {
+                let report = region.getReport()
+                regionReports[type] = report
+                totalAllocated += UInt64(report.allocatedSize)
+                activeAllocations += report.activeAllocations
+            }
+            
+            let totalCapacity = regionReports.values.reduce(0) { $0 + $1.capacity }
+            let fragmentation = totalCapacity > 0 ? Float(totalAllocated) / Float(totalCapacity) : 0.0
+            
+            return MemoryReport(
+                totalAllocated: totalAllocated,
+                activeAllocations: activeAllocations,
+                fragmentation: fragmentation,
+                regionReports: regionReports
+            )
     }
     
     // MARK: - Private Methods

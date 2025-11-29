@@ -276,26 +276,26 @@ public class UnifiedMultimediaEngine: ObservableObject {
         // Add timing callbacks for each subsystem
         clockSystem.addTimingCallback(for: .rendering) { [weak self] time, deltaTime in
             Task { @MainActor [weak self] in
-                self?.renderingEngine?.updateTiming(time: time, deltaTime: deltaTime)
+            self?.renderingEngine?.updateTiming(time: time, deltaTime: deltaTime)
             }
         }
         
         clockSystem.addTimingCallback(for: .audio) { [weak self] time, deltaTime in
             Task { @MainActor [weak self] in
-                self?.audioEngine?.updateTiming(time: time, deltaTime: deltaTime)
+            self?.audioEngine?.updateTiming(time: time, deltaTime: deltaTime)
             }
         }
         
         clockSystem.addTimingCallback(for: .input) { [weak self] time, deltaTime in
             Task { @MainActor [weak self] in
-                self?.inputManager?.updateTiming(time: time, deltaTime: deltaTime)
+            self?.inputManager?.updateTiming(time: time, deltaTime: deltaTime)
             }
         }
         
         // Add global timing callback
         clockSystem.addGlobalTimingCallback { [weak self] time, deltaTime in
             Task { @MainActor [weak self] in
-                self?.updateGlobalTiming(time: time, deltaTime: deltaTime)
+            self?.updateGlobalTiming(time: time, deltaTime: deltaTime)
             }
         }
     }

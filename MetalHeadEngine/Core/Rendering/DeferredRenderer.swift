@@ -27,6 +27,9 @@ public class DeferredRenderer {
     private var lightingPipelineState: MTLRenderPipelineState!
     private var compositionPipelineState: MTLRenderPipelineState!
     
+    // Fullscreen quad for lighting pass
+    private var fullscreenQuadBuffer: MTLBuffer!
+    
     // MARK: - Initialization
     public init(device: MTLDevice) {
         self.device = device
@@ -43,6 +46,7 @@ public class DeferredRenderer {
         
         try createGBuffer(width: width, height: height)
         try createLightingTarget(width: width, height: height)
+        try createFullscreenQuad()
         try setupPipelineStates()
         
         print("DeferredRenderer initialized successfully")
@@ -114,6 +118,9 @@ public class DeferredRenderer {
         }
         
         encoder.setRenderPipelineState(lightingPipelineState)
+        
+        // Set vertex buffer for fullscreen quad
+        encoder.setVertexBuffer(fullscreenQuadBuffer, offset: 0, index: 0)
         
         // Set G-Buffer textures
         encoder.setFragmentTexture(gBufferAlbedo, index: 0)
@@ -213,6 +220,30 @@ public class DeferredRenderer {
         lightingTarget = lighting
     }
     
+    private func createFullscreenQuad() throws {
+        // Create fullscreen quad vertices for lighting pass
+        // Using Vertex2D structure: position (float2), texCoord (float2), color (float4)
+        struct FullscreenQuadVertex {
+            var position: SIMD2<Float>
+            var texCoord: SIMD2<Float>
+            var color: SIMD4<Float>
+        }
+        
+        let vertices: [FullscreenQuadVertex] = [
+            FullscreenQuadVertex(position: SIMD2<Float>(-1, -1), texCoord: SIMD2<Float>(0, 1), color: SIMD4<Float>(1, 1, 1, 1)),
+            FullscreenQuadVertex(position: SIMD2<Float>( 1, -1), texCoord: SIMD2<Float>(1, 1), color: SIMD4<Float>(1, 1, 1, 1)),
+            FullscreenQuadVertex(position: SIMD2<Float>( 1,  1), texCoord: SIMD2<Float>(1, 0), color: SIMD4<Float>(1, 1, 1, 1)),
+            FullscreenQuadVertex(position: SIMD2<Float>(-1, -1), texCoord: SIMD2<Float>(0, 1), color: SIMD4<Float>(1, 1, 1, 1)),
+            FullscreenQuadVertex(position: SIMD2<Float>( 1,  1), texCoord: SIMD2<Float>(1, 0), color: SIMD4<Float>(1, 1, 1, 1)),
+            FullscreenQuadVertex(position: SIMD2<Float>(-1,  1), texCoord: SIMD2<Float>(0, 0), color: SIMD4<Float>(1, 1, 1, 1))
+        ]
+        
+        guard let buffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<FullscreenQuadVertex>.stride, options: []) else {
+            throw DeferredRenderError.textureCreationFailed
+        }
+        fullscreenQuadBuffer = buffer
+    }
+    
     private func setupPipelineStates() throws {
         // Load Metal library from framework bundle
         let frameworkBundle = Bundle(for: type(of: self))
@@ -226,11 +257,80 @@ public class DeferredRenderer {
             throw DeferredRenderError.libraryNotFound
         }
         
-        // G-Buffer pipeline would be setup here
-        // Lighting pipeline would be setup here
-        // Composition pipeline would be setup here
+        // Setup G-Buffer pipeline (writes to multiple render targets)
+        guard let gBufferVertexFunction = library.makeFunction(name: "gbuffer_vertex"),
+              let gBufferFragmentFunction = library.makeFunction(name: "gbuffer_fragment") else {
+            throw DeferredRenderError.libraryNotFound
+        }
         
-        print("Deferred rendering pipelines would be setup here")
+        let gBufferDescriptor = MTLRenderPipelineDescriptor()
+        gBufferDescriptor.vertexFunction = gBufferVertexFunction
+        gBufferDescriptor.fragmentFunction = gBufferFragmentFunction
+        gBufferDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm // Albedo
+        gBufferDescriptor.colorAttachments[1].pixelFormat = .rgba16Float // Normal
+        gBufferDescriptor.depthAttachmentPixelFormat = .depth32Float
+        gBufferDescriptor.rasterSampleCount = 1
+        
+        // Vertex descriptor for G-Buffer
+        let vertexDescriptor = MTLVertexDescriptor()
+        vertexDescriptor.attributes[0].format = .float3
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.attributes[0].bufferIndex = 0
+        vertexDescriptor.attributes[1].format = .float4
+        vertexDescriptor.attributes[1].offset = MemoryLayout<SIMD3<Float>>.stride
+        vertexDescriptor.attributes[1].bufferIndex = 0
+        vertexDescriptor.layouts[0].stride = MemoryLayout<Vertex>.stride
+        vertexDescriptor.layouts[0].stepRate = 1
+        vertexDescriptor.layouts[0].stepFunction = .perVertex
+        
+        gBufferDescriptor.vertexDescriptor = vertexDescriptor
+        
+        do {
+            gBufferPipelineState = try device.makeRenderPipelineState(descriptor: gBufferDescriptor)
+        } catch {
+            throw DeferredRenderError.libraryNotFound
+        }
+        
+        // Setup Lighting pipeline (fullscreen quad that reads G-Buffer)
+        guard let lightingFragmentFunction = library.makeFunction(name: "lighting_fragment") else {
+            throw DeferredRenderError.libraryNotFound
+        }
+        
+        let lightingDescriptor = MTLRenderPipelineDescriptor()
+        lightingDescriptor.vertexFunction = library.makeFunction(name: "vertex_2d_main")
+        lightingDescriptor.fragmentFunction = lightingFragmentFunction
+        lightingDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        lightingDescriptor.rasterSampleCount = 1
+        
+        // Vertex descriptor for fullscreen quad (using Vertex2D from Graphics2D)
+        // Vertex2D has: position (float2), texCoord (float2), color (float4)
+        let lightingVertexDescriptor = MTLVertexDescriptor()
+        lightingVertexDescriptor.attributes[0].format = .float2
+        lightingVertexDescriptor.attributes[0].offset = 0
+        lightingVertexDescriptor.attributes[0].bufferIndex = 0
+        lightingVertexDescriptor.attributes[1].format = .float2
+        lightingVertexDescriptor.attributes[1].offset = MemoryLayout<SIMD2<Float>>.stride
+        lightingVertexDescriptor.attributes[1].bufferIndex = 0
+        lightingVertexDescriptor.attributes[2].format = .float4
+        lightingVertexDescriptor.attributes[2].offset = MemoryLayout<SIMD2<Float>>.stride * 2
+        lightingVertexDescriptor.attributes[2].bufferIndex = 0
+        lightingVertexDescriptor.layouts[0].stride = MemoryLayout<SIMD2<Float>>.stride * 2 + MemoryLayout<SIMD4<Float>>.stride
+        lightingVertexDescriptor.layouts[0].stepRate = 1
+        lightingVertexDescriptor.layouts[0].stepFunction = .perVertex
+        
+        lightingDescriptor.vertexDescriptor = lightingVertexDescriptor
+        
+        do {
+            lightingPipelineState = try device.makeRenderPipelineState(descriptor: lightingDescriptor)
+        } catch {
+            throw DeferredRenderError.libraryNotFound
+        }
+        
+        // Composition pipeline (optional - can reuse lighting or add post-processing)
+        // For now, we'll use the same as lighting
+        compositionPipelineState = lightingPipelineState
+        
+        print("Deferred rendering pipelines initialized successfully")
     }
 }
 

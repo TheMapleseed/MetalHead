@@ -29,8 +29,12 @@ final class OffscreenRendererTests: XCTestCase {
     }
     
     func testInitializeOffscreenRenderer() async throws {
-        try offscreenRenderer.initialize()
-        XCTAssertTrue(true)
+        // When & Then - should not throw
+        XCTAssertNoThrow(try offscreenRenderer.initialize(), "Offscreen renderer should initialize without error")
+        
+        // Verify we can create render targets after initialization
+        let texture = try offscreenRenderer.createRenderTarget(name: "init_test", width: 256, height: 256)
+        XCTAssertNotNil(texture, "Should be able to create render target after initialization")
     }
     
     func testCreateRenderTarget() async throws {

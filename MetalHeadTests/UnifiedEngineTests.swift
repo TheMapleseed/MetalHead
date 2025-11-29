@@ -38,9 +38,11 @@ final class UnifiedEngineTests: XCTestCase {
         // Given
         try await engine.initialize()
         
-        // When & Then (should not throw error)
-        try await engine.initialize()
-        XCTAssertTrue(true, "Second initialization should succeed")
+        // When & Then - should not throw
+        XCTAssertNoThrow(try await engine.initialize(), "Second initialization should succeed without error")
+        
+        // Verify engine is still initialized
+        XCTAssertTrue(engine.isInitialized, "Engine should remain initialized after second call")
     }
     
     // MARK: - Lifecycle Tests
@@ -264,7 +266,12 @@ final class UnifiedEngineTests: XCTestCase {
         
         // Then
         await fulfillment(of: [expectation], timeout: 5.0)
-        XCTAssertTrue(true, "Concurrent access should be safe")
+        
+        // Verify all subsystems are still accessible after concurrent access
+        XCTAssertNotNil(engine.getSubsystem(MetalRenderingEngine.self), "Rendering engine should be accessible")
+        XCTAssertNotNil(engine.getSubsystem(AudioEngine.self), "Audio engine should be accessible")
+        XCTAssertNotNil(engine.getSubsystem(InputManager.self), "Input manager should be accessible")
+        XCTAssertNotNil(engine.getSubsystem(MemoryManager.self), "Memory manager should be accessible")
     }
     
     // MARK: - Error Handling Tests
@@ -273,7 +280,7 @@ final class UnifiedEngineTests: XCTestCase {
         // When & Then
         do {
             try await engine.initialize()
-            XCTAssertTrue(true, "Initialization should succeed")
+            XCTAssertTrue(engine.isInitialized, "Initialization should succeed")
         } catch {
             Logger.shared.logError("Initialization failed", error: error)
             XCTAssertTrue(error is Error, "Should handle errors gracefully")

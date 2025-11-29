@@ -126,12 +126,17 @@ final class RayTracingTests: XCTestCase {
             bounds: AABB(min: SIMD3<Float>(-1, -1, -1), max: SIMD3<Float>(1, 1, 1))
         )
         
-        // When
-        rayTracing.addGeometry(geometry)
+        // When & Then - should not throw
+        XCTAssertNoThrow(rayTracing.addGeometry(geometry), "Adding geometry should not throw")
         
-        // Then
-        // Geometry should be added without error
-        XCTAssertTrue(true)
+        // Verify we can add multiple geometries
+        let geometry2 = RTGeometry(
+            type: .box,
+            vertices: [],
+            indices: nil,
+            bounds: AABB(min: SIMD3<Float>(-2, -2, -2), max: SIMD3<Float>(2, 2, 2))
+        )
+        XCTAssertNoThrow(rayTracing.addGeometry(geometry2), "Adding second geometry should work")
     }
     
     func test_AddGeometry_whenMultipleGeometries_expectAllAdded() async throws {
@@ -144,13 +149,18 @@ final class RayTracingTests: XCTestCase {
             RTGeometry(type: .plane, vertices: [], indices: nil, bounds: AABB(min: SIMD3<Float>(-1), max: SIMD3<Float>(1)))
         ]
         
-        // When
-        for geometry in geometries {
-            rayTracing.addGeometry(geometry)
+        // When & Then - should not throw
+        for (index, geometry) in geometries.enumerated() {
+            XCTAssertNoThrow(rayTracing.addGeometry(geometry), "Adding geometry \(index) should not throw")
         }
         
-        // Then
-        XCTAssertTrue(true) // All geometries added
+        // Verify we can trace rays after adding geometries (indirect verification)
+        guard let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else {
+            XCTFail("Failed to create command buffer")
+            return
+        }
+        rayTracing.isEnabled = true
+        XCTAssertNoThrow(try await rayTracing.traceRays(commandBuffer: commandBuffer), "Tracing rays after adding geometries should work")
     }
     
     // MARK: - Material Tests
@@ -165,11 +175,12 @@ final class RayTracingTests: XCTestCase {
             metallic: 0.8
         )
         
-        // When
-        rayTracing.addMaterial(material)
+        // When & Then - should not throw
+        XCTAssertNoThrow(rayTracing.addMaterial(material), "Adding material should not throw")
         
-        // Then
-        XCTAssertTrue(true)
+        // Verify we can add multiple materials
+        let material2 = RTMaterial(albedo: SIMD3<Float>(0.2, 0.8, 0.2), roughness: 0.7, metallic: 0.2)
+        XCTAssertNoThrow(rayTracing.addMaterial(material2), "Adding second material should work")
     }
     
     func test_AddMaterial_whenMultipleMaterials_expectAllAdded() async throws {
@@ -182,13 +193,18 @@ final class RayTracingTests: XCTestCase {
             RTMaterial(albedo: SIMD3<Float>(0, 0, 1), roughness: 0.9, metallic: 0.1)
         ]
         
-        // When
-        for material in materials {
-            rayTracing.addMaterial(material)
+        // When & Then - should not throw
+        for (index, material) in materials.enumerated() {
+            XCTAssertNoThrow(rayTracing.addMaterial(material), "Adding material \(index) should not throw")
         }
         
-        // Then
-        XCTAssertTrue(true)
+        // Verify materials can be used (indirect - by tracing rays)
+        guard let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else {
+            XCTFail("Failed to create command buffer")
+            return
+        }
+        rayTracing.isEnabled = true
+        XCTAssertNoThrow(try await rayTracing.traceRays(commandBuffer: commandBuffer), "Tracing with materials should work")
     }
     
     // MARK: - Light Tests
@@ -204,11 +220,12 @@ final class RayTracingTests: XCTestCase {
             type: .point
         )
         
-        // When
-        rayTracing.addLight(light)
+        // When & Then - should not throw
+        XCTAssertNoThrow(rayTracing.addLight(light), "Adding point light should not throw")
         
-        // Then
-        XCTAssertTrue(true)
+        // Verify we can add multiple lights
+        let light2 = RTLight(position: SIMD3<Float>(5, 5, 5), color: SIMD3<Float>(1, 1, 1), intensity: 0.5, type: .point)
+        XCTAssertNoThrow(rayTracing.addLight(light2), "Adding second light should work")
     }
     
     func test_AddLight_whenDirectionalLight_expectAdded() async throws {
@@ -222,11 +239,12 @@ final class RayTracingTests: XCTestCase {
             type: .directional
         )
         
-        // When
-        rayTracing.addLight(light)
+        // When & Then - should not throw
+        XCTAssertNoThrow(rayTracing.addLight(light), "Adding directional light should not throw")
         
-        // Then
-        XCTAssertTrue(true)
+        // Verify light type
+        XCTAssertEqual(light.type, .directional, "Light type should be directional")
+        XCTAssertEqual(light.intensity, 2.0, accuracy: 0.01, "Light intensity should match")
     }
     
     func test_AddLight_whenSpotLight_expectAdded() async throws {
@@ -240,11 +258,12 @@ final class RayTracingTests: XCTestCase {
             type: .spot
         )
         
-        // When
-        rayTracing.addLight(light)
+        // When & Then - should not throw
+        XCTAssertNoThrow(rayTracing.addLight(light), "Adding spot light should not throw")
         
-        // Then
-        XCTAssertTrue(true)
+        // Verify light type and position
+        XCTAssertEqual(light.type, .spot, "Light type should be spot")
+        XCTAssertEqual(light.position.z, -5, accuracy: 0.01, "Light position should match")
     }
     
     func test_AddLight_whenAreaLight_expectAdded() async throws {
@@ -258,11 +277,15 @@ final class RayTracingTests: XCTestCase {
             type: .area
         )
         
-        // When
-        rayTracing.addLight(light)
+        // When & Then - should not throw
+        XCTAssertNoThrow(rayTracing.addLight(light), "Adding area light should not throw")
         
-        // Then
-        XCTAssertTrue(true)
+        // Verify light type
+        XCTAssertEqual(light.type, .area, "Light type should be area")
+        
+        // Verify we can add lights of different types
+        let pointLight = RTLight(position: SIMD3<Float>(0, 0, 0), color: SIMD3<Float>(1, 1, 1), intensity: 1.0, type: .point)
+        XCTAssertNoThrow(rayTracing.addLight(pointLight), "Adding different light type should work")
     }
     
     // MARK: - Performance Tests
@@ -333,9 +356,11 @@ final class RayTracingTests: XCTestCase {
             return
         }
         
-        // When & Then (should not crash)
-        rayTracing.traceRays(commandBuffer: commandBuffer)
-        XCTAssertTrue(true)
+        // When & Then - should not throw when disabled
+        XCTAssertNoThrow(try await rayTracing.traceRays(commandBuffer: commandBuffer), "Tracing when disabled should not throw")
+        
+        // Verify it's actually disabled
+        XCTAssertFalse(rayTracing.isEnabled, "Ray tracing should be disabled")
     }
     
     // MARK: - Edge Cases
@@ -369,9 +394,16 @@ final class RayTracingTests: XCTestCase {
             )
         )
         
-        // When & Then (should not crash)
-        rayTracing.addGeometry(geometry)
-        XCTAssertTrue(true)
+        // When & Then - should not throw
+        XCTAssertNoThrow(rayTracing.addGeometry(geometry), "Invalid bounds geometry should be handled gracefully")
+        
+        // Verify we can still trace rays with invalid bounds
+        guard let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else {
+            XCTFail("Failed to create command buffer")
+            return
+        }
+        rayTracing.isEnabled = true
+        XCTAssertNoThrow(try await rayTracing.traceRays(commandBuffer: commandBuffer), "Should handle invalid bounds during tracing")
     }
     
     // MARK: - Helper Methods

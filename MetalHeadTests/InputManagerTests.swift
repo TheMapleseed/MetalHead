@@ -282,11 +282,14 @@ final class InputManagerTests: XCTestCase {
         // Given
         inputManager.setupGamepadSupport()
         
-        // When
-        inputManager.stopGamepadDiscovery()
+        // When & Then - should not throw
+        XCTAssertNoThrow(inputManager.stopGamepadDiscovery(), "Stopping gamepad discovery should not throw")
         
-        // Then (should not crash)
-        XCTAssertTrue(true)
+        // Verify we can stop multiple times
+        XCTAssertNoThrow(inputManager.stopGamepadDiscovery(), "Stopping twice should be handled gracefully")
+        
+        // Verify we can start again after stopping
+        XCTAssertNoThrow(inputManager.startGamepadDiscovery(), "Should be able to start discovery after stopping")
     }
     
     // MARK: - Performance Tests

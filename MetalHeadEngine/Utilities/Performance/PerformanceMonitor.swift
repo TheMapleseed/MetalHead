@@ -28,6 +28,11 @@ public class PerformanceMonitor: ObservableObject {
     private let device: MTLDevice
     private var commandQueue: MTLCommandQueue?
     
+    // GPU utilization tracking
+    private var gpuFrameTimes: [TimeInterval] = []
+    private var lastGPUMeasurement: CFTimeInterval = 0
+    private let maxGPUFrameTimeHistory = 60
+    
     // Monitoring timer
     private var monitoringTimer: Timer?
     private let monitoringInterval: TimeInterval = 1.0 / 60.0 // 60 FPS monitoring
@@ -72,6 +77,9 @@ public class PerformanceMonitor: ObservableObject {
         if frameTimes.count > maxFrameTimeHistory {
             frameTimes.removeFirst()
         }
+        
+        // Record GPU frame time for utilization calculation
+        recordGPUFrameTime(frameTime)
         
         // Update FPS
         if lastFPSTime >= 1.0 {
@@ -135,10 +143,39 @@ public class PerformanceMonitor: ObservableObject {
     }
     
     public func getGPUUtilization() -> Float {
-        // This is a simplified implementation
-        // In a real implementation, you would use Metal Performance Shaders
-        // or other GPU monitoring tools
-        return 0.5 // Placeholder
+        // Estimate GPU utilization based on frame time vs target frame time
+        // If we're consistently hitting our target frame time, GPU is likely busy
+        // If frame times are low, GPU has headroom
+        
+        guard !gpuFrameTimes.isEmpty else {
+            return 0.0
+        }
+        
+        // Calculate average frame time
+        let averageFrameTime = gpuFrameTimes.reduce(0, +) / Double(gpuFrameTimes.count)
+        
+        // Target frame time for 60 FPS (16.67ms)
+        let targetFrameTime: TimeInterval = 1.0 / 60.0
+        
+        // If average frame time is close to or exceeds target, GPU is highly utilized
+        // Utilization is calculated as: min(1.0, averageFrameTime / targetFrameTime)
+        // This gives us a value between 0 and 1, where 1 means GPU is fully utilized
+        let utilization = Float(min(1.0, averageFrameTime / targetFrameTime))
+        
+        // Also factor in frame time variance - high variance suggests GPU is working hard
+        let variance = gpuFrameTimes.map { pow($0 - averageFrameTime, 2) }.reduce(0, +) / Double(gpuFrameTimes.count)
+        let varianceFactor = Float(min(1.0, variance / (targetFrameTime * targetFrameTime)))
+        
+        // Combine utilization and variance for a more accurate estimate
+        return min(1.0, max(0.0, utilization * 0.7 + varianceFactor * 0.3))
+    }
+    
+    /// Record GPU frame time for utilization calculation
+    public func recordGPUFrameTime(_ frameTime: TimeInterval) {
+        gpuFrameTimes.append(frameTime)
+        if gpuFrameTimes.count > maxGPUFrameTimeHistory {
+            gpuFrameTimes.removeFirst()
+        }
     }
     
     // MARK: - Private Methods

@@ -107,13 +107,16 @@ public class ComputeShaderManager {
     }
     
     /// Execute particle system update
-    public func updateParticles(particles: inout [Particle], deltaTime: Float) throws {
-        let particleBuffer = device.makeBuffer(bytes: &particles,
-                                             length: particles.count * MemoryLayout<Particle>.size,
-                                             options: [])
-        
+    public func updateParticles(particles: inout [Particle], deltaTime: Float) async throws {
+        // Ensure particle pipeline is set up
         if computePipelineStates["particle_update"] == nil {
-            try setupParticlePipeline()
+            try await setupParticlePipeline()
+        }
+        
+        guard let particleBuffer = device.makeBuffer(bytes: &particles,
+                                                     length: particles.count * MemoryLayout<Particle>.size,
+                                                     options: []) else {
+            throw ComputeError.commandBufferCreationFailed
         }
         
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
@@ -124,20 +127,30 @@ public class ComputeShaderManager {
             throw ComputeError.encoderCreationFailed
         }
         
-        encoder.setComputePipelineState(computePipelineStates["particle_update"]!)
+        guard let pipelineState = computePipelineStates["particle_update"] else {
+            throw ComputeError.shaderNotFound("particle_update")
+        }
+        
+        encoder.setComputePipelineState(pipelineState)
         encoder.setBuffer(particleBuffer, offset: 0, index: 0)
         
         var dt = deltaTime
         encoder.setBytes(&dt, length: MemoryLayout<Float>.size, index: 1)
         
         let threadsPerGrid = MTLSize(width: particles.count, height: 1, depth: 1)
-        let threadsPerThreadgroup = MTLSize(width: 256, height: 1, depth: 1)
+        let threadsPerThreadgroup = MTLSize(width: min(256, particles.count), height: 1, depth: 1)
         
         encoder.dispatchThreadgroups(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         encoder.endEncoding()
         
         commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
+        await commandBuffer.completed()
+        
+        // Copy results back to particles array
+        let resultPointer = particleBuffer.contents().bindMemory(to: Particle.self, capacity: particles.count)
+        for i in 0..<particles.count {
+            particles[i] = resultPointer[i]
+        }
     }
     
     // MARK: - Private Methods
@@ -171,7 +184,7 @@ public class ComputeShaderManager {
         }
     }
     
-    private func setupParticlePipeline() throws {
+    private func setupParticlePipeline() async throws {
         // Load Metal library from framework bundle
         let frameworkBundle = Bundle(for: type(of: self))
         let library: MTLLibrary
@@ -184,12 +197,17 @@ public class ComputeShaderManager {
             throw ComputeError.libraryNotFound
         }
         
-        // Create a simple particle update function
-        // This would require a custom metal shader for particles
-        print("Particle pipeline would be setup here")
+        // Create particle update pipeline state
+        guard let particleFunction = library.makeFunction(name: "particle_update") else {
+            throw ComputeError.shaderNotFound("particle_update")
+        }
         
-        // Placeholder for now - would create particle pipeline state here
-        throw ComputeError.shaderNotFound("particle_update")
+        let descriptor = MTLComputePipelineDescriptor()
+        descriptor.computeFunction = particleFunction
+        let result = try await device.makeComputePipelineState(descriptor: descriptor, options: [])
+        computePipelineStates["particle_update"] = result.0
+        
+        print("Particle pipeline initialized successfully")
     }
 }
 

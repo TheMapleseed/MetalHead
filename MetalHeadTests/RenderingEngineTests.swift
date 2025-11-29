@@ -122,11 +122,12 @@ final class RenderingEngineTests: XCTestCase {
         // Given
         let newSize = CGSize(width: 1920, height: 1080)
         
-        // When
-        renderingEngine.updateDrawableSize(newSize)
+        // When & Then - should not throw
+        XCTAssertNoThrow(renderingEngine.updateDrawableSize(newSize), "Updating drawable size should not throw")
         
-        // Then (should not crash)
-        XCTAssertTrue(true)
+        // Verify we can update multiple times
+        XCTAssertNoThrow(renderingEngine.updateDrawableSize(CGSize(width: 1920, height: 1080)), "Large size should work")
+        XCTAssertNoThrow(renderingEngine.updateDrawableSize(CGSize(width: 640, height: 480)), "Small size should work")
     }
     
     // MARK: - Performance Tests
