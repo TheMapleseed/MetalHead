@@ -92,18 +92,15 @@ while [ $(date +%s) -lt $END_TIME ]; do
         fi
         
         # Check for rendering activity (structured metrics)
-        if grep -q "METRIC:.*frame_rendered\|METRIC:.*render_called\|Frame.*rendered\|🎬.*render" "$LOG_FILE"; then
+        if grep -q "METRIC:.*render_called\|METRIC:.*frame_rendered\|Frame.*rendered\|🎬.*render" "$LOG_FILE"; then
             RENDERING_ACTIVE=true
         fi
         
-        # Count frames from structured metrics
-        FRAME_COUNT=$(grep "METRIC:.*frame_rendered" "$LOG_FILE" | grep -o "count=[0-9]*" | grep -o "[0-9]*" | tail -1 || echo "0")
-        if [ "$FRAME_COUNT" = "0" ]; then
-            FRAME_COUNT=$(grep -c "METRIC:.*frame_rendered\|Frame.*rendered" "$LOG_FILE" || echo "0")
-        fi
+        # Count frames from structured metrics (count render_called metrics)
+        FRAME_COUNT=$(grep -c "METRIC:.*render_called" "$LOG_FILE" 2>/dev/null || echo "0")
         
-        # Count errors
-        ERROR_COUNT=$(grep -c "METRIC:.*error\|❌\|ERROR\|error:" "$LOG_FILE" || echo "0")
+        # Count errors (ensure single value)
+        ERROR_COUNT=$(grep -c "METRIC:.*error\|❌\|ERROR\|error:" "$LOG_FILE" 2>/dev/null | head -1 || echo "0")
     fi
     
     sleep 1
@@ -122,11 +119,8 @@ echo -e "${BLUE}📊 Analyzing test results...${NC}"
 echo ""
 
 # Extract final metrics from log (prefer structured METRIC: lines)
-FINAL_FRAME_COUNT=$(grep "METRIC:.*frame_rendered" "$LOG_FILE" 2>/dev/null | grep -o "count=[0-9]*" | grep -o "[0-9]*" | tail -1 || echo "0")
-if [ "$FINAL_FRAME_COUNT" = "0" ]; then
-    FINAL_FRAME_COUNT=$(grep -c "METRIC:.*frame_rendered\|Frame.*rendered" "$LOG_FILE" 2>/dev/null || echo "0")
-fi
-FINAL_ERROR_COUNT=$(grep -c "METRIC:.*error\|❌\|ERROR\|error:" "$LOG_FILE" 2>/dev/null || echo "0")
+FINAL_FRAME_COUNT=$(grep -c "METRIC:.*render_called" "$LOG_FILE" 2>/dev/null || echo "0")
+FINAL_ERROR_COUNT=$(grep -c "METRIC:.*error\|❌\|ERROR\|error:" "$LOG_FILE" 2>/dev/null | head -1 || echo "0")
 FPS_MENTIONS=$(grep -c "METRIC:.*fps=\|FPS\|fps" "$LOG_FILE" 2>/dev/null || echo "0")
 INIT_MENTIONS=$(grep -c "METRIC:.*engine_initialized\|METRIC:.*initialization_complete\|✅.*initialized\|Engine initialized" "$LOG_FILE" 2>/dev/null || echo "0")
 RENDER_MENTIONS=$(grep -c "METRIC:.*render_called\|render\|Rendering" "$LOG_FILE" 2>/dev/null || echo "0")

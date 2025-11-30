@@ -1,0 +1,20 @@
+{
+  "test_timestamp": "2025-11-30T01:32:51Z",
+  "test_duration_seconds": 15,
+  "engine_status": {
+    "initialized": true,
+    "rendering_active": true,
+    "process_exited_cleanly": false
+  },
+  "metrics": {
+    "frames_rendered": ,
+    "errors_detected": 0
+0,
+    "fps_mentions": 160,
+    "initialization_mentions": 14,
+    "rendering_mentions": 524,
+    "test_objects_added": 1
+  },
+  "log_file": "./test-logs/engine_test_20251129_193231.log",
+  "test_result": "FAIL"
+}

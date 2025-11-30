@@ -1,0 +1,803 @@
+✅ UnifiedMultimediaEngine.init() - device created
+🎬 Frame 0: Engine running=false, initialized=false, deltaTime=0.008333333333333333
+⚠️ Render skipped: Engine not initialized
+🚀 MetalHeadApp.initializeEngine() called
+   Step 1: Initializing engine...
+🔧 Setting up subsystems...
+   📦 Initializing MemoryManager...
+      ✅ MemoryManager initialized
+   📦 Initializing MetalRenderingEngine...
+🚀 MetalRenderingEngine.initialize() called
+Created 8 parallel command queues for GPU core utilization
+   ✅ Metal setup complete
+   ✅ Buffers setup complete: vertexBuffer=256, indexBuffer=72
+   ✅ Pipeline setup complete
+Camera initialized: position=SIMD3<Float>(0.0, 0.0, 5.0), rotation=SIMD3<Float>(0.0, 0.0, 0.0)
+Projection matrix initialized with aspect ratio: 1.7777778
+   ✅ Matrices setup complete
+ComputeShaderManager initialized successfully
+OffscreenRenderer initialized successfully
+Graphics2D initialized successfully
+   Adding default cube...
+Default cube added to scene: vertexBuffer=256 bytes, indexBuffer=72 bytes, indexCount=36
+   Scene objects after initialization: 1
+✅ Metal Rendering Engine initialized successfully
+      ✅ MetalRenderingEngine initialized
+   📦 Initializing MetalRayTracingEngine (optional)...
+🎬 Frame 1: Engine running=false, initialized=false, deltaTime=0.012535124999885738
+⚠️ Render skipped: Engine not initialized
+🎬 Frame 2: Engine running=false, initialized=false, deltaTime=0.016659916666867502
+⚠️ Render skipped: Engine not initialized
+🎬 Frame 3: Engine running=false, initialized=false, deltaTime=0.015726541666481353
+⚠️ Render skipped: Engine not initialized
+🎬 Frame 4: Engine running=false, initialized=false, deltaTime=0.01701341666648659
+⚠️ Render skipped: Engine not initialized
+Metal Ray Tracing Engine initialized with hardware acceleration
+      ✅ MetalRayTracingEngine initialized successfully
+   📦 Initializing Graphics2D...
+Graphics2D initialized successfully
+      ✅ Graphics2D initialized
+   📦 Initializing AudioEngine...
+Audio Engine initialized successfully
+      ✅ AudioEngine initialized
+   📦 Initializing InputManager...
+Input Manager initialized successfully
+      ✅ InputManager initialized
+   📦 Initializing UnifiedClockSystem...
+      ✅ UnifiedClockSystem initialized
+   ✅ Subsystems setup complete
+🔧 Setting up synchronization...
+   ✅ Synchronization setup complete
+🔧 Setting up performance monitoring...
+Performance monitoring started
+   ✅ Performance monitoring setup complete
+✅ Unified Multimedia Engine initialized successfully - isInitialized=true
+METRIC: engine_initialized success=true isInitialized=true
+   ✅ Engine initialized - isInitialized=true
+   Step 2: Starting engine...
+▶️ Starting subsystems...
+Unified clock system started
+   ✅ Subsystems started
+   ✅ Main loop started
+✅ Unified Multimedia Engine started - isRunning=true
+METRIC: engine_started success=true isRunning=true
+   ✅ Engine started - isRunning=true
+   Step 3: Adding test objects...
+🔷 renderCube called at position: SIMD3<Float>(0.0, 0.0, 0.0)
+   Current scene objects: 1
+   Created 8 vertices, 36 indices
+   ✅ Buffers created: vertexBuffer=256 bytes, indexBuffer=72 bytes
+✅ Cube added to scene at position: SIMD3<Float>(0.0, 0.0, 0.0), total objects: 2
+🔷 renderCube called at position: SIMD3<Float>(2.0, 0.0, 0.0)
+   Current scene objects: 2
+   Created 8 vertices, 36 indices
+   ✅ Buffers created: vertexBuffer=256 bytes, indexBuffer=72 bytes
+✅ Cube added to scene at position: SIMD3<Float>(2.0, 0.0, 0.0), total objects: 3
+Sphere added to scene at position: SIMD3<Float>(-2.0, 0.0, 0.0), radius: 0.5
+METRIC: test_objects_added count=3
+   ✅ Test objects added
+METRIC: initialization_complete success=true
+✅ Initialization complete!
+🎬 Frame 5: Engine running=true, initialized=true, deltaTime=0.15267808333373978
+METRIC: render_called frameCount=0 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.392] [INFO] [Rendering] Frame 1 rendered - sceneObjects=4, FPS=0
+🎬 Frame 6: Engine running=true, initialized=true, deltaTime=0.013928041666076751
+METRIC: render_called frameCount=1 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.405] [INFO] [Rendering] Frame 2 rendered - sceneObjects=4, FPS=0
+Warning: Timing drift detected: 17.27837500014478ms
+Warning: Timing drift detected: 60.8097500005897ms
+🎬 Frame 7: Engine running=true, initialized=true, deltaTime=0.017399458333784423
+METRIC: render_called frameCount=2 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.422] [INFO] [Rendering] Frame 3 rendered - sceneObjects=4, FPS=0
+🎬 Frame 8: Engine running=true, initialized=true, deltaTime=0.015838958333006303
+METRIC: render_called frameCount=3 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.437] [INFO] [Rendering] Frame 4 rendered - sceneObjects=4, FPS=0
+🎬 Frame 9: Engine running=true, initialized=true, deltaTime=0.017566958333190996
+METRIC: render_called frameCount=4 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.455] [INFO] [Rendering] Frame 5 rendered - sceneObjects=4, FPS=0
+METRIC: render_called frameCount=5 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=4, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.472] [INFO] [Rendering] Frame 6 rendered - sceneObjects=4, FPS=0
+Warning: Timing drift detected: 131.13154213460874ms
+Warning: Timing drift detected: 4244.429222184585ms
+METRIC: render_called frameCount=6 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=4, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.488] [INFO] [Rendering] Frame 7 rendered - sceneObjects=4, FPS=0
+METRIC: render_called frameCount=7 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=4, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.505] [INFO] [Rendering] Frame 8 rendered - sceneObjects=4, FPS=0
+METRIC: render_called frameCount=8 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=4, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:19.522] [INFO] [Rendering] Frame 9 rendered - sceneObjects=4, FPS=0
+METRIC: render_called frameCount=9 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=4, is3DMode=true
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 4 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 4 objects
+[19:33:20.238] [INFO] [Rendering] Frame 0 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=0 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.254] [INFO] [Rendering] Frame 1 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=1 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.271] [INFO] [Rendering] Frame 2 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=2 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.288] [INFO] [Rendering] Frame 3 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=3 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.305] [INFO] [Rendering] Frame 4 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=4 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=4, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.322] [INFO] [Rendering] Frame 5 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=5 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=4, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.339] [INFO] [Rendering] Frame 6 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=6 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=4, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.354] [INFO] [Rendering] Frame 7 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=7 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=4, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.371] [INFO] [Rendering] Frame 8 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=8 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=4, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:20.389] [INFO] [Rendering] Frame 9 rendered - sceneObjects=4, FPS=52
+METRIC: render_called frameCount=9 sceneObjects=4 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=4, is3DMode=true
+🔵 Add Cube button clicked
+   Engine initialized: true
+   Engine running: true
+🔷 renderCube called at position: SIMD3<Float>(-1.7932229, 0.62269235, 1.8243568)
+   Current scene objects: 4
+   Created 8 vertices, 36 indices
+   ✅ Buffers created: vertexBuffer=256 bytes, indexBuffer=72 bytes
+✅ Cube added to scene at position: SIMD3<Float>(-1.7932229, 0.62269235, 1.8243568), total objects: 5
+✅ Added cube at position: SIMD3<Float>(-1.7932229, 0.62269235, 1.8243568)
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 5 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 5 objects
+[19:33:21.238] [INFO] [Rendering] Frame 0 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.255] [INFO] [Rendering] Frame 1 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.273] [INFO] [Rendering] Frame 2 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.289] [INFO] [Rendering] Frame 3 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.306] [INFO] [Rendering] Frame 4 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.322] [INFO] [Rendering] Frame 5 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=5, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.339] [INFO] [Rendering] Frame 6 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=5, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.356] [INFO] [Rendering] Frame 7 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=5, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.372] [INFO] [Rendering] Frame 8 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=5, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:21.389] [INFO] [Rendering] Frame 9 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=5, is3DMode=true
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 5 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 5 objects
+[19:33:22.240] [INFO] [Rendering] Frame 0 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.256] [INFO] [Rendering] Frame 1 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.273] [INFO] [Rendering] Frame 2 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.289] [INFO] [Rendering] Frame 3 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.306] [INFO] [Rendering] Frame 4 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=5, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.323] [INFO] [Rendering] Frame 5 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=5, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.339] [INFO] [Rendering] Frame 6 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=5, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.355] [INFO] [Rendering] Frame 7 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=5, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.372] [INFO] [Rendering] Frame 8 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=5, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:22.389] [INFO] [Rendering] Frame 9 rendered - sceneObjects=5, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=5 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=5, is3DMode=true
+Sphere added to scene at position: SIMD3<Float>(-1.8049283, -0.9235797, 0.930017), radius: 0.5
+✅ Added sphere at position: SIMD3<Float>(-1.8049283, -0.9235797, 0.930017)
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 6 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 6 objects
+[19:33:23.240] [INFO] [Rendering] Frame 0 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=6, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.257] [INFO] [Rendering] Frame 1 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=6, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.273] [INFO] [Rendering] Frame 2 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=6, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.289] [INFO] [Rendering] Frame 3 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=6, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.307] [INFO] [Rendering] Frame 4 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=6, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.323] [INFO] [Rendering] Frame 5 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=6, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.340] [INFO] [Rendering] Frame 6 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=6, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.356] [INFO] [Rendering] Frame 7 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=6, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.373] [INFO] [Rendering] Frame 8 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=6, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:23.389] [INFO] [Rendering] Frame 9 rendered - sceneObjects=6, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=6 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=6, is3DMode=true
+🔵 Add Cube button clicked
+   Engine initialized: true
+   Engine running: true
+🔷 renderCube called at position: SIMD3<Float>(0.30790114, 1.3478034, 0.55738354)
+   Current scene objects: 6
+   Created 8 vertices, 36 indices
+   ✅ Buffers created: vertexBuffer=256 bytes, indexBuffer=72 bytes
+✅ Cube added to scene at position: SIMD3<Float>(0.30790114, 1.3478034, 0.55738354), total objects: 7
+✅ Added cube at position: SIMD3<Float>(0.30790114, 1.3478034, 0.55738354)
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 7 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 7 objects
+[19:33:24.241] [INFO] [Rendering] Frame 0 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.257] [INFO] [Rendering] Frame 1 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.273] [INFO] [Rendering] Frame 2 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.291] [INFO] [Rendering] Frame 3 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.307] [INFO] [Rendering] Frame 4 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.324] [INFO] [Rendering] Frame 5 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.341] [INFO] [Rendering] Frame 6 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.357] [INFO] [Rendering] Frame 7 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.373] [INFO] [Rendering] Frame 8 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:24.390] [INFO] [Rendering] Frame 9 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=7, is3DMode=true
+🔊 Audio playing
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 7 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 7 objects
+[19:33:25.241] [INFO] [Rendering] Frame 0 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.258] [INFO] [Rendering] Frame 1 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.274] [INFO] [Rendering] Frame 2 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.291] [INFO] [Rendering] Frame 3 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.308] [INFO] [Rendering] Frame 4 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.324] [INFO] [Rendering] Frame 5 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.341] [INFO] [Rendering] Frame 6 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.358] [INFO] [Rendering] Frame 7 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.375] [INFO] [Rendering] Frame 8 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:25.390] [INFO] [Rendering] Frame 9 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=7, is3DMode=true
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 7 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 7 objects
+[19:33:26.242] [INFO] [Rendering] Frame 0 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.257] [INFO] [Rendering] Frame 1 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.274] [INFO] [Rendering] Frame 2 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.291] [INFO] [Rendering] Frame 3 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.308] [INFO] [Rendering] Frame 4 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.325] [INFO] [Rendering] Frame 5 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.342] [INFO] [Rendering] Frame 6 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.357] [INFO] [Rendering] Frame 7 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.375] [INFO] [Rendering] Frame 8 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:26.392] [INFO] [Rendering] Frame 9 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=7, is3DMode=true
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 7 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 7 objects
+[19:33:27.242] [INFO] [Rendering] Frame 0 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.259] [INFO] [Rendering] Frame 1 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.275] [INFO] [Rendering] Frame 2 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.292] [INFO] [Rendering] Frame 3 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.308] [INFO] [Rendering] Frame 4 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.325] [INFO] [Rendering] Frame 5 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.342] [INFO] [Rendering] Frame 6 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.358] [INFO] [Rendering] Frame 7 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.375] [INFO] [Rendering] Frame 8 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:27.391] [INFO] [Rendering] Frame 9 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=7, is3DMode=true
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 7 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 7 objects
+[19:33:28.242] [INFO] [Rendering] Frame 0 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.259] [INFO] [Rendering] Frame 1 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.276] [INFO] [Rendering] Frame 2 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.292] [INFO] [Rendering] Frame 3 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.308] [INFO] [Rendering] Frame 4 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.326] [INFO] [Rendering] Frame 5 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.342] [INFO] [Rendering] Frame 6 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.359] [INFO] [Rendering] Frame 7 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.376] [INFO] [Rendering] Frame 8 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:28.393] [INFO] [Rendering] Frame 9 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=7, is3DMode=true
+🔇 Audio stopped
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 7 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 7 objects
+[19:33:29.243] [INFO] [Rendering] Frame 0 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.260] [INFO] [Rendering] Frame 1 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.276] [INFO] [Rendering] Frame 2 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.293] [INFO] [Rendering] Frame 3 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.309] [INFO] [Rendering] Frame 4 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.326] [INFO] [Rendering] Frame 5 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.343] [INFO] [Rendering] Frame 6 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=6 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=6, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.360] [INFO] [Rendering] Frame 7 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=7 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=7, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.375] [INFO] [Rendering] Frame 8 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=8 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=8, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:29.393] [INFO] [Rendering] Frame 9 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=9 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=9, sceneObjects=7, is3DMode=true
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   📐 View matrix translation: (0.0, 0.0, -5.0)
+   📐 Projection matrix: near=0.1, far=100.0, fov=45°
+🎨 Rendering 7 scene objects
+   Camera position: SIMD3<Float>(0.0, 0.0, 5.0), rotation: SIMD3<Float>(0.0, 0.0, 0.0)
+   View matrix translation: (0.0, 0.0, -5.0)
+   Projection matrix scale: x=1.1212682, y=2.4142137
+   Command buffer created: ✅
+   Render encoder created: ✅
+   Pipeline state set: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+   ✅ Completed rendering 7 objects
+[19:33:30.243] [INFO] [Rendering] Frame 0 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=0 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=0, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:30.260] [INFO] [Rendering] Frame 1 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=1 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=1, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:30.277] [INFO] [Rendering] Frame 2 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=2 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=2, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:30.293] [INFO] [Rendering] Frame 3 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=3 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=3, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   🔗 Pipeline state set: ✅, Depth stencil: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:30.310] [INFO] [Rendering] Frame 4 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=4 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=4, sceneObjects=7, is3DMode=true
+   Drawable: ✅, RenderPass: ✅
+   ✅ Drew object 0: indexCount=36, position=(0.0, 0.0, 0.0)
+[19:33:30.327] [INFO] [Rendering] Frame 5 rendered - sceneObjects=7, FPS=60
+METRIC: render_called frameCount=5 sceneObjects=7 is3DMode=true
+🎬 MetalRenderingEngine.render() called - frameCount=5, sceneObjects=7, is3DMode=true
+   ✅ Drew object 0
