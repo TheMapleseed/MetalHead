@@ -143,9 +143,11 @@ public final class Logger: @unchecked Sendable {
         
         os_log("%{public}s", log: category, type: osLogLevel, logMessage)
         
-        if isVerbose {
-            print(logMessage)
-        }
+        // Always print to stdout for test scripts to capture
+        // Format: [TIMESTAMP] [LEVEL] [CATEGORY] MESSAGE
+        let categoryName = getCategoryName(for: category)
+        let structuredMessage = "[\(timestamp)] [\(level.rawValue.uppercased())] [\(categoryName)] \(message)"
+        print(structuredMessage)
     }
     
     // MARK: - Performance Logging

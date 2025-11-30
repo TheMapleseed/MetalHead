@@ -130,8 +130,9 @@ public class MetalRenderingEngine: ObservableObject {
             return
         }
         
-        // Debug: Log that we're rendering (first 10 frames, then every 60)
+        // Log rendering activity for test verification
         if frameCount < 10 || frameCount % 60 == 0 {
+            print("METRIC: render_called frameCount=\(frameCount) sceneObjects=\(sceneObjects.count) is3DMode=\(is3DMode)")
             print("🎬 MetalRenderingEngine.render() called - frameCount=\(frameCount), sceneObjects=\(sceneObjects.count), is3DMode=\(is3DMode)")
             if frameCount < 5 {
                 print("   Drawable: \(drawable != nil ? "✅" : "❌"), RenderPass: \(renderPassDescriptor != nil ? "✅" : "❌")")
@@ -188,9 +189,9 @@ public class MetalRenderingEngine: ObservableObject {
         commandBuffer.present(drawable)
         commandBuffer.commit()
         
-        // Debug: Log successful frame
-        if frameCount < 10 {
-            print("   ✅ Frame \(frameCount) rendered and committed - sceneObjects=\(sceneObjects.count)")
+        // Log frame metrics for test verification
+        if frameCount % 60 == 0 || frameCount < 10 {
+            Logger.shared.logRendering("Frame \(frameCount) rendered - sceneObjects=\(sceneObjects.count), FPS=\(fps)", level: .info)
         }
     }
     
